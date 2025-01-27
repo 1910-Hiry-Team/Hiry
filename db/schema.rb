@@ -10,9 +10,73 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_27_150533) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_27_160828) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "applications", force: :cascade do |t|
+    t.string "stage"
+    t.boolean "match"
+    t.bigint "user_id", null: false
+    t.bigint "job_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_applications_on_job_id"
+    t.index ["user_id"], name: "index_applications_on_user_id"
+  end
+
+  create_table "companies", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "location"
+    t.string "description"
+    t.string "industry"
+    t.integer "employee_number"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_companies_on_user_id"
+  end
+
+  create_table "experiences", force: :cascade do |t|
+    t.string "company"
+    t.string "job_title"
+    t.string "contrat"
+    t.string "missions"
+    t.string "description"
+    t.date "start_date"
+    t.date "end_date"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_experiences_on_user_id"
+  end
+
+  create_table "jobs", force: :cascade do |t|
+    t.string "job_title"
+    t.string "location"
+    t.string "missions"
+    t.string "contract"
+    t.string "language"
+    t.string "experience"
+    t.int4range "salary"
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_jobs_on_company_id"
+  end
+
+  create_table "studies", force: :cascade do |t|
+    t.string "school"
+    t.string "level"
+    t.string "diploma"
+    t.date "start_date"
+    t.date "end_date"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_studies_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -24,8 +88,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_150533) do
     t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "last_name"
+    t.integer "role"
+    t.string "phone_number"
+    t.date "date_of_birth"
+    t.string "skills"
+    t.string "hobbies"
+    t.string "city"
+    t.string "country"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "applications", "jobs"
+  add_foreign_key "applications", "users"
+  add_foreign_key "companies", "users"
+  add_foreign_key "experiences", "users"
+  add_foreign_key "jobs", "companies"
+  add_foreign_key "studies", "users"
 end
