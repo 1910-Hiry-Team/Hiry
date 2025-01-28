@@ -74,3 +74,5 @@ group :test do
 end
 
 gem "devise"
+gem 'faker'
+gem 'country_select', '~> 8.0'
