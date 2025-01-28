@@ -1,5 +1,6 @@
 # app/controllers/users/registrations_controller.rb
 class Users::RegistrationsController < Devise::RegistrationsController
+  skip_before_action :authenticate_user!, only: [:new, :create]
   before_action :configure_permitted_parameters
 
   def new

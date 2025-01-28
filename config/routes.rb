@@ -19,6 +19,8 @@ Rails.application.routes.draw do
 
   # custom routes
   get 'sign-up', to: 'pages#sign_up', as: :sign_up_choice
+  get '/sign-up-choice', to: 'pages#sign_up', as: :new_user_choice
+
 
   # Resource routes
   resources :users, only: [:show]
