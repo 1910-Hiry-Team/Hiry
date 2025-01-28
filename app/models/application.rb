@@ -4,6 +4,6 @@ class Application < ApplicationRecord
   belongs_to :job
 
   # Validations
-  validates :stage, presence: true
-  validates :match, presence: true
+  validates :stage, inclusion: { in: ["Applied", "Interviewing", "Hired", "Rejected"] }
+  validates :match, inclusion: { in: [true, false] }
 end
