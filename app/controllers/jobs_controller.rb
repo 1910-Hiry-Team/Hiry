@@ -1,7 +1,11 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy]
   def index
-    @jobs = Job.all
+    @jobs = Job.all  # Add filtering logic here (search function)
+  end
+
+  def search
+    # Show search form
   end
 
   def show

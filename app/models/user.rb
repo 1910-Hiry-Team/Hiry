@@ -4,22 +4,22 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  enum role: { jobseeker: 0, company: 1 }
+
+  # Associations based on profile
+  has_one :jobseeker_profile, dependent: :destroy
+  has_one :company, dependent: :destroy
+
   # Associations
-  has_many :applications
-  has_many :experiences
-  has_many :studies
-  has_many :companies
+  has_many :applications, dependent: :destroy
+  has_many :experiences, dependent: :destroy
+  has_many :studies, dependent: :destroy
+  has_many :jobs, through: :applications
 
   # Validations
   validates :email, presence: true, uniqueness: true
   validates :role, presence: true
-  validates :first_name, presence: true, if: :jobseeker?
-  validates :last_name, presence: true, if: :jobseeker?
-  validates :phone_number, presence: true, if: :jobseeker?, uniqueness: true
-  validates :date_of_birth, presence: true, if: :jobseeker?
-  validates :skills, presence: true, if: :jobseeker?
-  validates :city, presence: true, if: :jobseeker?
-  validates :country, presence: true, if: :jobseeker?
 
-  enum role: { jobseeker: 0, recruiter: 1 }
+  accepts_nested_attributes_for :jobseeker_profile
+  accepts_nested_attributes_for :company
 end

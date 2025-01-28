@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_27_160828) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_28_145431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,7 +27,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_160828) do
 
   create_table "companies", force: :cascade do |t|
     t.string "name"
-    t.string "email"
     t.string "location"
     t.string "description"
     t.string "industry"
@@ -66,6 +65,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_160828) do
     t.index ["company_id"], name: "index_jobs_on_company_id"
   end
 
+  create_table "jobseeker_profiles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "phone_number"
+    t.date "date_of_birth"
+    t.string "skills"
+    t.string "hobbies"
+    t.string "city"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_jobseeker_profiles_on_user_id"
+  end
+
   create_table "studies", force: :cascade do |t|
     t.string "school"
     t.string "level"
@@ -86,15 +100,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_160828) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "first_name"
-    t.string "last_name"
     t.integer "role"
-    t.string "phone_number"
-    t.date "date_of_birth"
-    t.string "skills"
-    t.string "hobbies"
-    t.string "city"
-    t.string "country"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -104,5 +110,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_27_160828) do
   add_foreign_key "companies", "users"
   add_foreign_key "experiences", "users"
   add_foreign_key "jobs", "companies"
+  add_foreign_key "jobseeker_profiles", "users"
   add_foreign_key "studies", "users"
 end
