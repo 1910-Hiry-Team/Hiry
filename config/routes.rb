@@ -1,14 +1,5 @@
 Rails.application.routes.draw do
-  get 'users/show'
-  get 'jobs/index'
-  get 'jobs/show'
-  get 'jobs/new'
-  get 'jobs/create'
-  get 'jobs/edit'
-  get 'jobs/update'
-  get 'jobs/destroy'
-  devise_for :users
-  root to: "pages#home"
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -17,4 +8,32 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # Devise routes
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
+
+  # Root route
+  root to: 'pages#home'
+
+  # custom routes
+  get 'sign-up', to: 'pages#sign_up', as: :sign_up_choice
+  get '/sign-up-choice', to: 'pages#sign_up', as: :new_user_choice
+
+  # User namespace
+  resources :users, only: [:show]
+
+  # Job namespace (Regular jobs routes for jobseekers)
+  resources :jobs, only: [:index, :show] do
+    collection do
+      get 'search'  # This gives you /jobs/search
+    end
+  end
+
+  # Company namespace
+  namespace :company do
+    get 'dashboard', to: 'dashboard#index'
+    resources :jobs  # This gives you /company/jobs
+  end
 end

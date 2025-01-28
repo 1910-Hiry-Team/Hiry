@@ -5,7 +5,6 @@ class Company < ApplicationRecord
 
   # Validations
   validates :name, presence: true
-  validates :email, presence: true
   validates :employee_number, presence: true
   validates :industry, presence: true
   validates :location, presence: true

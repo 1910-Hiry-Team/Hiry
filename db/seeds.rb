@@ -20,37 +20,43 @@ User.destroy_all
 # Create Users
 puts "Creating users..."
 10.times do
-  User.create!(
-  first_name: Faker::Name.first_name,
-  last_name: Faker::Name.last_name,
-  email: Faker::Internet.unique.email,
-  password: "password123", # Provide a default password
-  password_confirmation: "password123", # Confirm the password
-  phone_number: Faker::PhoneNumber.phone_number,
-  date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
-  skills: Faker::Job.key_skill,
-  hobbies: Faker::Hobby.activity,
-  city: Faker::Address.city,
-  country: Faker::Address.country,
-  role: [0, 1].sample
-)
-end
-users = User.all
-
-# Create Companies
-puts "Creating companies..."
-5.times do
-  Company.create!(
-    name: Faker::Company.name,
-    email: Faker::Internet.email,
-    location: Faker::Address.city,
-    description: Faker::Company.catch_phrase,
-    industry: Faker::Company.industry,
-    employee_number: rand(10..500),
-    user: users.sample
+  # First create the user
+  user = User.create!(
+    email: Faker::Internet.unique.email,
+    password: "password123",
+    password_confirmation: "password123",
+    role: [:jobseeker, :company].sample
   )
+
+  # Then create the associated profile
+  if user.jobseeker?
+    JobseekerProfile.create!(
+      user: user,
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      phone_number: Faker::PhoneNumber.phone_number,
+      date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
+      skills: Faker::Job.key_skill,
+      hobbies: Faker::Hobby.activity,
+      city: Faker::Address.city,
+      country: Faker::Address.country
+    )
+  else
+    Company.create!(
+      user: user,
+      name: Faker::Company.name,
+      email: Faker::Internet.email,
+      location: Faker::Address.city,
+      description: Faker::Company.catch_phrase,
+      industry: Faker::Company.industry,
+      employee_number: rand(10..500)
+    )
+  end
 end
+
+users = User.all
 companies = Company.all
+
 
 # Create Jobs
 puts "Creating jobs..."
@@ -70,7 +76,7 @@ jobs = Job.all
 
 # Create Studies
 puts "Creating studies..."
-users.each do |user|
+User.where(role: 0).each do |user|
   rand(1..3).times do
     Study.create!(
       school: Faker::University.name,
@@ -85,7 +91,7 @@ end
 
 # Create Experiences
 puts "Creating experiences..."
-users.each do |user|
+User.where(role: 0).each do |user|
   rand(1..3).times do
     Experience.create!(
       company: Faker::Company.name,
@@ -102,7 +108,7 @@ end
 
 # Create Applications
 puts "Creating applications..."
-users.each do |user|
+User.where(role: 0).each do |user|
   rand(1..5).times do
     Application.create!(
       stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,

@@ -1,0 +1,7 @@
+# app/views/pages/sign_up.html.erb
+<div class="container">
+  <h1>Join as a...</h1>
+
+  <%= link_to "Job Seeker", new_user_registration_path(role: 'jobseeker'), class: "btn btn-primary" %>
+  <%= link_to "Company", new_user_registration_path(role: 'company'), class: "btn btn-secondary" %>
+</div>
