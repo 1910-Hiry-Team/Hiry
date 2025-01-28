@@ -1,6 +1,24 @@
-<h1>Jobs#show</h1>
-<p>Find me in app/views/jobs/show.html.erb</p>
+<div>
+  <div>
+    <h2><%= @job.job_title %> at <%= @job.company.name %></h2>
+  </div>
+  <div>
+    <p><%= @job.company.employee_number %></p>
+  </div>
+  <div>
+    <p><%= @job.location %></p>
+  </div>
+  <div>
+    <p><%= @job.company.industry %></p>
+  </div>
+  <div>
+    <p><%= @job.contract %></p>
+  </div>
+  <p><%= @job.company.description %></p>
+</div>
 
-<%= @job.job_title %>
+<div>
+  
+</div>
 
 <%= link_to "Back to offers", jobs_path %>
