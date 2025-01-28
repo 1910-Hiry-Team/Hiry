@@ -1,2 +1,48 @@
-<h1>Jobs#show</h1>
-<p>Find me in app/views/jobs/show.html.erb</p>
+<div class="#">
+  <div class="company-info-container">
+    <div>
+      <h2><%= @job.job_title %> at <%= @job.company.name %></h2>
+    </div>
+    <div>
+      <p><span class="material-symbols-outlined">group</span><strong><%= @job.company.employee_number %></strong> collaborators </p>
+    </div>
+    <div>
+      <p><%= @job.company.location %></p>
+    </div>
+    <div>
+      <p><%= @job.company.industry %></p>
+    </div>
+    <div>
+      <p><%= @job.contract %></p>
+    </div>
+    <p><%= @job.company.description %></p>
+  </div>
+  <div class="job-offer-content-container">
+    <div class="job-offer-important-content">
+      <p><%= @job.job_title %></p>
+      <p><%= @job.location %></p>
+      <p><%= @job.contract %></p>
+      <p><%= @job.experience %></p>
+      <p><%= @job.salary %>$</p>
+    </div>
+    <div class="job-offer-description-criteria">
+      <div class="job-offer-missions-content">
+        <h3>Your missions:</h3>
+        <li><%= @job.missions %></li>
+        <li><%= @job.missions %></li>
+        <li><%= @job.missions %></li>
+      </div>
+      <div>
+        <h3>Languages:</h3>
+        <p><%= @job.language %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="media-content">
+</div>
+
+
+
+<%= link_to "Back to offers", jobs_path %>
