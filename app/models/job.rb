@@ -1,4 +1,5 @@
 class Job < ApplicationRecord
+  searchkick
   # Associations
   belongs_to :company
   has_many :applications

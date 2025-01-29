@@ -26,7 +26,7 @@ Rails.application.routes.draw do
   # Job namespace (Regular jobs routes for jobseekers)
   resources :jobs, only: [:index, :show] do
     collection do
-      get 'search'  # This gives you /jobs/search
+      get :search
     end
   end
 
