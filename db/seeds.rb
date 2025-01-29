@@ -45,7 +45,7 @@ puts "Creating users..."
     Company.create!(
       user: user,
       name: Faker::Company.name,
-      email: Faker::Internet.email,
+      # email: Faker::Internet.email,
       location: Faker::Address.city,
       description: Faker::Company.catch_phrase,
       industry: Faker::Company.industry,
