@@ -76,3 +76,4 @@ end
 gem "devise"
 gem 'faker'
 gem 'country_select', '~> 8.0'
+gem 'hotwire-rails'

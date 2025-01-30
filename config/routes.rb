@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -11,7 +10,8 @@ Rails.application.routes.draw do
 
   # Devise routes
   devise_for :users, controllers: {
-    registrations: 'users/registrations'
+    registrations: 'users/registrations',
+    sessions: 'users/sessions'
   }
 
   # Root route
@@ -29,11 +29,13 @@ Rails.application.routes.draw do
     collection do
       get 'search'  # This gives you /jobs/search
     end
+    resources :applications, only: [:show, :new, :create]
+    resource :favorites, only: [:create, :destroy]
   end
 
   # Company namespace
-  namespace :company do
+  resources :companies, only: [] do
     get 'dashboard', to: 'dashboard#index'
-    resources :jobs  # This gives you /company/jobs
+    resources :jobs, module: :company  # This gives you /company/jobs
   end
 end
