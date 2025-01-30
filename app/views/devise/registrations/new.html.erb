@@ -1,6 +1,7 @@
 <h2>Sign up as <%= @role.capitalize %> - Step <%= @step %> of <%= @total_steps %></h2>
-
-<%= render "devise/registrations/steps/step_#{@step}", locals: { resource: @user, resource_name: resource_name, role: @role } %>
+<turbo-frame id="registration_form">
+  <%= render "devise/registrations/steps/step_#{@step}", locals: { resource: @user, resource_name: resource_name, role: @role } %>
+</turbo-frame>
 
 <div class="form-actions">
   <% if @step > 1 %>
@@ -8,7 +9,10 @@
   <% end %>
 
   <% if @step < @total_steps %>
-    <%= button_tag "Next", class: 'button primary' %>
+    <%= link_to "Next", new_registration_path(resource_name, role: @role, step: @step + 1),
+      class: 'button primary',
+      data: { turbo_frame: "_top" }
+    %>
   <% else %>
     <%= button_tag "Submit Registration", class: 'button primary' %>
   <% end %>

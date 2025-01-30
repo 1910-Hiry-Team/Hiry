@@ -11,14 +11,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     @step = 1 if @step < 1
 
-    if @role == 'jobseeker' && @step > 1
+    if @role == 'jobseeker'
       @total_steps = jobseeker_total_steps
       @user.build_jobseeker_profile unless @user.jobseeker_profile
-    elsif @role == 'company' && @step > 1
+    elsif @role == 'company'
       @total_steps = company_total_steps
       @user.build_company unless @user.company
+    else
+      @total_steps = 1
     end
-    
+
     render :new
   end
 
