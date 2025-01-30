@@ -44,5 +44,16 @@
 </div>
 
 
-
-<%= link_to "Back to offers", jobs_path %>
+<div>
+  <%= link_to "Apply", new_job_application_path(@job) %>
+  <div id="favorite-button">
+    <% if current_user.favorite_jobs.include?(@job) %>
+      <%= link_to "Unfavorite", job_favorites_path(@job), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
+    <% else %>
+      <%= simple_form_for [@job, @favorite] do |f| %>
+        <%= f.submit "Add to favorites", class: "btn btn-primary" %>
+      <% end %>
+    <% end %>
+</div>
+  <%= link_to "Back to offers", jobs_path %>
+</div>
