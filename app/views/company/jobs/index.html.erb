@@ -1,1 +1,15 @@
-<h1>your jobs</h1>
+<h1>Job Listings</h1>
+
+<% @jobs.each do |job| %>
+  <div class="job">
+    <h2><%= link_to job.job_title, company_job_path(job.company, job) %></h2>
+    <p><strong>Location:</strong> <%= job.location %></p>
+    <p><strong>Missions:</strong> <%= job.missions %></p>
+    <p><strong>Contract Type:</strong> <%= job.contract %></p>
+    <p><strong>Preferred Language:</strong> <%= job.language %></p>
+    <p><strong>Experience Level:</strong> <%= job.experience %></p>
+    <p><strong>Salary:</strong> <%= job.salary %></p>
+    <p><strong>Posted on:</strong> <%= job.created_at.strftime("%B %d, %Y") %></p>
+  </div>
+<% end %>
+<%= link_to  "Create a new job", new_company_job_path(@company) %>

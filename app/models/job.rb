@@ -7,6 +7,8 @@ class Job < ApplicationRecord
   belongs_to :company
   has_many :applications
   has_many :users, through: :applications
+  has_many :favorites
+  has_many :favorited_by_users, through: :favorites, source: :user
 
   # Validations
   validates :job_title, presence: true

@@ -13,6 +13,7 @@ class JobsController < ApplicationController
   end
 
   def show
+    @favorite = Favorite.new
   end
 
   def new

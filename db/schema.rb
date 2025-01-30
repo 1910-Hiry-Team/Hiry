@@ -51,6 +51,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_142414) do
     t.index ["user_id"], name: "index_experiences_on_user_id"
   end
 
+  create_table "favorites", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "job_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_favorites_on_job_id"
+    t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
   create_table "jobs", force: :cascade do |t|
     t.string "job_title"
     t.string "location"
@@ -58,12 +67,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_142414) do
     t.string "contract"
     t.string "language"
     t.string "experience"
-    t.int4range "salary"
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "latitude"
     t.float "longitude"
+    t.integer "salary"
     t.index ["company_id"], name: "index_jobs_on_company_id"
   end
 
@@ -111,6 +120,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_142414) do
   add_foreign_key "applications", "users"
   add_foreign_key "companies", "users"
   add_foreign_key "experiences", "users"
+  add_foreign_key "favorites", "jobs"
+  add_foreign_key "favorites", "users"
   add_foreign_key "jobs", "companies"
   add_foreign_key "jobseeker_profiles", "users"
   add_foreign_key "studies", "users"

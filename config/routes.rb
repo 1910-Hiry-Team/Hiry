@@ -10,7 +10,8 @@ Rails.application.routes.draw do
 
   # Devise routes
   devise_for :users, controllers: {
-    registrations: 'users/registrations'
+    registrations: 'users/registrations',
+    sessions: 'users/sessions'
   }
 
   # Root route
@@ -28,11 +29,13 @@ Rails.application.routes.draw do
     collection do
       get :search
     end
+    resources :applications, only: [:show, :new, :create]
+    resource :favorites, only: [:create, :destroy]
   end
 
   # Company namespace
-  namespace :company do
+  resources :companies, only: [] do
     get 'dashboard', to: 'dashboard#index'
-    resources :jobs  # This gives you /company/jobs
+    resources :jobs, module: :company  # This gives you /company/jobs
   end
 end
