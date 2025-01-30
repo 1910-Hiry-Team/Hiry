@@ -29,6 +29,8 @@ Rails.application.routes.draw do
     collection do
       get 'search'  # This gives you /jobs/search
     end
+    resources :applications, only: [:show, :new, :create]
+    resource :favorites, only: [:create, :destroy]
   end
 
   # Company namespace
