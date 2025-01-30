@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   # Devise routes
-  devise_scope :user do
+  devise_for :user do
     resource :registration,
              only: [:new, :create, :show, :update], # Keep show and update, remove index, destroy etc. if not needed
              path: 'registrations',

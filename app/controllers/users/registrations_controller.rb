@@ -35,7 +35,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     when :company_info_part1 # Company Step 2
       @user = User.find(params[:user_id]) || User.new # Find existing user or new
       @user.build_company unless @user.company
-    when :company_info_part2 # Company Step 3
+    when :company_info_part2 # Company Step 3  
       @user = User.find(params[:user_id]) # Find existing user
     when :confirmation # Last step for both
       @user = User.find(params[:user_id]) # Find existing user
