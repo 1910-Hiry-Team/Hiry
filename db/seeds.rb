@@ -31,11 +31,16 @@ answer = gets.chomp
 if answer == 'y'
   USE_REAL_CITIES = true
 else
-  puts "Generating fake cities..."
   USE_REAL_CITIES = false
 end
 
-REAL_CITIES = ['Paris', 'New York', 'Brussels', 'London', 'Rome']
+REAL_CITIES = [
+              "Paris, France",
+              "New York, NY, United States",
+              "Brussels, Belgium",
+              "London, UK",
+              "Rome, Italy"
+            ]
 
 puts 'Do you want to clear the database? (y/n)'
 print '> '
@@ -57,7 +62,7 @@ start_time = Time.now
 puts "Creating users..."
 jobseeker_profiles_to_create = []
 companies_to_create = []
-NUMBER_OF_JOBS.times do
+NUMBER_OF_USERS.times do
   city = USE_REAL_CITIES ? REAL_CITIES.sample : Faker::Address.city
   # First create the user
   user = User.create!(
@@ -104,9 +109,14 @@ puts "Creating jobs..."
 jobs_to_create = []
 NUMBER_OF_JOBS.times do
   city = USE_REAL_CITIES ? REAL_CITIES.sample : Faker::Address.city
+  geo = Geocoder.search(city).first
+  lat, lon = geo&.latitude, geo&.longitude
+
   jobs_to_create << {
     job_title: Faker::Job.title,
     location: city,
+    latitude: lat,
+    longitude: lon,
     missions: Faker::Lorem.sentence(word_count: 10),
     contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
     language: Faker::ProgrammingLanguage.name,
@@ -167,10 +177,12 @@ User.where(role: 0).each do |user|
       stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,
       match: [true, false].sample,
       user_id: user.id,
-      job: jobs.sample,
+      job_id: jobs.sample.id,
     }
   end
 end
+
+Application.import(applications_to_create)
 
 puts "Seeding completed!"
 puts "Users created: #{User.count}"
