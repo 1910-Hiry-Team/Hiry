@@ -1,0 +1,32 @@
+<h2>Step Confirmation</h2>
+
+<p>Please review your details before submitting:</p>
+
+<p><strong>Email:</strong> <%= @user.email %></p>
+<% if @role == 'jobseeker' %>
+  <p><strong>Email:</strong> <%= @user.email %></p>
+  <p><strong>First Name:</strong> <%= @user.jobseeker_profile.first_name %></p>
+  <p><strong>Last Name:</strong> <%= @user.jobseeker_profile.last_name %></p>
+  <p><strong>Phone Number:</strong> <%= @user.jobseeker_profile.phone_number %></p>
+  <p><strong>Date of Birth:</strong> <%= @user.jobseeker_profile.date_of_birth %></p>
+  <p><strong>City:</strong> <%= @user.jobseeker_profile.city %></p>
+  <p><strong>Country:</strong> <%= @user.jobseeker_profile.country %></p>
+  <p><strong>Skills:</strong> <%= @user.jobseeker_profile.skills %></p>
+  <p><strong>Hobbies:</strong> <%= @user.jobseeker_profile.hobbies %></p>
+
+  <% @user.experiences.each do |experience| %>
+    <h3>Experience:</h3>
+    <p><strong>Company:</strong> <%= experience.company %></p>
+    <p><strong>Job Title:</strong> <%= experience.job_title %></p>
+    <p><strong>Start Date:</strong> <%= experience.start_date %></p>
+    <p><strong>End Date:</strong> <%= experience.end_date %></p>
+    <p><strong>Missions:</strong> <%= experience.missions %></p>
+  <% end %>
+<% elsif @role == 'company' %>
+  <p><strong>Company Name:</strong> <%= @user.company.name %></p>
+  <%# ... display other company details ... %>
+<% end %>
+
+<div class="form-actions">
+  <%= render_wizard form: nil, submit_button_text: "Complete Registration" %>
+</div>

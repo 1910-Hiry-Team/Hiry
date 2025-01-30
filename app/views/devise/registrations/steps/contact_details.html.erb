@@ -1,7 +1,9 @@
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name, step: @step)) do |f| %>
-  <%= devise_error_messages! %>
+<h2>Step 2: Contact Details</h2>
 
-  <%= f.fields_for :jobseeker_profile_attributes, resource.jobseeker_profile || resource.build_jobseeker_profile do |profile_fields| %>
+<%= form_for @user, url: wizard_path(@user), method: :put do |f| %>
+  <%= devise_error_messages! %> <%# Keep devise error messages if you want to display devise errors here %>
+
+  <%= f.fields_for :jobseeker_profile_attributes, @user.jobseeker_profile || @user.build_jobseeker_profile do |profile_fields| %>
     <div class="field">
       <%= profile_fields.label :phone_number %><br />
       <%= profile_fields.text_field :phone_number %>
@@ -23,5 +25,7 @@
     </div>
   <% end %>
 
-  <%= f.hidden_field :step, value: @step %>
+  <div class="form-actions">
+    <%= render_wizard form: f, previous_button_text: "Previous", next_button_text: "Next Step" %>
+  </div>
 <% end %>

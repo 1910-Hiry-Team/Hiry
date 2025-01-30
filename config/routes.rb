@@ -9,10 +9,18 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   # Devise routes
-  devise_for :users, controllers: {
-    registrations: 'users/registrations',
-    sessions: 'users/sessions'
-  }
+  devise_scope :user do
+    resource :registration,
+             only: [:new, :create, :show, :update], # Keep show and update, remove index, destroy etc. if not needed
+             path: 'registrations',
+             path_names: { new: 'sign_up' },
+             controller: 'users/registrations',
+             as: :user_registration do
+               collection do
+                 get 'sign_up/:role', to: 'users/registrations#new', as: 'new_role' # Route for initial role selection if needed
+               end
+             end
+  end
 
   # Root route
   root to: 'pages#home'

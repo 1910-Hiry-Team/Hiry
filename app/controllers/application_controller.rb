@@ -2,6 +2,10 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_user!
 
+
+
+  include Devise::Controllers::Helpers
+
   def after_sign_out_path_for(resource_or_scope)
     new_user_choice_path # redirects to our choice page after logout
   end
