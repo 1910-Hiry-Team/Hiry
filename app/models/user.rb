@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_one :company, dependent: :destroy
 
   # Associations
+  has_many :favorites
+  has_many :favorite_jobs, through: :favorites, source: :job
   has_many :applications, dependent: :destroy
   has_many :experiences, dependent: :destroy
   has_many :studies, dependent: :destroy
