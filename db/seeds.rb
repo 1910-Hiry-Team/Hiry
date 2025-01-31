@@ -4,21 +4,22 @@ puts '2. Medium'
 puts '3. Heavy'
 print '> '
 
-case gets.chomp.to_i
-when /[1l]\.?|light/i
+case gets.chomp
+when /1\.?|l|light/i
   puts 'Light seeding Selected'
   NUMBER_OF_USERS = rand(10..20)
   NUMBER_OF_JOBS = rand(10..20)
-when /[2m]\•?|medium/i
+when /2\.?|m|medium/i
   puts 'Medium seeding Selected'
   NUMBER_OF_USERS = rand(50..100)
   NUMBER_OF_JOBS = rand(50..100)
-when /[3h]\.?|heavy/i
+when /3\.?|h|heavy/i
   puts 'Heavy seeding Selected'
   NUMBER_OF_USERS = rand(1000..2000)
   NUMBER_OF_JOBS = rand(1000..2000)
 else
   puts 'Invalid choice. Exiting...'
+  exit
 end
 
 RANGE_OF_STUDIES = 3
