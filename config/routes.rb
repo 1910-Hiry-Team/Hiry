@@ -37,5 +37,6 @@ Rails.application.routes.draw do
   resources :companies, only: [] do
     get 'dashboard', to: 'dashboard#index'
     resources :jobs, module: :company  # This gives you /company/jobs
+    resources :applications, only: [:index]
   end
 end

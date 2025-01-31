@@ -1,0 +1,23 @@
+<div>
+  <h3>Applications</h3>
+  <% @jobs.each do |job| %>
+    <% job.applications.each do |application| %>
+      <p>
+        <%= application.user.jobseeker_profile.first_name %>
+        <%= application.user.jobseeker_profile.last_name %>
+      </p>
+      <p>Skills : <%= application.user.jobseeker_profile.skills %></p>
+      <p>Hobbies : <%= application.user.jobseeker_profile.hobbies %></p>
+      <p>
+        Location :
+        <%= application.user.jobseeker_profile.city %>
+        <%= application.user.jobseeker_profile.country %>
+      </p>
+      <p>
+        <%= link_to "View Application",
+            job_application_path(job, application),
+            class: "btn btn-primary" %>
+      </p>
+    <% end %>
+  <% end %>
+</div>

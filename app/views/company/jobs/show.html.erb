@@ -13,3 +13,16 @@
 <%= link_to "Edit Job", edit_company_job_path(@job.company, @job), class: "btn btn-primary" %>
 <%= button_to "Delete Job", company_job_path(@job.company, @job), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
 <%= link_to "Back to Job Listings", company_jobs_path(@job.company), class: "btn btn-secondary" %>
+
+<div>
+  <h3>Applications</h3>
+  <% @job.applications.each do |application| %>
+    <p>
+      <%= application.user.jobseeker_profile.first_name %>
+      <%= application.user.jobseeker_profile.last_name %>
+      <%= link_to "View Application",
+          job_application_path(@job, application),
+          class: "btn btn-primary" %>
+    </p>
+  <% end %>
+</div>
