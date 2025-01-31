@@ -40,12 +40,31 @@
   </div>
 </div>
 
-<div class="media-content">
+<div data-controller="modal">
+  <button data-action="modal#open" class="btn btn-primary">Apply</button>
+
+  <div data-modal-target="container" class="modal-container hidden">
+    <div class="modal-background" data-action="click->modal#close"></div>
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Application confirmation</h2>
+        <button class="modal-close" data-action="modal#close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <%= form_with model: @application, url: job_applications_path(@job), method: :post, data: { turbo_frame: "modal" } do |f| %>
+          <%= f.hidden_field :job_id, value: @job.id %>
+          <%= f.hidden_field :stage, value: 'Applied' %>
+          <%= f.hidden_field :match, value: false %>
+
+          <%= f.submit "Confirm application", class: "btn btn-success" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
-
-
 <div>
-  <%= link_to "Apply", new_job_application_path(@job) %>
   <div id="favorite-button">
     <% if current_user.favorite_jobs.include?(@job) %>
       <%= link_to "Unfavorite", job_favorites_path(@job), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
@@ -54,6 +73,6 @@
         <%= f.submit "Add to favorites", class: "btn btn-primary" %>
       <% end %>
     <% end %>
-</div>
+  </div>
   <%= link_to "Back to offers", jobs_path %>
 </div>

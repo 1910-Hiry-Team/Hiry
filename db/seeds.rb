@@ -67,7 +67,7 @@ puts "Creating jobs..."
     contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
     language: Faker::ProgrammingLanguage.name,
     experience: ["Entry", "Mid", "Senior"].sample,
-    salary: (30000..60000), # Adjust to fit your salary format
+    salary: 60000, # Adjust to fit your salary format
     company: companies.sample
   )
 end
