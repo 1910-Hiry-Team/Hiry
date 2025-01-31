@@ -42,7 +42,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     if resource.company?
       company_jobs_path(resource.company)
     else
-      search_path
+      search_jobs_path
     end
   end
 

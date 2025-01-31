@@ -121,9 +121,10 @@ NUMBER_OF_JOBS.times do
     contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
     language: Faker::ProgrammingLanguage.name,
     experience: ["Entry", "Mid", "Senior"].sample,
-    salary: (30000..60000),
-    company_id: companies.sample.id
+    salary: rand(30000..60000), # Adjust to fit your salary format
+    company: companies.sample
   }
+
 end
 
 Job.import(jobs_to_create)
