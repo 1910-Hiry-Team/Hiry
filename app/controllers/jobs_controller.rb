@@ -14,6 +14,7 @@ class JobsController < ApplicationController
 
   def show
     @favorite = Favorite.new
+    @application = Application.new
   end
 
   def new
