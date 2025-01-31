@@ -11,7 +11,7 @@ when 1
   NUMBER_OF_JOBS = rand(10..20)
 when 2
   puts 'Medium seeding Selected'
-  NUMBER_OF_USERS = rand(50..10)
+  NUMBER_OF_USERS = rand(50..100)
   NUMBER_OF_JOBS = rand(50..100)
 when 3
   puts 'Heavy seeding Selected'
@@ -122,7 +122,7 @@ NUMBER_OF_JOBS.times do
     language: Faker::ProgrammingLanguage.name,
     experience: ["Entry", "Mid", "Senior"].sample,
     salary: rand(30000..60000), # Adjust to fit your salary format
-    company: companies.sample
+    company_id: companies.sample.id
   }
 
 end
