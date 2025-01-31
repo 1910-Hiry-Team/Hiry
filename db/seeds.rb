@@ -63,7 +63,6 @@ puts 'Do you want to clear the database? ('.blue + 'y'.green + '/'.blue + 'n'.re
 print '> '
 answer = gets.chomp
 if answer == 'y'
-  puts ''
   puts "Clearing database...".yellow
   # Clear existing data to avoid duplication
   Application.destroy_all
@@ -215,7 +214,6 @@ end
 
 Application.import(applications_to_create)
 
-puts ''
 puts "Applications created!".green
 
 puts ''
