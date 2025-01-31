@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   # Job namespace (Regular jobs routes for jobseekers)
   resources :jobs, only: [:index, :show] do
     collection do
-      get 'search'  # This gives you /jobs/search
+      get :search
     end
     resources :applications, only: [:show, :new, :create]
     resource :favorites, only: [:create, :destroy]
@@ -37,5 +37,6 @@ Rails.application.routes.draw do
   resources :companies, only: [] do
     get 'dashboard', to: 'dashboard#index'
     resources :jobs, module: :company  # This gives you /company/jobs
+    resources :applications, only: [:index, :edit, :update]
   end
 end

@@ -6,6 +6,10 @@ class JobsController < ApplicationController
 
   def search
     # Show search form
+    @jobs = Job.all
+    @jobs = Job.search(params[:job_title]) if params[:job_title].present?
+    @jobs = @jobs.near(params[:location], 200) if params[:location].present?
+    render :index
   end
 
   def show
