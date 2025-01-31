@@ -6,5 +6,10 @@ class ApplicationsController < ApplicationController
   end
 
   def show
+    @application = Application.find(params[:id])
+    @company = current_user.company
+  end
+
+  def edit
   end
 end
