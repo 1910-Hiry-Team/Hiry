@@ -1,0 +1,36 @@
+<h2>Step 3: Experience Information</h2>
+
+<%= form_for @user, url: wizard_path(@user), method: :put do |f| %>
+  <%= devise_error_messages! %> <%# Keep devise error messages if you want to display devise errors here %>
+
+  <%= f.fields_for :experiences_attributes, @user.experiences.build do |experience_fields| %> <%# Assuming you want to create a new experience each step %>
+    <div class="field">
+      <%= experience_fields.label :company %><br />
+      <%= experience_fields.text_field :company %>
+    </div>
+
+    <div class="field">
+      <%= experience_fields.label :job_title %><br />
+      <%= experience_fields.text_field :job_title %>
+    </div>
+
+    <div class="field">
+      <%= experience_fields.label :start_date %><br />
+      <%= experience_fields.date_field :start_date %>
+    </div>
+
+    <div class="field">
+      <%= experience_fields.label :end_date %><br />
+      <%= experience_fields.date_field :end_date %>
+    </div>
+
+    <div class="field">
+      <%= experience_fields.label :missions %><br />
+      <%= experience_fields.text_area :missions %>
+    </div>
+  <% end %>
+
+  <div class="form-actions">
+    <%= render_wizard form: f, previous_button_text: "Previous", next_button_text: "Next Step" %>
+  </div>
+<% end %>

@@ -1,0 +1,21 @@
+<h2>Step 1: Personal Details</h2>
+
+<%= form_for @user, url: wizard_path(@user), method: :put do |f| %>
+  <%= devise_error_messages! %> <%# Keep devise error messages if you want to display devise errors here %>
+
+  <%= f.fields_for :jobseeker_profile_attributes, @user.jobseeker_profile || @user.build_jobseeker_profile do |profile_fields| %>
+    <div class="field">
+      <%= profile_fields.label :first_name %><br />
+      <%= profile_fields.text_field :first_name %>
+    </div>
+
+    <div class="field">
+      <%= profile_fields.label :last_name %><br />
+      <%= profile_fields.text_field :last_name %>
+    </div>
+  <% end %>
+
+  <div class="form-actions">
+    <%= render_wizard form: f, next_button_text: "Next Step" %> <%# No previous button on first step %>
+  </div>
+<% end %>

@@ -1,36 +1,11 @@
-<h2>Sign up</h2>
+<h2>Sign up as <%= @role.capitalize if @role.present? %></h2>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= f.error_notification %>
-
-  <div class="form-inputs">
-    <%= f.input :email %>
-    <%= f.input :password %>
-    <%= f.input :password_confirmation %>
-    <%= f.input :role, as: :hidden, input_html: { value: params[:role] } %>
-    <% if params[:role] == 'jobseeker' %>
-      <%= f.simple_fields_for :jobseeker_profile do |p| %>
-        <%= p.input :first_name %>
-        <%= p.input :last_name %>
-        <%= p.input :phone_number %>
-        <%= p.input :date_of_birth %>
-        <%= p.input :skills %>
-        <%= p.input :hobbies %>
-        <%= p.input :city %>
-        <%= p.input :country, input_html: { class: 'form-control' }, as: :string %>
-      <% end %>
-    <% elsif params[:role] == 'company' %>
-      <%= f.simple_fields_for :company do |c| %>
-        <%= c.input :name %>
-        <%= c.input :location %>
-        <%= c.input :description %>
-        <%= c.input :industry %>
-        <%= c.input :employee_number %>
-      <% end %>
-    <% end %>
-  </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Sign up" %>
-  </div>
+<% if @role == 'jobseeker' %>
+  <%= link_to "Start Jobseeker Registration", wizard_path(steps.first, role: 'jobseeker'), class: 'button primary' %>
+<% elsif @role == 'company' %>
+  <%= link_to "Start Company Registration", wizard_path(steps.first, role: 'company'), class: 'button primary' %>
+<% else %>
+  <p>Please select a role to begin registration:</p>
+  <%= link_to "Sign up as Jobseeker", new_user_registration_path(role: 'jobseeker'), class: 'button primary' %>
+  <%= link_to "Sign up as Company", new_user_registration_path(role: 'company'), class: 'button primary' %>
 <% end %>
