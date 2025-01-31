@@ -233,3 +233,4 @@ puts ''
 puts "Reindexing models...".cyan
 Job.reindex
 puts "Reindexing completed!".green
+puts ''
