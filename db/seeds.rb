@@ -1,24 +1,36 @@
-puts 'What weight of seeding do you want?'
-puts '1. Light'
-puts '2. Medium'
-puts '3. Heavy'
+require 'rainbow/refinement'
+using Rainbow
+
+puts ''
+puts 'What weight of seeding do you want?'.blue
+puts '1. '.red + 'Light'
+puts '2. '.red + 'Medium'
+puts '3. '.red + 'Heavy' + ' (This will take a while)'.yellow
 print '> '
 
 case gets.chomp
 when /1\.?|l|light/i
-  puts 'Light seeding Selected'
+  puts 'Light seeding Selected'.green
   NUMBER_OF_USERS = rand(10..20)
   NUMBER_OF_JOBS = rand(10..20)
 when /2\.?|m|medium/i
-  puts 'Medium seeding Selected'
+  puts 'Medium seeding Selected'.green
   NUMBER_OF_USERS = rand(50..100)
   NUMBER_OF_JOBS = rand(50..100)
 when /3\.?|h|heavy/i
-  puts 'Heavy seeding Selected'
-  NUMBER_OF_USERS = rand(1000..2000)
-  NUMBER_OF_JOBS = rand(1000..2000)
+  puts 'Heavy seeding Selected'.green
+  puts 'This can take 10 minutes. Do you really want to proceed? ('.yellow + 'y'.green + '/'.yellow + 'n'.red + ')'.yellow
+    print '> '
+    answer = gets.chomp
+    if answer == 'y'
+      NUMBER_OF_USERS = rand(1000..2000)
+      NUMBER_OF_JOBS = rand(1000..2000)
+    else
+      puts 'Exiting...'.red
+      exit
+    end
 else
-  puts 'Invalid choice. Exiting...'
+  puts 'Invalid choice. Exiting...'.red
   exit
 end
 
@@ -26,12 +38,15 @@ RANGE_OF_STUDIES = 3
 RANGE_OF_EXPERIENCES = 3
 RANGE_OF_APPLICATIONS = 5
 
-puts 'Do you want to generate real cities? (y/n)'
+puts ''
+puts 'Do you want to generate real cities? ('.blue + 'y'.green + '/'.blue + 'n'.red + ')'.blue
 print '> '
 answer = gets.chomp
 if answer == 'y'
+  puts 'Real cities selected'.green
   USE_REAL_CITIES = true
 else
+  puts 'Fake cities selected'.red
   USE_REAL_CITIES = false
 end
 
@@ -43,11 +58,13 @@ REAL_CITIES = [
               "Rome, Italy"
             ]
 
-puts 'Do you want to clear the database? (y/n)'
+puts ''
+puts 'Do you want to clear the database? ('.blue + 'y'.green + '/'.blue + 'n'.red + ')'.blue
 print '> '
 answer = gets.chomp
 if answer == 'y'
-  puts "Clearing database..."
+  puts ''
+  puts "Clearing database...".yellow
   # Clear existing data to avoid duplication
   Application.destroy_all
   Job.destroy_all
@@ -60,7 +77,8 @@ end
 start_time = Time.now
 
 # Create Users
-puts "Creating users..."
+puts ''
+puts "Creating users...".cyan
 jobseeker_profiles_to_create = []
 companies_to_create = []
 NUMBER_OF_USERS.times do
@@ -104,9 +122,11 @@ Company.import(companies_to_create)
 users = User.all
 companies = Company.all
 
+puts "Users created!".green
 
 # Create Jobs
-puts "Creating jobs..."
+puts ''
+puts "Creating jobs...".cyan
 jobs_to_create = []
 NUMBER_OF_JOBS.times do
   city = USE_REAL_CITIES ? REAL_CITIES.sample : Faker::Address.city
@@ -132,8 +152,11 @@ Job.import(jobs_to_create)
 
 jobs = Job.all
 
+puts "Jobs created!".green
+
 # Create Studies
-puts "Creating studies..."
+puts ''
+puts "Creating studies...".cyan
 studies_to_create = []
 User.where(role: 0).each do |user|
   rand(1.. RANGE_OF_STUDIES).times do
@@ -150,8 +173,11 @@ end
 
 Study.import(studies_to_create)
 
+puts 'Studies created!'.green
+
 # Create Experiences
-puts "Creating experiences..."
+puts ''
+puts "Creating experiences...".cyan
 experiences_to_create = []
 User.where(role: 0).each do |user|
   rand(1.. RANGE_OF_EXPERIENCES).times do
@@ -170,8 +196,11 @@ end
 
 Experience.import(experiences_to_create)
 
+puts "Experiences created!".green
+
 # Create Applications
-puts "Creating applications..."
+puts ''
+puts "Creating applications...".cyan
 applications_to_create = []
 User.where(role: 0).each do |user|
   rand(1.. RANGE_OF_APPLICATIONS).times do
@@ -186,15 +215,21 @@ end
 
 Application.import(applications_to_create)
 
-puts "Seeding completed!"
-puts "Users created: #{User.count}"
-puts "Companies created: #{Company.count}"
-puts "Jobs created: #{Job.count}"
-puts "Studies created: #{Study.count}"
-puts "Experiences created: #{Experience.count}"
-puts "Applications created: #{Application.count}"
-puts "Time taken: #{Time.now - start_time} seconds"
+puts ''
+puts "Applications created!".green
 
-puts "Reindexing models..."
+puts ''
+puts "Seeding completed!".green
+puts "Users created: " + "#{User.count}".red
+puts "Companies created: " + "#{Company.count}".red
+puts "Jobs created: " + "#{Job.count}".red
+puts "Studies created: " + "#{Study.count}".red
+puts "Experiences created: " + "#{Experience.count}".red
+puts "Applications created: " + "#{Application.count}".red
+puts "Time taken: " + "#{(Time.now - start_time).round(2)} seconds".red
+
+# Reindex models
+puts ''
+puts "Reindexing models...".cyan
 Job.reindex
-puts "Reindexing completed!"
+puts "Reindexing completed!".green
