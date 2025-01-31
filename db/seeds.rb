@@ -5,15 +5,15 @@ puts '3. Heavy'
 print '> '
 
 case gets.chomp.to_i
-when 1
+when /[1l]\.?|light/i
   puts 'Light seeding Selected'
   NUMBER_OF_USERS = rand(10..20)
   NUMBER_OF_JOBS = rand(10..20)
-when 2
+when /[2m]\•?|medium/i
   puts 'Medium seeding Selected'
   NUMBER_OF_USERS = rand(50..100)
   NUMBER_OF_JOBS = rand(50..100)
-when 3
+when /[3h]\.?|heavy/i
   puts 'Heavy seeding Selected'
   NUMBER_OF_USERS = rand(1000..2000)
   NUMBER_OF_JOBS = rand(1000..2000)
