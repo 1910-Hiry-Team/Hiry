@@ -1,25 +1,69 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-# db/seeds.rb
+puts 'What weight of seeding do you want?'
+puts '1. Light'
+puts '2. Medium'
+puts '3. Heavy'
+print '> '
 
-# Clear existing data to avoid duplication
-Application.destroy_all
-Job.destroy_all
-Company.destroy_all
-Experience.destroy_all
-Study.destroy_all
-User.destroy_all
+case gets.chomp.to_i
+when 1
+  puts 'Light seeding Selected'
+  NUMBER_OF_USERS = rand(10..20)
+  NUMBER_OF_JOBS = rand(10..20)
+when 2
+  puts 'Medium seeding Selected'
+  NUMBER_OF_USERS = rand(50..10)
+  NUMBER_OF_JOBS = rand(50..100)
+when 3
+  puts 'Heavy seeding Selected'
+  NUMBER_OF_USERS = rand(1000..2000)
+  NUMBER_OF_JOBS = rand(1000..2000)
+else
+  puts 'Invalid choice. Exiting...'
+end
+
+RANGE_OF_STUDIES = 3
+RANGE_OF_EXPERIENCES = 3
+RANGE_OF_APPLICATIONS = 5
+
+puts 'Do you want to generate real cities? (y/n)'
+print '> '
+answer = gets.chomp
+if answer == 'y'
+  USE_REAL_CITIES = true
+else
+  USE_REAL_CITIES = false
+end
+
+REAL_CITIES = [
+              "Paris, France",
+              "New York, NY, United States",
+              "Brussels, Belgium",
+              "London, UK",
+              "Rome, Italy"
+            ]
+
+puts 'Do you want to clear the database? (y/n)'
+print '> '
+answer = gets.chomp
+if answer == 'y'
+  puts "Clearing database..."
+  # Clear existing data to avoid duplication
+  Application.destroy_all
+  Job.destroy_all
+  Company.destroy_all
+  Experience.destroy_all
+  Study.destroy_all
+  User.destroy_all
+end
+
+start_time = Time.now
 
 # Create Users
 puts "Creating users..."
-10.times do
+jobseeker_profiles_to_create = []
+companies_to_create = []
+NUMBER_OF_USERS.times do
+  city = USE_REAL_CITIES ? REAL_CITIES.sample : Faker::Address.city
   # First create the user
   user = User.create!(
     email: Faker::Internet.unique.email,
@@ -30,28 +74,31 @@ puts "Creating users..."
 
   # Then create the associated profile
   if user.jobseeker?
-    JobseekerProfile.create!(
-      user: user,
+    jobseeker_profiles_to_create << {
+      user_id: user.id,
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       phone_number: Faker::PhoneNumber.phone_number,
       date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
       skills: Faker::Job.key_skill,
       hobbies: Faker::Hobby.activity,
-      city: Faker::Address.city,
+      city: city,
       country: Faker::Address.country
-    )
+    }
   else
-    Company.create!(
-      user: user,
+    companies_to_create << {
+      user_id: user.id,
       name: Faker::Company.name,
-      location: Faker::Address.city,
+      location: city,
       description: Faker::Company.catch_phrase,
       industry: Faker::Company.industry,
       employee_number: rand(10..500)
-    )
+    }
   end
 end
+
+JobseekerProfile.import(jobseeker_profiles_to_create)
+Company.import(companies_to_create)
 
 users = User.all
 companies = Company.all
@@ -59,40 +106,55 @@ companies = Company.all
 
 # Create Jobs
 puts "Creating jobs..."
-20.times do
-  Job.create!(
+jobs_to_create = []
+NUMBER_OF_JOBS.times do
+  city = USE_REAL_CITIES ? REAL_CITIES.sample : Faker::Address.city
+  geo = Geocoder.search(city).first
+  lat, lon = geo&.latitude, geo&.longitude
+
+  jobs_to_create << {
     job_title: Faker::Job.title,
-    location: Faker::Address.city,
+    location: city,
+    latitude: lat,
+    longitude: lon,
     missions: Faker::Lorem.sentence(word_count: 10),
     contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
     language: Faker::ProgrammingLanguage.name,
     experience: ["Entry", "Mid", "Senior"].sample,
     salary: rand(30000..60000), # Adjust to fit your salary format
     company: companies.sample
-  )
+  }
+
 end
+
+Job.import(jobs_to_create)
+
 jobs = Job.all
 
 # Create Studies
 puts "Creating studies..."
+studies_to_create = []
 User.where(role: 0).each do |user|
-  rand(1..3).times do
-    Study.create!(
+  rand(1.. RANGE_OF_STUDIES).times do
+    studies_to_create << {
       school: Faker::University.name,
       level: ["Bachelor's", "Master's", "PhD"].sample,
       diploma: Faker::Educator.course_name,
       start_date: Faker::Date.backward(days: 3650),
       end_date: Faker::Date.backward(days: 365),
-      user: user
-    )
+      user_id: user.id
+    }
   end
 end
 
+Study.import(studies_to_create)
+
 # Create Experiences
 puts "Creating experiences..."
+experiences_to_create = []
 User.where(role: 0).each do |user|
-  rand(1..3).times do
-    Experience.create!(
+  rand(1.. RANGE_OF_EXPERIENCES).times do
+    experiences_to_create << {
       company: Faker::Company.name,
       job_title: Faker::Job.title,
       contrat: ["Full-time", "Part-time", "Contract"].sample,
@@ -100,22 +162,38 @@ User.where(role: 0).each do |user|
       description: Faker::Lorem.paragraph,
       start_date: Faker::Date.backward(days: 2000),
       end_date: Faker::Date.backward(days: 365),
-      user: user
-    )
+      user_id: user.id
+    }
   end
 end
+
+Experience.import(experiences_to_create)
 
 # Create Applications
 puts "Creating applications..."
+applications_to_create = []
 User.where(role: 0).each do |user|
-  rand(1..5).times do
-    Application.create!(
+  rand(1.. RANGE_OF_APPLICATIONS).times do
+    applications_to_create << {
       stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,
       match: [true, false].sample,
-      user: user,
-      job: jobs.sample,
-    )
+      user_id: user.id,
+      job_id: jobs.sample.id,
+    }
   end
 end
 
+Application.import(applications_to_create)
+
 puts "Seeding completed!"
+puts "Users created: #{User.count}"
+puts "Companies created: #{Company.count}"
+puts "Jobs created: #{Job.count}"
+puts "Studies created: #{Study.count}"
+puts "Experiences created: #{Experience.count}"
+puts "Applications created: #{Application.count}"
+puts "Time taken: #{Time.now - start_time} seconds"
+
+puts "Reindexing models..."
+Job.reindex
+puts "Reindexing completed!"

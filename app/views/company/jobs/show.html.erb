@@ -1,28 +1,48 @@
-<h1><%= @job.job_title %></h1>
+<div class="container my-5">
+  <div class="card shadow-lg p-4">
+    <div class="card-body">
+      <h1 class="card-title text-center mb-4"><%= @job.job_title.capitalize %></h1>
 
-<p><strong>Location:</strong> <%= @job.location %></p>
-<p><strong>Missions:</strong> <%= @job.missions %></p>
-<p><strong>Contract Type:</strong> <%= @job.contract %></p>
-<p><strong>Preferred Language:</strong> <%= @job.language %></p>
-<p><strong>Experience Level:</strong> <%= @job.experience %></p>
-<p><strong>Salary:</strong> <%= @job.salary %></p>
-<p><strong>Posted on:</strong> <%= @job.created_at.strftime("%B %d, %Y") %></p>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>📍 Location:</strong> <%= @job.location %></p>
+          <p><strong>📝 Contract Type:</strong> <%= @job.contract %></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>🗣 Preferred Language:</strong> <%= @job.language %></p>
+          <p><strong>📊 Experience Level:</strong> <%= @job.experience %></p>
+          <p><strong>💰 Salary:</strong> <%= @job.salary %></p>
+        </div>
+        <div class='col-md-12'>
+          <p><strong>🎯 Missions:</strong> <%= @job.missions %></p>
+        </div>
+      </div>
 
-<hr>
+      <p class="text-muted mt-3"><strong>📅 Posted on:</strong> <%= @job.created_at.strftime("%B %d, %Y") %></p>
+    </div>
+  </div>
 
-<%= link_to "Edit Job", edit_company_job_path(@job.company, @job), class: "btn btn-primary" %>
-<%= button_to "Delete Job", company_job_path(@job.company, @job), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
-<%= link_to "Back to Job Listings", company_jobs_path(@job.company), class: "btn btn-secondary" %>
 
-<div>
-  <h3>Applications</h3>
-  <% @job.applications.each do |application| %>
-    <p>
-      <%= application.user.jobseeker_profile.first_name %>
-      <%= application.user.jobseeker_profile.last_name %>
-      <%= link_to "View Application",
-          job_application_path(@job, application),
-          class: "btn btn-primary" %>
-    </p>
-  <% end %>
+  <div class="d-flex justify-content-center gap-3 mt-4">
+    <%= link_to "✏️ Edit Job", edit_company_job_path(@job.company, @job), class: "btn btn-outline-primary" %>
+    <%= button_to "🗑 Delete Job", company_job_path(@job.company, @job), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-outline-danger" %>
+  </div>
+
+  <div class="text-center mt-4">
+    <%= link_to "➕ Create a New Job", new_company_job_path(@company), class: "btn btn-success me-2" %>
+    <%= link_to "⬅️ Back to Job Listings", company_jobs_path(@job.company), class: "btn btn-secondary" %>
+  </div>
+
+  <div>
+    <h3>Applications</h3>
+    <% @job.applications.each do |application| %>
+      <p>
+        <%= application.user.jobseeker_profile.first_name %>
+        <%= application.user.jobseeker_profile.last_name %>
+        <%= link_to "View Application",
+            job_application_path(@job, application),
+            class: "btn btn-primary" %>
+      </p>
+    <% end %>
+  </div>
 </div>
