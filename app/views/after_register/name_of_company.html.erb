@@ -1,0 +1,8 @@
+<h2>Thank you for signing up</h2>
+
+<%= simple_form_for @user, url: wizard_path, method: :post do |f| %>
+  <%= f.fields_for :company_attributes do |profile_form| %>
+    <%= profile_form.input :name %>
+  <% end %>
+  <%= f.button :submit, "Next" %>
+<% end %>

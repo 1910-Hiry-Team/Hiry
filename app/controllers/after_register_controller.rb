@@ -16,6 +16,7 @@ class AfterRegisterController < ApplicationController
       return redirect_to user_after_register_path(user_id: @user.id, id: first_step_for(@user))
     end
     Rails.logger.info "📢 Jobseeker profile: #{@user.jobseeker_profile.inspect}"
+    Rails.logger.info "📢 Jobseeker profile: #{@user.company.inspect}"
     render_wizard
   end
 
