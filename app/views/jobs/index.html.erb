@@ -1,5 +1,7 @@
 <h1>List of jobs</h1>
 
+<%= render "shared/searchbar" %>
+
 <% @jobs.each do |job| %>
   <p><strong>Company:</strong> <%= job.company.name %></p>
   <p><strong>Job title:</strong> <%= job.job_title %></p>
