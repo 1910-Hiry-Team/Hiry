@@ -1,0 +1,7 @@
+<% @jobs.each do |job| %>
+  <p><strong>Company:</strong> <%= job.company.name %></p>
+  <p><strong>Job title:</strong> <%= job.job_title %></p>
+  <p><strong>Location:</strong> <%= job.location %></p>
+  <p><strong>Contract type:</strong> <%= job.contract %></p>
+  <%= link_to "Offer details", job_path(job) %>
+<% end %>

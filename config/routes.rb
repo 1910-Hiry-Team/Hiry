@@ -23,7 +23,9 @@ Rails.application.routes.draw do
   get '/sign-up-choice', to: 'pages#sign_up', as: :new_user_choice
 
   # User namespace
-  resources :users, only: [:show, :edit, :update]
+  resources :users, only: [:show, :edit, :update] do
+    resources :favorites, only: [:index]
+  end
 
   # Job namespace (Regular jobs routes for jobseekers)
   resources :jobs, only: [:index, :show] do

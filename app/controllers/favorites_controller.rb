@@ -12,6 +12,11 @@ class FavoritesController < ApplicationController
     end
   end
 
+  def index
+    @favorites = current_user.favorites
+    @jobs = @favorites.map(&:job)
+  end
+
   def destroy
     @job = Job.find(params[:job_id])
     favorite = current_user.favorites.find_by(job_id: @job.id)
