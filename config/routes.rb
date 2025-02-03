@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   get '/sign-up-choice', to: 'pages#sign_up', as: :new_user_choice
 
   # User namespace
-  resources :users, only: [:show]
+  resources :users, only: [:show, :edit, :update]
 
   # Job namespace (Regular jobs routes for jobseekers)
   resources :jobs, only: [:index, :show] do
@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   end
 
   # Company namespace
-  resources :companies, only: [:edit, :show] do
+  resources :companies, only: [:edit, :update, :show] do
     get 'dashboard', to: 'dashboard#index', as: :dashboard
     resources :jobs, module: :company  # This gives you /company/jobs
     resources :applications, only: [:index, :edit, :update]

@@ -1,0 +1,49 @@
+<%= form_with model: @user, local: true do |form|  %>
+  <% if @user.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h4>
+      <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <% if @user.jobseeker_profile%>
+        <div class="mb-3">
+          <%= form.label :first_name, class: "form-label" %>
+          <%= form.text_field :first_name, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :last_name, class: "form-label" %>
+          <%= form.text_field :last_name, class: "form-control" %>
+        </div>
+      <% else %>
+        <div class="mb-3">
+          <%= form.label :employee_number, class: "form-label" %>
+          <%= form.text_field :employee_number, class: "form-control" %>
+        </div>
+      <% end %>
+
+      <div class="mb-3">
+        <%= form.label :email, class: "form-label" %>
+        <%= form.email_field :email, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :password, class: "form-label" %>
+        <%= form.password_field :password, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :password_confirmation, class: "form-label" %>
+        <%= form.password_field :password_confirmation, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+  <%= form.submit "Update my profile", class: "btn btn-primary" %>
+<% end %>
