@@ -12,23 +12,6 @@
 
   <div class="row">
     <div class="col-md-6">
-      <% if @user.jobseeker_profile%>
-        <div class="mb-3">
-          <%= form.label :first_name, class: "form-label" %>
-          <%= form.text_field :first_name, class: "form-control" %>
-        </div>
-
-        <div class="mb-3">
-          <%= form.label :last_name, class: "form-label" %>
-          <%= form.text_field :last_name, class: "form-control" %>
-        </div>
-      <% else %>
-        <div class="mb-3">
-          <%= form.label :employee_number, class: "form-label" %>
-          <%= form.text_field :employee_number, class: "form-control" %>
-        </div>
-      <% end %>
-
       <div class="mb-3">
         <%= form.label :email, class: "form-label" %>
         <%= form.email_field :email, class: "form-control" %>
@@ -43,7 +26,61 @@
         <%= form.label :password_confirmation, class: "form-label" %>
         <%= form.password_field :password_confirmation, class: "form-control" %>
       </div>
+      <%= form.submit "Update my login information", class: "btn btn-primary" %>
     </div>
-  </div>
-  <%= form.submit "Update my profile", class: "btn btn-primary" %>
 <% end %>
+
+<% if @user.jobseeker_profile %>
+  <%= simple_fields_for @user.jobseeker_profile do |p| %>
+    <div class="col-md-6">
+      <div class="mb-3">
+          <%= p.label :first_name, class: "form-label" %>
+          <%= p.text_field :first_name, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= p.label :last_name, class: "form-label" %>
+          <%= p.text_field :last_name, class: "form-control" %>
+        </div>
+
+      <div class="mb-3">
+        <%= p.label :phone_number, class: "form-label" %>
+        <%= p.text_field :phone_number, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= p.label :date_of_birth, class: "form-label" %>
+        <%= p.date_field :date_of_birth, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= p.label :skills, class: "form-label" %>
+        <%= p.text_field :skills, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= p.label :hobbies, class: "form-label" %>
+        <%= p.text_field :hobbies, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= p.label :location, class: "form-label" %>
+        <%= p.text_field :location, class: "form-control" %>
+      </div>
+      <%= p.submit "Update my job seeker information", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+<% end %>
+
+<% if @user.company %>
+  <%= simple_fields_for @user.company do |c| %>
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= c.label :employee_number, class: "form-label" %>
+        <%= c.text_field :employee_number, class: "form-control" %>
+      </div>
+      <%= c.submit "Update my employee number", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+<% end %>
+</div>
