@@ -137,6 +137,7 @@ unless answer == 'y'
     location = USE_REAL_CITIES ? REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
     geo = Geocoder.search(location).first
     lat, lon = geo&.latitude, geo&.longitude
+    @languages = ["English", "French", "Spanish", "German", "Italian", "Chinese", "Japanese", "Russian", "Arabic", "Portuguese", "Dutch", "Korean", "Turkish", "Polish", "Swedish", "Danish", "Norwegian", "Finnish", "Greek", "Czech", "Hungarian", "Romanian", "Bulgarian", "Croatian", "Slovak", "Slovenian", "Lithuanian", "Latvian", "Estonian"]
 
     jobs_to_create << {
       job_title: Faker::Job.title,
@@ -145,8 +146,8 @@ unless answer == 'y'
       longitude: lon,
       missions: Faker::Lorem.sentence(word_count: 10),
       contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
-      language: Faker::ProgrammingLanguage.name,
-      experience: ["Entry", "Mid", "Senior"].sample,
+      language: @languages.sample,
+      experience: ["Entry", "Intermediate", "Senior"].sample,
       salary: rand(30000..60000), # Adjust to fit your salary format
       company_id: companies.sample.id
     }
