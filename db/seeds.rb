@@ -11,7 +11,7 @@ when 1
   NUMBER_OF_JOBS = rand(10..20)
 when 2
   puts 'Medium seeding Selected'
-  NUMBER_OF_USERS = rand(50..10)
+  NUMBER_OF_USERS = rand(50..100)
   NUMBER_OF_JOBS = rand(50..100)
 when 3
   puts 'Heavy seeding Selected'
@@ -112,6 +112,7 @@ NUMBER_OF_JOBS.times do
   geo = Geocoder.search(city).first
   lat, lon = geo&.latitude, geo&.longitude
 
+@languages = ["English", "French", "Spanish", "German", "Italian", "Chinese", "Japanese", "Russian", "Arabic", "Portuguese", "Dutch", "Korean", "Turkish", "Polish", "Swedish", "Danish", "Norwegian", "Finnish", "Greek", "Czech", "Hungarian", "Romanian", "Bulgarian", "Croatian", "Slovak", "Slovenian", "Lithuanian", "Latvian", "Estonian"]
   jobs_to_create << {
     job_title: Faker::Job.title,
     location: city,
@@ -119,10 +120,10 @@ NUMBER_OF_JOBS.times do
     longitude: lon,
     missions: Faker::Lorem.sentence(word_count: 10),
     contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
-    language: Faker::ProgrammingLanguage.name,
-    experience: ["Entry", "Mid", "Senior"].sample,
+    language: @languages.sample,
+    experience: ["Entry", "Intermediate", "Senior", "Executive"].sample,
     salary: rand(30000..60000), # Adjust to fit your salary format
-    company: companies.sample
+    company_id: companies.sample.id
   }
 
 end
