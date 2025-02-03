@@ -22,10 +22,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
 
     puts "Params reçus : #{params.inspect}"
-
-    # Assignation du rôle (UNE SEULE FOIS, avec sign_up_params)
-    # Le rôle est déjà inclus dans sign_up_params grâce à configure_permitted_parameters
-
     puts "Rôle après assignation : #{resource.role}"
 
     if resource.save
@@ -52,14 +48,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(resource)
+    puts "Valide resource : #{resource.valid?}"
     if resource.valid?
       if resource.jobseeker?
-        redirect_to user_after_register_path(resource.id, step: 'personal_details')
+        user_after_register_path(user_id: resource.id, id: :personal_details)
+        # raise
       elsif resource.company?
-        redirect_to user_after_register_path(resource.company.id, step: 'name_of_company')
+        user_after_register_path(resource, :name_of_company)
       end
     else
-      super
+      new_user_registration_path
     end
   end
 
@@ -77,7 +75,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
       jobseeker_profile_attributes: [:first_name, :last_name, :phone_number, :date_of_birth, :skills, :hobbies, :city, :country],
       company_attributes: [:name, :location, :description, :industry, :employee_number]
     ])
-    # Pas besoin de répéter les clés ici, elles sont déjà dans sign_up_params
   end
 end
 

@@ -6,8 +6,6 @@ class User < ApplicationRecord
 
   enum role: { jobseeker: 'jobseeker', company: 'company' }
 
-  before_validation :convert_role_to_integer
-
   # Associations based on profile
   has_one :jobseeker_profile, dependent: :destroy
   has_one :company, dependent: :destroy
@@ -22,15 +20,9 @@ class User < ApplicationRecord
 
   # Validations
   validates :email, presence: true, uniqueness: true
-  validates :role, presence: true
+  validates :role, presence: true, inclusion: { in: ['jobseeker', 'company'] }
 
   accepts_nested_attributes_for :jobseeker_profile
   accepts_nested_attributes_for :company
-
-  private
-
-  def convert_role_to_integer
-    self.role = User.roles[role] if role.is_a?(String)
-  end
 
 end
