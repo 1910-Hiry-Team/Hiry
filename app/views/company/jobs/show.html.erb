@@ -35,16 +35,16 @@
 
   <div>
     <h3>Applications</h3>
-      <% @job.users.each do |user| %>
+      <% @job.users.uniq.each do |user| %>
         <p>
           <% if user.jobseeker_profile.present? %>
             <%= user.jobseeker_profile.first_name %>
             <%= user.jobseeker_profile.last_name %>
+
+            <% application = @job.applications.find_by(user_id: user.id) %>
             <%= link_to "View Application",
               job_application_path(@job, application),
               class: "btn btn-primary" %>
-          <% else %>
-            <em>No jobseeker profile available</em>
           <% end %>
         </p>
       <% end %>
