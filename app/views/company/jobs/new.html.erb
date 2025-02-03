@@ -26,7 +26,14 @@
 
             <div class="mb-3">
               <%= form.label :location, "Location", class: "form-label" %>
-              <%= form.text_field :location, class: "form-control", required: true %>
+              <%= f.text_field :location,
+            placeholder: "Enter Location",
+            data: {
+              controller: "address-autocomplete",
+              address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"],
+              address_autocomplete_target: "address"
+            },
+            class: "form-control" %>
             </div>
 
             <div class="mb-3">

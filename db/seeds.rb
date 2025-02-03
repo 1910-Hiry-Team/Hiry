@@ -1,6 +1,8 @@
 require 'rainbow/refinement'
 using Rainbow
 
+puts 'Version 0.1.0'.green # For Debug purposes to be sure you're in the right file
+
 puts ''
 puts 'Do you want to skip the seeding and only reindex the database for elasticsearch? ('.blue + 'y'.green + '/'.blue + 'n'.red + ')'.blue
 print '> '
@@ -86,7 +88,7 @@ unless answer == 'y'
   jobseeker_profiles_to_create = []
   companies_to_create = []
   NUMBER_OF_USERS.times do
-    city = USE_REAL_CITIES ? REAL_CITIES.sample : Faker::Address.city
+    location = USE_REAL_CITIES ? REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
     # First create the user
     user = User.create!(
       email: Faker::Internet.unique.email,
@@ -105,14 +107,13 @@ unless answer == 'y'
         date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
         skills: Faker::Job.key_skill,
         hobbies: Faker::Hobby.activity,
-        city: city,
-        country: Faker::Address.country
+        location: location
       }
     else
       companies_to_create << {
         user_id: user.id,
         name: Faker::Company.name,
-        location: city,
+        location: location,
         description: Faker::Company.catch_phrase,
         industry: Faker::Company.industry,
         employee_number: rand(10..500)
@@ -133,13 +134,13 @@ unless answer == 'y'
   puts "Creating jobs...".cyan
   jobs_to_create = []
   NUMBER_OF_JOBS.times do
-    city = USE_REAL_CITIES ? REAL_CITIES.sample : Faker::Address.city
-    geo = Geocoder.search(city).first
+    location = USE_REAL_CITIES ? REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
+    geo = Geocoder.search(location).first
     lat, lon = geo&.latitude, geo&.longitude
 
     jobs_to_create << {
       job_title: Faker::Job.title,
-      location: city,
+      location: location,
       latitude: lat,
       longitude: lon,
       missions: Faker::Lorem.sentence(word_count: 10),

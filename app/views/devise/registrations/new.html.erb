@@ -16,23 +16,22 @@
         <%= p.input :date_of_birth %>
         <%= p.input :skills %>
         <%= p.input :hobbies %>
-        <%= p.input :city %>
-        <%= p.input :country, input_html: { class: 'form-control' }, as: :string %>
+        <%= p.input :location,
+          placeholder: "Enter Location",
+            input_html: {data: {address_autocomplete_target: "address"}},
+            wrapper_html: {data: {controller: "address-autocomplete",
+                                  address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]}}
+        %>
       <% end %>
     <% elsif params[:role] == 'company' %>
       <%= f.simple_fields_for :company do |c| %>
         <%= c.input :name %>
-        <div>
-          <label for="location">Location</label>
-          <%= c.text_field :location,
-            placeholder: "Enter Location",
-            data: {
-              controller: "address-autocomplete",
-              address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"],
-              address_autocomplete_target: "address"
-            },
-            class: "form-control" %>
-        </div>
+        <%= c.input :location,
+          placeholder: "Enter Location",
+            input_html: {data: {address_autocomplete_target: "address"}},
+            wrapper_html: {data: {controller: "address-autocomplete",
+                                  address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]}}
+        %>
         <%= c.input :description %>
         <%= c.input :industry %>
         <%= c.input :employee_number %>
