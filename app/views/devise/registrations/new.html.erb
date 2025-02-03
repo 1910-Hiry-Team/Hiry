@@ -2,45 +2,21 @@
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= f.error_notification %>
+  <%= f.hidden_field :role, value: params[:role] %>
 
   <div class="form-inputs">
     <%= f.input :email %>
     <%= f.input :password %>
     <%= f.input :password_confirmation %>
-    <%= f.input :role, as: :hidden, input_html: { value: params[:role] } %>
-    <% if params[:role] == 'jobseeker' %>
-      <%= f.simple_fields_for :jobseeker_profile do |p| %>
-        <%= p.input :first_name %>
-        <%= p.input :last_name %>
-        <%= p.input :phone_number %>
-        <%= p.input :date_of_birth %>
-        <%= p.input :skills %>
-        <%= p.input :hobbies %>
-        <%= p.input :city %>
-        <%= p.input :country, input_html: { class: 'form-control' }, as: :string %>
-      <% end %>
-    <% elsif params[:role] == 'company' %>
-      <%= f.simple_fields_for :company do |c| %>
-        <%= c.input :name %>
-        <div>
-          <label for="location">Location</label>
-          <%= c.text_field :location,
-            placeholder: "Enter Location",
-            data: {
-              controller: "address-autocomplete",
-              address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"],
-              address_autocomplete_target: "address"
-            },
-            class: "form-control" %>
-        </div>
-        <%= c.input :description %>
-        <%= c.input :industry %>
-        <%= c.input :employee_number %>
-      <% end %>
-    <% end %>
+
   </div>
 
   <div class="form-actions">
     <%= f.button :submit, "Sign up" %>
   </div>
 <% end %>
+
+
+<h1><%= params[:role] %></h1>
+
+<h2>Bonjour</h2>

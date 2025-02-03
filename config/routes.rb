@@ -15,7 +15,10 @@ Rails.application.routes.draw do
   }
 
   resources :users, only: [:show] do
-    resources :after_register, only: [:show, :update]
+    resources :after_register, only: [:show, :update], controller: 'after_register' do
+      get ':step', action: :show, as: :step
+      patch ':step', action: :update
+    end
   end
 
   # Root route
@@ -24,9 +27,6 @@ Rails.application.routes.draw do
   # custom routes
   get 'sign-up', to: 'pages#sign_up', as: :sign_up_choice
   get '/sign-up-choice', to: 'pages#sign_up', as: :new_user_choice
-
-  # User namespace
-  resources :users, only: [:show]
 
   # Job namespace (Regular jobs routes for jobseekers)
   resources :jobs, only: [:index, :show] do

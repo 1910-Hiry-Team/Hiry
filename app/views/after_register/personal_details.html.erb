@@ -1,5 +1,5 @@
 <h2>Thank you for signing up</h2>
-<%= simple_form_for @user, url: wizard_path do |f| %>
+<%= simple_form_for @user, url: wizard_path, method: :post do |f| %>
   <%= f.fields_for :jobseeker_profile do |profile_form| %>
     <%= profile_form.input :first_name %>
     <%= profile_form.input :last_name %>

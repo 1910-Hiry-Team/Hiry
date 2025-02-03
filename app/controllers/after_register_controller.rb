@@ -1,8 +1,10 @@
 class AfterRegisterController < ApplicationController
   include Wicked::Wizard
   before_action :authenticate_user!
+  before_action :set_user
 
-  steps :jobseeker_signup, :personal_details :birthdate, :location_details, :experience_details, :skills_hobbies_details, :company_signup, :name_of_company, :company_location, :company_details, :company_employee
+  steps :personal_details, :birthdate, :location_details, :experience_details, :skills_hobbies_details,
+        :name_of_company, :company_location, :company_details, :company_employee
 
   def show
     if @user.jobseeker?
@@ -14,10 +16,10 @@ class AfterRegisterController < ApplicationController
 
   def update
     if @user.jobseeker?
-      @user.update(params[:user])
+      @user.update(user_params)
       render_wizard @user, form: 'jobseeker'
     elsif @user.company?
-      @user.update(params[:user])
+      @user.update(user_params)
       render_wizard @user, form: 'company'
     end
   end
@@ -28,11 +30,20 @@ class AfterRegisterController < ApplicationController
     @user = User.find(params[:user_id])
   end
 
+  def user_params
+    params.require(:user).permit(
+      :first_name, :last_name, :email, :phone_number, :date_of_birth, :skills, :hobbies, :city, :country,
+      company_attributes: [:name, :location, :description, :industry, :employee_number]
+    )
+  end
+
   def finish_wizard_path
     if user.jobseeker?
-      jobs_path
+      search_jobs_path
     elsif user.company?
-      company_dashboard_path(user.company)
+      company_dashboard_path(@user.company)
+    else
+      root_path
     end
   end
 end

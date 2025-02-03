@@ -4,7 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  enum role: { jobseeker: 0, company: 1 }
+  enum role: { jobseeker: 'jobseeker', company: 'company' }
+
+  before_validation :convert_role_to_integer
 
   # Associations based on profile
   has_one :jobseeker_profile, dependent: :destroy
@@ -14,7 +16,7 @@ class User < ApplicationRecord
   has_many :favorites
   has_many :favorite_jobs, through: :favorites, source: :job
   has_many :applications, dependent: :destroy
-  has_many :experiences, dependent: :destroy 
+  has_many :experiences, dependent: :destroy
   has_many :studies, dependent: :destroy
   has_many :jobs, through: :applications
 
@@ -24,4 +26,11 @@ class User < ApplicationRecord
 
   accepts_nested_attributes_for :jobseeker_profile
   accepts_nested_attributes_for :company
+
+  private
+
+  def convert_role_to_integer
+    self.role = User.roles[role] if role.is_a?(String)
+  end
+
 end
