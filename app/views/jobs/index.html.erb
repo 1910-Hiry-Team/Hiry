@@ -1,9 +1,30 @@
 <h1>List of jobs</h1>
 
-<% @jobs.each do |job| %>
-  <p><strong>Company:</strong> <%= job.company.name %></p>
-  <p><strong>Job title:</strong> <%= job.job_title %></p>
-  <p><strong>Location:</strong> <%= job.location %></p>
-  <p><strong>Contract type:</strong> <%= job.contract %></p>
-  <%= link_to "Offer details", job_path(job) %>
-<% end %>
+<div class= "job-container">
+  <% @jobs.each do |job| %>
+    <div class="job-card">
+      <div class="job-card-header">
+        <img src="https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png" alt="company logo" class="company-logo">
+        <div class="job-card-header-info">
+          <h2><%= job.job_title %></h2>
+          <div class="flexbox">
+            <p><%= job.company.name %></p>
+            <p>|</p>
+            <p><%= job.location %></p>
+          </div>
+        </div>
+      </div>
+      <div class="job-card-content">
+        <p><%= job.contract %></p>
+        <p><%= job.experience %></p>
+        <p><%= job.language %></p>
+      </div>
+      <div class="job-card-footer">
+        <div class="salary-box">
+          <h3> $<%= job.salary %></h3>
+        </div>
+        <div class="job-button"><%= link_to "Details", job_path(job) %></div>
+      </div>
+    </div>
+  <% end %>
+</div>
