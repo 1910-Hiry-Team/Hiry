@@ -1,4 +1,8 @@
+require 'rainbow/refinement'
+using Rainbow
+
 class JobsController < ApplicationController
+
   before_action :set_job, only: [:show, :edit, :update, :destroy]
   def index
     @jobs = Job.all  # Add filtering logic here (search function)
@@ -6,9 +10,24 @@ class JobsController < ApplicationController
 
   def search
     # Show search form
-    @jobs = Job.all
-    @jobs = Job.search(params[:job_title]) if params[:job_title].present?
-    @jobs = @jobs.near(params[:location], 200) if params[:location].present?
+    if params[:job_title].present?
+      @jobs = Job.search(params[:job_title])
+    else
+      @jobs = Job.all
+    end
+
+    # Filter results by location if present
+    if params[:location].present?
+      # Get nearby job IDs using Geocoder
+      nearby_jobs = Job.near(params[:location], 200).map(&:id)
+
+      # If using Searchkick, ensure to intersect with geocoded results
+      if params[:job_title].present?
+        @jobs = @jobs.where(id: nearby_jobs)
+      else
+        @jobs = Job.where(id: nearby_jobs)
+      end
+    end
     render :index
   end
 
