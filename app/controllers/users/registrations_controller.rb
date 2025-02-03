@@ -39,10 +39,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(resource)
-    if resource.company?
-      company_jobs_path(resource.company)
+    if resource.valid?
+      if resource.jobseeker?
+        user_after_register_path(resource, :jobseeker_signup)
+      elsif resource.company?
+        user_after_register_path(resource, :company_signup)
+      end
     else
-      search_jobs_path
+      new_user_registration_path(resource)
+    # if resource.company?
+    #   company_jobs_path(resource.company)
+    # else
+    #   search_jobs_path
+    # end
     end
   end
 
@@ -50,20 +59,28 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [
-      :email, :password, :password_confirmation, :role,
-      company_attributes: [:name, :location, :description, :industry, :employee_number]  # removed :email from here
+    :email,:password,:password_confirmation,:role,
+      jobseeker_profile_attributes: [:first_name,:last_name,:phone_number,:date_of_birth,:skills,:hobbies,:city,:country],
+      company_attributes: [:name,:location,:description,:industry,:employee_number]
     ])
   end
-
-  def jobseeker_profile_params
-    params.require(:user).require(:jobseeker_profile_attributes).permit(
-      :first_name, :last_name, :phone_number, :date_of_birth, :skills, :hobbies, :city, :country
-    )
-  end
-
-  def company_params
-    params.require(:user).require(:company_attributes).permit(
-      :name, :email, :location, :description, :industry, :employee_number
-    )
-  end
 end
+
+  # def configure_permitted_parameters
+  #   devise_parameter_sanitizer.permit(:sign_up, keys: [
+  #     :email, :password, :password_confirmation, :role,
+  #     company_attributes: [:name, :location, :description, :industry, :employee_number]  # removed :email from here
+  #   ])
+  # end
+
+  # def jobseeker_profile_params
+  #   params.require(:user).require(:jobseeker_profile_attributes).permit(
+  #     :first_name, :last_name, :phone_number, :date_of_birth, :skills, :hobbies, :city, :country
+  #   )
+  # end
+
+  # def company_params
+  #   params.require(:user).require(:company_attributes).permit(
+  #     :name, :email, :location, :description, :industry, :employee_number
+  #   )
+  # end

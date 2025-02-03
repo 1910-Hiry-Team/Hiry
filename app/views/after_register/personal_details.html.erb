@@ -1,9 +1,8 @@
 <h2>Thank you for signing up</h2>
-<%= form_for(@user, :url => wizard_path, :method => :put) do |f| %>
-  <%= f.text_field :first_name, :placeholder => 'First name' %>
-  <%= f.text_field :last_name, :placeholder => 'Last name' %>
-  <%= f.submit 'Next', :class => 'btn btn-primary' %>
+<%= simple_form_for @user, url: wizard_path do |f| %>
+  <%= f.fields_for :jobseeker_profile do |profile_form| %>
+    <%= profile_form.input :first_name %>
+    <%= profile_form.input :last_name %>
+  <% end %>
+  <%= f.button :submit, "Next" %>
 <% end %>
-
-
-<%= link_to 'skip', next_wizard_path %>

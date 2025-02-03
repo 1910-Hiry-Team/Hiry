@@ -14,6 +14,10 @@ Rails.application.routes.draw do
     sessions: 'users/sessions'
   }
 
+  resources :users, only: [:show] do
+    resources :after_register, only: [:show, :update]
+  end
+
   # Root route
   root to: 'pages#home'
 

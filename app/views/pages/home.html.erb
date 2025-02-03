@@ -18,8 +18,8 @@
     <div class="col-6">
       <div class="card lg-white">
         <h2 class="mb-3">Sign up as a ...</h2>
-          <%= link_to "Job Seeker", new_user_registration_path(role: 'jobseeker'), class: "btn btn-primary mb-3" %>
-          <%= link_to "Company", new_user_registration_path(role: 'company'), class: "btn btn-secondary mb-3" %>
+          <%= link_to "Job Seeker", new_user_registration_path(user: { role: 'jobseeker' }), class: "btn btn-primary mb-3" %>
+          <%= link_to "Company", new_user_registration_path(user: { role: 'company' }), class: "btn btn-secondary mb-3" %>
       </div>
     </div>
   </div>
