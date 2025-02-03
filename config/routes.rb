@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   end
 
   # Company namespace
-  resources :companies, only: [] do
+  resources :companies, only: [:edit, :show] do
     get 'dashboard', to: 'dashboard#index', as: :dashboard
     resources :jobs, module: :company  # This gives you /company/jobs
     resources :applications, only: [:index, :edit, :update]
