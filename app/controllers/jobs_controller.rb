@@ -1,6 +1,3 @@
-require 'rainbow/refinement'
-using Rainbow
-
 class JobsController < ApplicationController
 
   before_action :set_job, only: [:show, :edit, :update, :destroy]
