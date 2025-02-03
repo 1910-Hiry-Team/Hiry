@@ -1,0 +1,6 @@
+<h1>Your dashboard</h1>
+
+<%= link_to "View my company profile", company_path(@company), class: "btn btn-primary" %>
+<%= link_to "View my Job listings", company_jobs_path, class: "btn btn-primary" %>
+<%= link_to "View my applications", company_applications_path, class: "btn btn-primary" %>
+<%= link_to "Create a new Job listing", new_company_job_path(@company), class: "btn btn-success mt-4 mb-4" %>

@@ -1,0 +1,6 @@
+<h1>My Favorites</h1>
+<% if @favorites.empty? %>
+  <p>There are no favorites yet. <%= link_to "Find some jobs", jobs_path %></p>
+<% else %>
+  <%= render "shared/jobs"%>
+<% end %>

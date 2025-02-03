@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'dashboard/index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -22,7 +23,9 @@ Rails.application.routes.draw do
   get '/sign-up-choice', to: 'pages#sign_up', as: :new_user_choice
 
   # User namespace
-  resources :users, only: [:show]
+  resources :users, only: [:show, :edit, :update] do
+    resources :favorites, only: [:index]
+  end
 
   # Job namespace (Regular jobs routes for jobseekers)
   resources :jobs, only: [:index, :show] do
@@ -34,8 +37,8 @@ Rails.application.routes.draw do
   end
 
   # Company namespace
-  resources :companies, only: [] do
-    get 'dashboard', to: 'dashboard#index'
+  resources :companies, only: [:edit, :update, :show] do
+    get 'dashboard', to: 'dashboard#index', as: :dashboard
     resources :jobs, module: :company  # This gives you /company/jobs
     resources :applications, only: [:index, :edit, :update]
   end

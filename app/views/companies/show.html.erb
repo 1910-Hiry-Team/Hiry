@@ -1,0 +1,9 @@
+<h1><%= @company.name %></h1>
+
+<p><strong>Location:</strong> <%= @company.location %></p>
+<p><strong>Industry:</strong> <%= @company.industry %></p>
+<p><strong>Description:</strong> <%= @company.description %></p>
+
+<% if current_user.company == @company %>
+  <%= link_to "Edit", edit_company_path(@company), class: "btn btn-success"%>
+<% end %>

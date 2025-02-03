@@ -35,14 +35,18 @@
 
   <div>
     <h3>Applications</h3>
-    <% @job.applications.each do |application| %>
-      <p>
-        <%= application.user.jobseeker_profile.first_name %>
-        <%= application.user.jobseeker_profile.last_name %>
-        <%= link_to "View Application",
-            job_application_path(@job, application),
-            class: "btn btn-primary" %>
-      </p>
-    <% end %>
+      <% @job.users.uniq.each do |user| %>
+        <p>
+          <% if user.jobseeker_profile.present? %>
+            <%= user.jobseeker_profile.first_name %>
+            <%= user.jobseeker_profile.last_name %>
+
+            <% application = @job.applications.find_by(user_id: user.id) %>
+            <%= link_to "View Application",
+              job_application_path(@job, application),
+              class: "btn btn-primary" %>
+          <% end %>
+        </p>
+      <% end %>
   </div>
 </div>
