@@ -15,14 +15,18 @@ class AfterRegisterController < ApplicationController
     if step == 'wicked_finish'
       return redirect_to user_after_register_path(user_id: @user.id, id: first_step_for(@user))
     end
+    Rails.logger.info "📢 Jobseeker profile: #{@user.jobseeker_profile.inspect}"
     render_wizard
   end
 
   def update
-    if @user.jobseeker?
-      @user.update(user_params)
+    Rails.logger.info "📢 Params reçus: #{params.inspect}"
+
+    if @user.update(user_params)
+      Rails.logger.info "✔️ Update réussi pour l'utilisateur : #{@user.inspect}"
       render_wizard @user, form: 'jobseeker'
     elsif @user.company?
+      Rails.logger.error "❌ Erreur lors de la mise à jour : #{@user.errors.full_messages}"
       @user.update(user_params)
       render_wizard @user, form: 'company'
     end
@@ -33,14 +37,15 @@ class AfterRegisterController < ApplicationController
   def first_step_for(user)
     user.jobseeker? ? :personal_details : :name_of_company
   end
-  
+
   def set_user
     @user = User.find(params[:user_id])
+    @user.build_jobseeker_profile if @user.jobseeker? && @user.jobseeker_profile.nil?
   end
 
   def user_params
     params.require(:user).permit(
-      :first_name, :last_name, :email, :phone_number, :date_of_birth, :skills, :hobbies, :city, :country,
+      jobseeker_profile_attributes: [:first_name, :last_name, :email, :phone_number, :date_of_birth, :skills, :hobbies, :city, :country],
       company_attributes: [:name, :location, :description, :industry, :employee_number]
     )
   end
