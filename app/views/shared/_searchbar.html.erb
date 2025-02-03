@@ -1,0 +1,21 @@
+<div class="container">
+    <%= form_with(url: search_jobs_path, method: :get, local: true) do |f| %>
+        <div>
+            <label for="job_title">Job Title</label>
+            <%= f.text_field :job_title, placeholder: "Enter Job Title" %>
+        </div>
+
+        <div>
+          <label for="location">Location</label>
+          <%= f.text_field :location,
+            placeholder: "Enter Location",
+            data: {
+              controller: "address-autocomplete",
+              address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"],
+              address_autocomplete_target: "address"
+            },
+            class: "form-control" %>
+        </div>
+
+        <%= f.submit 'Search', class: 'btn btn-primary'%>
+    <% end %>

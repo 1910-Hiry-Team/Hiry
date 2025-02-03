@@ -1,0 +1,44 @@
+<div>
+  <h2><%=@application.user.jobseeker_profile.first_name%>
+      <%=@application.user.jobseeker_profile.last_name%>'s application
+  </h2>
+  <div>
+    <h3>Profile</h3>
+    <p>Age:
+      <%= ((Time.zone.now - @application.user.jobseeker_profile.date_of_birth.to_time) / 1.year.seconds).floor %> years old
+    </p>
+    <p>Skills: <%= @application.user.jobseeker_profile.skills %></p>
+    <p>Hobbies: <%= @application.user.jobseeker_profile.hobbies %></p>
+    <p>Location:
+      <%= @application.user.jobseeker_profile.city %>,
+      <%= @application.user.jobseeker_profile.country %>
+    </p>
+  </div>
+
+  <div>
+    <h3>Contact Information</h3>
+    <p>Email: <%= @application.user.email %></p>
+    <p>Phone Number: <%= @application.user.jobseeker_profile.phone_number %></p>
+  </div>
+
+  <div>
+    <h3>Status</h3>
+    <p>Stage of the application : <%= @application.stage %></p>
+    <% unless @application.match %>
+      <p>
+        You have not accepted this candidate yet.
+        Do you wish to accept this candidate?</p>
+      <%= link_to "Accept",
+          edit_company_application_path(@company, @application),
+          class: 'btn btn-primary' %>
+    <% else %>
+      <p>
+        You have accepted this candidate.
+        Do you wish to reject this candidate?</p>
+      </p>
+      <%= link_to "Reject",
+          edit_company_application_path(@company, @application),
+          class: 'btn btn-primary'%>
+    <% end %>
+  </div>
+</div>

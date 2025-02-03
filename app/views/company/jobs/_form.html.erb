@@ -1,0 +1,62 @@
+<%= form_with(model: [@company, @job], local: true, class: "needs-validation") do |form| %>
+  <% if @job.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(@job.errors.count, "error") %> prohibited this job from being saved:</h4>
+      <ul>
+        <% @job.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= form.label :job_title, "Job Title", class: "form-label" %>
+        <%= form.text_field :job_title, class: "form-control", required: true %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :location, "Location", class: "form-label" %>
+        <%= form.text_field :location, class: "form-control", required: true %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :contract, "Contract Type", class: "form-label" %>
+        <%= form.select :contract, ["Full-Time", "Part-Time", "Freelance", "Internship"], prompt: "Select contract type", class: "form-select" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= form.label :language, "Preferred Language", class: "form-label" %>
+        <%= form.text_field :language, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :experience, "Experience Level", class: "form-label" %>
+        <%= form.select :experience, ["Entry Level", "Mid-Level", "Senior", "Director"], prompt: "Select experience level", class: "form-select" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :salary, "Salary (USD)", class: "form-label" %>
+        <%= form.number_field :salary, min: 0, step: 1000, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="mb-3">
+        <%= form.label :missions, "Missions", class: "form-label" %>
+        <%= form.text_area :missions, class: "form-control", rows: 5, placeholder: "Describe the job responsibilities..." %>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center gap-3 mt-3">
+    <%= form.submit @job.persisted? ? "Update Job" : "Create Job", class: "btn btn-success" %>
+    <%= link_to "Cancel", company_jobs_path(@company), class: "btn btn-secondary" %>
+  </div>
+<% end %>
