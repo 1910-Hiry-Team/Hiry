@@ -49,16 +49,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   private
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [
+    devise_parameter_sanitizer.permit(
+      :sign_up, keys: [
       :email, :password, :password_confirmation, :role,
-      company_attributes: [:name, :location, :description, :industry, :employee_number]  # removed :email from here
+      company_attributes: [:name, :location, :description, :industry, :employee_number],
+      jobseeker_profile_attributes: [:first_name, :last_name, :phone_number, :date_of_birth, :skills, :hobbies, :location]
     ])
-  end
-
-  def jobseeker_profile_params
-    params.require(:user).require(:jobseeker_profile_attributes).permit(
-      :first_name, :last_name, :phone_number, :date_of_birth, :skills, :hobbies, :city, :country
-    )
   end
 
   def company_params

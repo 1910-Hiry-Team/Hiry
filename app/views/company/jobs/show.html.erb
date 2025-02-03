@@ -35,11 +35,11 @@
 
   <div>
     <h3>Applications</h3>
-      <% @job.applications.each do |application| %>
+      <% @job.users.each do |user| %>
         <p>
-          <% if application.user.jobseeker_profile.present? %>
-            <%= application.user.jobseeker_profile.first_name %>
-            <%= application.user.jobseeker_profile.last_name %>
+          <% if user.jobseeker_profile.present? %>
+            <%= user.jobseeker_profile.first_name %>
+            <%= user.jobseeker_profile.last_name %>
             <%= link_to "View Application",
               job_application_path(@job, application),
               class: "btn btn-primary" %>
