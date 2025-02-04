@@ -1,0 +1,8 @@
+<h2>Company Location</h2>
+
+<%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
+  <%= f.fields_for :company do |company_form| %>
+    <%= company_form.input :location %>
+  <% end %>
+  <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
+<% end %>

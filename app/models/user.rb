@@ -25,4 +25,11 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :jobseeker_profile
   accepts_nested_attributes_for :company
 
+  def after_register_current_step
+    @after_register_current_step || 1
+  end
+
+  def after_register_current_step=(step)
+    @after_register_current_step = step
+  end
 end

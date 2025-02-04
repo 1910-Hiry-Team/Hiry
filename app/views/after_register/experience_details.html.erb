@@ -1,0 +1,9 @@
+<h2>Your Experience</h2>
+
+<%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
+  <%# Champs pour l'expérience (à adapter) %>
+  <%= f.fields_for :experiences, builder: proc { |b| b.label :company, "Company Name" } do |experience_form| %>
+    <%= experience_form.input :company %>
+    <% end %>
+  <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
+<% end %>

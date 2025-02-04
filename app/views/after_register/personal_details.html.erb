@@ -1,9 +1,9 @@
 <h2>Thank you for signing up</h2>
 
-<%= simple_form_for @user, url: wizard_path, method: :post do |f| %>
+<%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
   <%= f.fields_for :jobseeker_profile do |profile_form| %>
     <%= profile_form.input :first_name %>
     <%= profile_form.input :last_name %>
   <% end %>
-  <%= f.button :submit, "Next" %>
+  <%= f.submit "Next", data: { disable_with: "Please wait..." } %> <%# Ajout pour le feedback visuel %>
 <% end %>

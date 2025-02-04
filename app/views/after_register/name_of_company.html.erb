@@ -1,8 +1,9 @@
 <h2>Thank you for signing up</h2>
+<h2>Company Name</h2>
 
-<%= simple_form_for @user, url: wizard_path, method: :post do |f| %>
-  <%= f.fields_for :company_attributes do |profile_form| %>
-    <%= profile_form.input :name %>
-  <% end %>
-  <%= f.button :submit, "Next" %>
+<%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
+  <%= f.fields_for :company do |company_form| %>
+    <%= company_form.input :name %>
+  <% end %>
+  <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
 <% end %>

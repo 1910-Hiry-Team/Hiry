@@ -1,0 +1,8 @@
+<h2>Number of Employees</h2>
+
+<%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
+  <%= f.fields_for :company do |company_form| %>
+    <%= company_form.input :employee_number %>
+  <% end %>
+  <%= f.submit "Finish", data: { disable_with: "Please wait..." } %>
+<% end %>
