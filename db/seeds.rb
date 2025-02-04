@@ -113,6 +113,37 @@ unless answer == 'y'
     puts "Error fetching logos from Cloudinary: #{e.message}".red
   end
 
+  puts ''
+  puts 'Fetching profile pictures from Cloudinary...'.cyan
+  PROFILE_PICS = []
+  begin
+    next_cursor = nil
+    loop do
+      # Fetch all resources from the "logos" folder
+      response = Cloudinary::Api.resources(type: 'upload',
+                                            prefix: 'profile-pictures',
+                                            max_results: 100,
+                                            next_cursor: next_cursor)
+
+      response['resources'].each do |resource|
+        public_id = resource['public_id']
+      # Check if the resource exists (if it's deleted, this will raise an error)
+        begin
+          Cloudinary::Api.resource(public_id) # This will succeed only if the resource exists
+          PROFILE_PICS << public_id
+        rescue Cloudinary::Api::NotFound
+          puts "Skipping deleted profile picture: #{public_id}".red
+        end
+      end
+
+      next_cursor = response['next_cursor']
+      break unless next_cursor
+    end
+    puts "#{LOGOS.size} valid profile pictures fetched from Cloudinary!".green
+  rescue Cloudinary::Api::Error => e
+    puts "Error fetching profile pictures from Cloudinary: #{e.message}".red
+  end
+
   # Clear the database
   if DATABASE_CLEAR
     puts "Clearing database...".yellow
@@ -223,6 +254,17 @@ unless answer == 'y'
     end
   end
   puts "Logos assigned to companies!".green
+
+  # Assign profile pictures to users
+  puts ''
+  puts "Assigning profile pictures to users...".cyan
+  users.each do |user|
+    unless user.photo.attached?
+      random_profile_pic = PROFILE_PICS.sample # Get a random profile picture public_id
+      profile_pic_url = Cloudinary::Utils.cloudinary_url(random_profile_pic) # Generate the profile picture URL
+      user.photo.attach(io: URI.open(profile_pic_url), filename: "profile_pic_#{user.email}_#{Faker::Crypto.md5}.jpg")
+    end
+  end
 
   # Create Jobs
   puts ''
