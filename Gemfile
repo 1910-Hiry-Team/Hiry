@@ -83,3 +83,6 @@ gem 'faker'
 gem 'country_select', '~> 8.0'
 gem 'activerecord-import'
 gem 'hotwire-rails'
+
+
+gem 'pundit'

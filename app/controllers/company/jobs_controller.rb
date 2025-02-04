@@ -1,22 +1,25 @@
 class Company::JobsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_company
-  before_action :ensure_company_user!
+  # Remove ensure_company_user! as Pundit will handle this now
 
   def index
-    @jobs = @company.jobs
+    @jobs = policy_scope([:company, @company.jobs])
   end
 
   def new
     @job = @company.jobs.new
+    authorize [:company, @job]
   end
 
   def show
     @job = @company.jobs.find(params[:id])
+    authorize [:company, @job]
   end
 
   def create
     @job = @company.jobs.new(job_params)
+    authorize [:company, @job]
     if @job.save
       redirect_to company_job_path(@company, @job), notice: "Job created successfully"
     else
@@ -26,10 +29,12 @@ class Company::JobsController < ApplicationController
 
   def edit
     @job = @company.jobs.find(params[:id])
+    authorize [:company, @job]
   end
 
   def update
     @job = @company.jobs.find(params[:id])
+    authorize [:company, @job]
     if @job.update(job_params)
       redirect_to company_job_path(@company, @job), notice: "Job updated successfully"
     else
@@ -39,6 +44,7 @@ class Company::JobsController < ApplicationController
 
   def destroy
     @job = @company.jobs.find(params[:id])
+    authorize [:company, @job]
     @job.destroy
     redirect_to company_jobs_path(@company), notice: "Job deleted successfully"
   end
@@ -47,12 +53,6 @@ class Company::JobsController < ApplicationController
 
   def set_company
     @company = Company.find(params[:company_id])
-  end
-
-  def ensure_company_user!
-    unless current_user.company == @company
-      redirect_to root_path, alert: "Not authorized"
-    end
   end
 
   def job_params

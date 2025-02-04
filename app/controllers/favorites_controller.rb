@@ -1,25 +1,34 @@
 class FavoritesController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_job
 
   def create
-    @favorite = Favorite.new
-    @job = Job.find(params[:job_id])
-    current_user.favorites.create(job: @job)
+    @favorite = current_user.favorites.new(job: @job)
+    authorize @favorite
+
+    @favorite.save
 
     respond_to do |format|
       format.html { redirect_back fallback_location: jobs_path }
-      format.js   # Renders create.js.erb
+      format.js
     end
   end
 
   def destroy
-    @job = Job.find(params[:job_id])
-    favorite = current_user.favorites.find_by(job_id: @job.id)
-    favorite.destroy if favorite
+    @favorite = current_user.favorites.find_by!(job: @job)
+    authorize @favorite
+
+    @favorite.destroy
 
     respond_to do |format|
       format.html { redirect_back fallback_location: jobs_path }
-      format.js   # Renders destroy.js.erb
+      format.js
     end
+  end
+
+  private
+
+  def set_job
+    @job = Job.find(params[:job_id])
   end
 end
