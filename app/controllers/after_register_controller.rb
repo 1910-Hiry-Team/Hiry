@@ -16,6 +16,11 @@ class AfterRegisterController < ApplicationController
   def update
     params_to_update = @user.jobseeker? ? jobseeker_params : company_params
     @user.assign_attributes(params_to_update)
+
+    if step == :name_of_company && @user.company && !@user.company.persisted?
+      @user.company.save
+    end
+
     if @user.save(context: step)
       update_current_step_and_render_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
     else
@@ -32,7 +37,9 @@ class AfterRegisterController < ApplicationController
   def set_user
     @user = User.find(params[:user_id])
     @user.build_jobseeker_profile if @user.jobseeker? && @user.jobseeker_profile.nil?
-    @user.build_company if @user.company? && @user.company.nil?
+    if @user.company.nil?
+      @user.create_company(name: "") # Crée une company vide pour qu'elle soit persistée
+    end
   end
 
   def jobseeker_params
@@ -56,11 +63,11 @@ class AfterRegisterController < ApplicationController
   def company_params
     case step
     when :name_of_company
-      params.require(:user).permit(company_attributes: [:name])
+      params.require(:user).permit(company_attributes: [:id, :name])
     when :company_location
-      params.require(:user).permit(company_attributes: [:location])
+      params.require(:user).permit(company_attributes: [:id, :location])
     when :company_details
-      params.require(:user).permit(company_attributes: [:employee_number, :industry, :description])
+      params.require(:user).permit(company_attributes: [:id, :employee_number, :industry, :description])
     else
       {}
     end
@@ -84,6 +91,7 @@ class AfterRegisterController < ApplicationController
 
   def render_error_and_wizard(form_type)
     flash.now[:alert] = @user.errors.full_messages.join(", ")
+    flash.now[:alert] += ", " + @user.company.errors.full_messages.join(", ") if @user.company
     render_wizard @user, form: form_type
   end
 end
