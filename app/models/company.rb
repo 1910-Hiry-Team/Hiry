@@ -1,6 +1,7 @@
 class Company < ApplicationRecord
   belongs_to :user
   has_many :jobs
+  has_one_attached :logo
 
   # Validations
   validates :name, presence: true

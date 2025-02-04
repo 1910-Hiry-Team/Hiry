@@ -10,6 +10,11 @@ class User < ApplicationRecord
   has_one :jobseeker_profile, dependent: :destroy
   has_one :company, dependent: :destroy
 
+  accepts_nested_attributes_for :jobseeker_profile
+  accepts_nested_attributes_for :company
+
+  has_one_attached :photo
+
   # Associations
   has_many :favorites
   has_many :favorite_jobs, through: :favorites, source: :job

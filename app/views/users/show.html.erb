@@ -1,6 +1,6 @@
 <div>
   <% if @user.jobseeker_profile %>
-    <h2><%= @user.first_name %> <%= @user.last_name %>'s profile</h2>
+    <h2><%= @user.jobseeker_profile.first_name %> <%= @user.jobseeker_profile.last_name %>'s profile</h2>
   <% else %>
     <h2><%= @user.company.name %>, employee: <%= @user.company.employee_number %>'s profile</h2>
   <% end %>
