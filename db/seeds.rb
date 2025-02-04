@@ -15,8 +15,8 @@ unless answer == 'y'
   puts ''
   puts 'What weight of seeding do you want?'.blue
   puts '1. '.red + 'Light' + ' (30s)'.green
-  puts '2. '.red + 'Medium' + ' (120s)'.yellow
-  puts '3. '.red + 'Heavy' + ' (600s)'.red
+  puts '2. '.red + 'Medium' + ' (200s)'.yellow
+  puts '3. '.red + 'Heavy' + ' (1000s)'.red
   print '> '
 
   case gets.chomp
@@ -72,6 +72,7 @@ unless answer == 'y'
   # -------------------
   # Constants
   # -------------------
+  t_constants = Time.now
   RANGE_OF_STUDIES = 3
   RANGE_OF_EXPERIENCES = 3
   RANGE_OF_APPLICATIONS = 5
@@ -83,10 +84,12 @@ unless answer == 'y'
                 "London, UK",
                 "Rome, Italy"
               ]
+  t_stop_constants = Time.now
 
   # -------------------
   puts ''
   puts 'Fetching logos from Cloudinary...'.cyan
+  t_logos = Time.now
   LOGOS = []
   begin
     next_cursor = nil
@@ -115,9 +118,12 @@ unless answer == 'y'
   rescue Cloudinary::Api::Error => e
     puts "Error fetching logos from Cloudinary: #{e.message}".red
   end
+  t_stop_logos = Time.now
+
   # -------------------
   puts ''
   puts 'Fetching profile pictures from Cloudinary...'.cyan
+  t_profile_pics = Time.now
   PROFILE_PICS = []
   begin
     next_cursor = nil
@@ -142,18 +148,18 @@ unless answer == 'y'
       next_cursor = response['next_cursor']
       break unless next_cursor
     end
-    puts "#{LOGOS.size} valid profile pictures fetched from Cloudinary!".green
+    puts "#{PROFILE_PICS.size} valid profile pictures fetched from Cloudinary!".green
   rescue Cloudinary::Api::Error => e
     puts "Error fetching profile pictures from Cloudinary: #{e.message}".red
   end
-  # -------------------
+  t_stop_profile_pics = Time.now
 
   # -------------------
   # Clear the database
   # -------------------
-
   if DATABASE_CLEAR
     puts "Clearing database...".yellow
+    t_clear_db = Time.now
     Application.in_batches(of: 1000).destroy_all
     Favorite.in_batches(of: 1000).destroy_all
     Job.in_batches(of: 1000).destroy_all
@@ -162,14 +168,12 @@ unless answer == 'y'
     Study.in_batches(of: 1000).destroy_all
     User.in_batches(of: 1000).destroy_all
     puts "Database cleared!".green
+    t_stop_clear_db = Time.now
   end
 
   # -------------------
-  # -------------------
   # Seed the database
   # -------------------
-  # -------------------
-
   start_time = Time.now
 
   # -------------------
@@ -177,6 +181,7 @@ unless answer == 'y'
   # -------------------
   puts ''
   puts "Creating users...".cyan
+  t_create_users = Time.now
   jobseeker_profiles_to_create = []
   companies_to_create = []
   NUMBER_OF_USERS.times do
@@ -216,39 +221,41 @@ unless answer == 'y'
   # -------------------
   # Create test users
   # -------------------
-  test_seeker = User.create!(
-    email: 'test@seeker.com',
-    password: '123456',
-    password_confirmation: '123456',
-    role: :jobseeker
-  )
+  if DATABASE_CLEAR # Only create test users if the database was cleared
+    test_seeker = User.create!(
+      email: 'test@seeker.com',
+      password: '123456',
+      password_confirmation: '123456',
+      role: :jobseeker
+    )
 
-  test_company = User.create!(
-    email: 'test@company.com',
-    password: '123456',
-    password_confirmation: '123456',
-    role: :company
-  )
+    test_company = User.create!(
+      email: 'test@company.com',
+      password: '123456',
+      password_confirmation: '123456',
+      role: :company
+    )
 
-  JobseekerProfile.create!(
-    user_id: test_seeker.id,
-    first_name: 'Test',
-    last_name: 'Seeker',
-    phone_number: '1234567890',
-    date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
-    skills: Faker::Job.key_skill,
-    hobbies: Faker::Hobby.activity,
-    location: 'Paris, France'
-  )
+    JobseekerProfile.create!(
+      user_id: test_seeker.id,
+      first_name: 'Test',
+      last_name: 'Seeker',
+      phone_number: '1234567890',
+      date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
+      skills: Faker::Job.key_skill,
+      hobbies: Faker::Hobby.activity,
+      location: 'Paris, France'
+    )
 
-  Company.create!(
-    user_id: test_company.id,
-    name: 'Test Company',
-    location: 'Paris, France',
-    description: 'We are a test company',
-    industry: 'Test Industry',
-    employee_number: 10
-  )
+    Company.create!(
+      user_id: test_company.id,
+      name: 'Test Company',
+      location: 'Paris, France',
+      description: 'We are a test company',
+      industry: 'Test Industry',
+      employee_number: 10
+    )
+  end
 
   JobseekerProfile.import(jobseeker_profiles_to_create)
   Company.import(companies_to_create)
@@ -258,12 +265,14 @@ unless answer == 'y'
   jobseeker_profiles = JobseekerProfile.all
 
   puts "Users created!".green
+  t_stop_create_users = Time.now
 
   # ---------------------------
   # Assign logos to companies
   # ---------------------------
   puts ''
   puts "Assigning logos to companies...".cyan
+  t_assign_logos = Time.now
   companies.each do |company|
     unless company.logo.attached?
       random_logo = LOGOS.sample # Get a random logo public_id
@@ -272,12 +281,14 @@ unless answer == 'y'
     end
   end
   puts "Logos assigned to companies!".green
+  t_stop_assign_logos = Time.now
 
   # ---------------------------------------
   # Assign profile pictures to jobseekers
   # ---------------------------------------
   puts ''
   puts "Assigning profile pictures to jobseekers...".cyan
+  t_assign_profile_pics = Time.now
   jobseeker_profiles.each do |profile|
     unless profile.photo.attached?
       random_profile_pic = PROFILE_PICS.sample # Get a random profile picture public_id
@@ -286,12 +297,14 @@ unless answer == 'y'
     end
   end
   puts "Profile pictures assigned to jobseekers".green
+  t_stop_assign_profile_pics = Time.now
 
   # -------------------
   # Create Jobs
   # -------------------
   puts ''
   puts "Creating jobs...".cyan
+  t_create_jobs = Time.now
   jobs_to_create = []
   NUMBER_OF_JOBS.times do
     location = USE_REAL_CITIES ? REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
@@ -319,12 +332,14 @@ unless answer == 'y'
   jobs = Job.all
 
   puts "Jobs created!".green
+  t_stop_create_jobs = Time.now
 
   # -------------------
   # Create Studies
   # -------------------
   puts ''
   puts "Creating studies...".cyan
+  t_create_studies = Time.now
   studies_to_create = []
   User.where(role: 0).each do |user|
     rand(1.. RANGE_OF_STUDIES).times do
@@ -342,12 +357,14 @@ unless answer == 'y'
   Study.import(studies_to_create)
 
   puts 'Studies created!'.green
+  t_stop_create_studies = Time.now
 
   # -------------------
   # Create Experiences
   # -------------------
   puts ''
   puts "Creating experiences...".cyan
+  t_create_experiences = Time.now
   experiences_to_create = []
   User.where(role: 0).each do |user|
     rand(1.. RANGE_OF_EXPERIENCES).times do
@@ -367,12 +384,14 @@ unless answer == 'y'
   Experience.import(experiences_to_create)
 
   puts "Experiences created!".green
+  t_stop_create_experiences = Time.now
 
   # -------------------
   # Create Applications
   # -------------------
   puts ''
   puts "Creating applications...".cyan
+  t_create_applications = Time.now
   applications_to_create = []
   User.where(role: 0).each do |user|
     rand(1.. RANGE_OF_APPLICATIONS).times do
@@ -388,6 +407,7 @@ unless answer == 'y'
   Application.import(applications_to_create)
 
   puts "Applications created!".green
+  t_stop_create_applications = Time.now
 
   puts ''
   puts "Seeding completed!".green
@@ -405,6 +425,22 @@ end
 # -------------------
 puts ''
 puts "Reindexing models...".cyan
+t_reindex = Time.now
 Job.reindex
 puts "Reindexing completed!".green
+t_stop_reindex = Time.now
+
 puts ''
+puts "Time taken for each step:".green
+puts "Setting up constants: ".white + "#{(t_stop_constants - t_constants).round(2)} seconds".red
+puts "Fetching logos: ".white + "#{(t_stop_logos - t_logos).round(2)} seconds".red
+puts "Fetching profile pictures: ".white + "#{(t_stop_profile_pics - t_profile_pics).round(2)} seconds".red
+puts "Clearing database: ".white + "#{(t_stop_clear_db - t_clear_db).round(2)} seconds".red if DATABASE_CLEAR
+puts "Creating users: ".white + "#{(t_stop_create_users - t_create_users).round(2)} seconds".red
+puts "Assigning logos: ".white + "#{(t_stop_assign_logos - t_assign_logos).round(2)} seconds".red
+puts "Assigning profile pictures: ".white + "#{(t_stop_assign_profile_pics - t_assign_profile_pics).round(2)} seconds".red
+puts "Creating jobs: ".white + "#{(t_stop_create_jobs - t_create_jobs).round(2)} seconds".red
+puts "Creating studies: ".white + "#{(t_stop_create_studies - t_create_studies).round(2)} seconds".red
+puts "Creating experiences: ".white + "#{(t_stop_create_experiences - t_create_experiences).round(2)} seconds".red
+puts "Creating applications: ".white + "#{(t_stop_create_applications - t_create_applications).round(2)} seconds".red
+puts "Reindexing: ".white + "#{(t_stop_reindex - t_reindex).round(2)} seconds".red
