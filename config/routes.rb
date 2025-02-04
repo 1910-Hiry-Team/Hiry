@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   resources :users, only: [:show] do
     resources :after_register, only: [:show, :update], controller: 'after_register' do
       get ':step', action: :show, as: :step
-      patch ':step', action: :update
+      put ':step', action: :update
       # step :personal_details, :birthdate, :location_details, :experience_details, :skills_hobbies_details, :name_of_company, :company_location, :company_details, :company_employee
     end
   end
