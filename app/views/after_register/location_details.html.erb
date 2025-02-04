@@ -1,9 +1,11 @@
-<h2>Your Location</h2>
+<trubo-frame id="location_details">
+  <h2>Your Location</h2>
 
-<%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
-  <%= f.fields_for :jobseeker_profile do |profile_form| %>
-    <%= profile_form.input :city %>
-    <%= profile_form.input :country, collection: Carmen.country_names %> <%# Utilisation de Carmen pour les pays %>
-  <% end %>
-  <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
-<% end %>
+  <%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
+     <%= f.fields_for :jobseeker_profile do |profile_form| %>
+       <%= profile_form.input :city %>
+       <%= profile_form.input :country, collection: Carmen.country_names %> <%# Utilisation de Carmen pour les pays %>
+     <% end %>
+     <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
+  <% end %>
+</trubo-frame>

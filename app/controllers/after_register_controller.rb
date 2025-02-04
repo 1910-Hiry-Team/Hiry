@@ -15,6 +15,7 @@ class AfterRegisterController < ApplicationController
   end
 
   def update
+    puts "Params: #{params.inspect}"
     if @user.jobseeker?
       if @user.update(user_params)
         @user.after_register_current_step = steps.index(step) + 1 if steps.index(step) < steps.length - 1
