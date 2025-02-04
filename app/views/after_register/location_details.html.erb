@@ -1,4 +1,4 @@
-<trubo-frame id="location_details">
+
   <h2>Your Location</h2>
 
   <%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
@@ -8,4 +8,4 @@
      <% end %>
      <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
   <% end %>
-</trubo-frame>
+
