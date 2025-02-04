@@ -1,0 +1,16 @@
+.link-back {
+  margin-left: 16px;
+  a {
+    text-decoration: none;
+    color : black;
+  }
+}
+
+.link-back:hover {
+  i {
+    color: grey;
+  }
+  a {
+    color: grey;
+  }
+}
