@@ -2,7 +2,7 @@ class AfterRegisterController < ApplicationController
   include Wicked::Wizard
   before_action :authenticate_user!
   before_action :set_user
-  
+
   steps :personal_details, :birthdate, :location_details, :experience_details, :skills_hobbies_details,
         :name_of_company, :company_location, :company_details, :company_employee
 
@@ -61,10 +61,8 @@ class AfterRegisterController < ApplicationController
       params.require(:user).permit(company_attributes: [:location])
     when :company_details
       params.require(:user).permit(company_attributes: [:employee_number, :industry, :description])
-    when :company_employee # Ajout de l'étape company_employee (manquait dans ton code initial)
-      params.require(:user).permit(company_attributes: [:employee_range]) # Exemple, ajuste selon tes attributs
     else
-      {} # Retourne un hash vide par défaut pour les étapes non gérées ici
+      {}
     end
   end
 

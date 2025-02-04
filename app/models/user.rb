@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
   # Associations based on profile
   has_one :jobseeker_profile, inverse_of: :user
-  has_one :company, dependent: :destroy
+  has_one :company, dependent: :destroy, inverse_of: :user
 
   # Associations
   has_many :favorites

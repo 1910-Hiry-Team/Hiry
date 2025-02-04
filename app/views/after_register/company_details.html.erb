@@ -1,9 +1,11 @@
-<h2>Company Details</h2>
+<turbo-frame id="wizard-frame">
+  <h2>Company Details</h2>
 
-<%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
-  <%= f.fields_for :company do |company_form| %>
-    <%= company_form.input :description %>
-    <%= company_form.input :industry %>
-  <% end %>
-  <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
-<% end %>
+  <%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
+     <%= f.fields_for :company do |company_details_form| %>
+       <%= company_details_form.input :description %>
+       <%= company_details_form.input :industry %>
+     <% end %>
+     <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
+  <% end %>
+</turbo-frame>
