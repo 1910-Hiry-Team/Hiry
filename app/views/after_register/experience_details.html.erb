@@ -1,9 +1,29 @@
-<h2>Your Experience</h2>
+<turbo-frame id="wizard-frame">
+  <h2>Your Experience</h2>
 
-<%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
-  <%# Champs pour l'expérience (à adapter) %>
-   <%= f.fields_for :experiences, builder: proc { |b| b.label :company, "Company Name" } do |experience_form| %>
-     <%= experience_form.input :company %>
-     <% end %>
-   <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
-<% end %>
+  <%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
+    <%= f.fields_for :experiences, @user.experiences.build do |experience_form| %>
+
+      <!-- Company -->
+      <%= experience_form.input :company, label: "Company Name" %>
+
+      <!-- Job Title -->
+      <%= experience_form.input :job_title, label: "Job Title" %>
+
+      <!-- Start and End Dates (Range) -->
+      <div class="date-range">
+        <%= experience_form.input :start_date, as: :date, label: "Start Date" %>
+        <%= experience_form.input :end_date, as: :date, label: "End Date" %>
+      </div>
+
+      <!-- Missions -->
+      <%= experience_form.input :missions, label: "Missions", as: :text %>
+
+      <!-- Description -->
+      <%= experience_form.input :description, label: "Description", as: :text %>
+
+    <% end %>
+
+    <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
+  <% end %>
+</turbo-frame>

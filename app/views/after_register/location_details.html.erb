@@ -2,10 +2,10 @@
   <h2>Your Location</h2>
 
   <%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
-     <%= f.fields_for :jobseeker_profile_attributes do |profile_form| %>
-     <%= profile_form.input :location %>
-       <%= profile_form.input :city %>
-       <%= profile_form.input :country, as: :select, collection: ISO3166::Country.translations.values %>
+     <%= f.fields_for :jobseeker_profile_attributes do |location_form| %>
+     <%= location_form.input :location %>
+       <%= location_form.input :city %>
+       <%= location_form.input :country, as: :select, collection: ISO3166::Country.translations.values %>
      <% end %>
      <%= f.submit "Next" %>
   <% end %>
