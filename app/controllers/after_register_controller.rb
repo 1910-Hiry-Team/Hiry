@@ -14,28 +14,66 @@ class AfterRegisterController < ApplicationController
   end
 
   def update
-    puts "Params: #{params.inspect}"
     if @user.jobseeker?
-      if @user.update(jobseeker_params)
-        @user.after_register_current_step = steps.index(step) + 1 if steps.index(step) < steps.length - 1
-        @user.save!
-
-        puts "@user.after_register_current_step before render_wizard: #{@user.after_register_current_step.inspect}" # DEBUG
-        puts "About to render_wizard for jobseeker, step: #{step}" # DEBUG
-        render_wizard @user, form: 'jobseeker'
-        puts "render_wizard completed for jobseeker" # DEBUG
-      else
-        flash[:alert] = @user.errors.full_messages.join(", ")
-        render_wizard @user, form: 'jobseeker'
+      case step # Utilisation de case step pour les étapes jobseeker
+      when :personal_details
+        if @user.update(jobseeker_params) # Utilise jobseeker_params pour jobseeker
+          update_current_step_and_render_wizard('jobseeker') # Méthode factorisée pour la logique commune
+        else
+          render_error_and_wizard('jobseeker') # Méthode factorisée pour la gestion des erreurs
+        end
+      when :birthdate
+        if @user.update(jobseeker_params) # Utilise jobseeker_params pour jobseeker
+          update_current_step_and_render_wizard('jobseeker') # Méthode factorisée pour la logique commune
+        else
+          render_error_and_wizard('jobseeker') # Méthode factorisée pour la gestion des erreurs
+        end
+      when :location_details # Ajoute les autres étapes jobseeker ici...
+        if @user.update(jobseeker_params)
+          update_current_step_and_render_wizard('jobseeker')
+        else
+          render_error_and_wizard('jobseeker')
+        end
+      when :experience_details
+        if @user.update(jobseeker_params)
+          update_current_step_and_render_wizard('jobseeker')
+        else
+          render_error_and_wizard('jobseeker')
+        end
+      when :skills_hobbies_details
+        if @user.update(jobseeker_params)
+          update_current_step_and_render_wizard('jobseeker')
+        else
+          render_error_and_wizard('jobseeker')
+        end
       end
+
     elsif @user.company?
-      if @user.update(company_params)
-        @user.after_register_current_step = steps.index(step) + 1 if steps.index(step) < steps.length - 1
-        @user.save!
-        render_wizard @user, form: 'company'
-      else
-        flash[:alert] = @user.errors.full_messages.join(", ")
-        render_wizard @user, form: 'company'
+      case step # Utilisation de case step pour les étapes company
+      when :name_of_company
+        if @user.update(company_params) # Utilise company_params pour company
+          update_current_step_and_render_wizard('company') # Méthode factorisée pour la logique commune
+        else
+          render_error_and_wizard('company') # Méthode factorisée pour la gestion des erreurs
+        end
+      when :company_location
+        if @user.update(company_params)
+          update_current_step_and_render_wizard('company')
+        else
+          render_error_and_wizard('company')
+        end
+      when :company_details # Ajoute les autres étapes company ici...
+        if @user.update(company_params)
+          update_current_step_and_render_wizard('company')
+        else
+          render_error_and_wizard('company')
+        end
+      when :company_employee
+        if @user.update(company_params)
+          update_current_step_and_render_wizard('company')
+        else
+          render_error_and_wizard('company')
+        end
       end
     end
   end
@@ -92,5 +130,16 @@ class AfterRegisterController < ApplicationController
     else
       root_path
     end
+  end
+
+  def update_current_step_and_render_wizard(form_type)
+    @user.after_register_current_step = steps.index(step) + 1 if steps.index(step) < steps.length - 1
+    @user.save! # Sauvegarde explicite après mise à jour de after_register_current_step
+    render_wizard @user, form: form_type
+  end
+
+  def render_error_and_wizard(form_type)
+    flash.now[:alert] = @user.errors.full_messages.join(", ")
+    render_wizard @user, form: form_type
   end
 end

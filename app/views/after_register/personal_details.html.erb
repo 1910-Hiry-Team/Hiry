@@ -1,4 +1,4 @@
-
+<turbo-frame id="personal_details">
   <h2>Thank you for signing up</h2>
 
   <%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
@@ -9,3 +9,4 @@
     <% end %>
     <%= f.submit "Next" %>
   <% end %>
+</turbo-frame>
