@@ -22,69 +22,16 @@ class AfterRegisterController < ApplicationController
     else
       render_error_and_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
     end
-    # if @user.jobseeker?
-    #   puts "@user.class: #{@user.class}"
-    #   case step # Utilisation de case step pour les étapes jobseeker
-    #   when :personal_details
-    #     if @user.update(jobseeker_params, context: step) # Utilise jobseeker_params pour jobseeker
-    #       update_current_step_and_render_wizard('jobseeker') # Méthode factorisée pour la logique commune
-    #     else
-    #       render_error_and_wizard('jobseeker') # Méthode factorisée pour la gestion des erreurs
-    #     end
-    #   when :birthdate
-    #     if @user.update(jobseeker_params, context: step) # Utilise jobseeker_params pour jobseeker
-    #       update_current_step_and_render_wizard('jobseeker') # Méthode factorisée pour la logique commune
-    #     else
-    #       render_error_and_wizard('jobseeker') # Méthode factorisée pour la gestion des erreurs
-    #     end
-    #   when :location_details # Ajoute les autres étapes jobseeker ici...
-    #     if @user.update(jobseeker_params, context: step)
-    #       update_current_step_and_render_wizard('jobseeker')
-    #     else
-    #       render_error_and_wizard('jobseeker')
-    #     end
-    #   when :experience_details
-    #     if @user.update(jobseeker_params, context: step)
-    #       update_current_step_and_render_wizard('jobseeker')
-    #     else
-    #       render_error_and_wizard('jobseeker')
-    #     end
-    #   when :skills_hobbies_details
-    #     if @user.update(jobseeker_params, context: step)
-    #       update_current_step_and_render_wizard('jobseeker')
-    #     else
-    #       render_error_and_wizard('jobseeker')
-    #     end
-    #   end
 
-    # elsif @user.company?
-    #   case step # Utilisation de case step pour les étapes company
-    #   when :name_of_company
-    #     if @user.update(company_params, context: step) # Utilise company_params pour company
-    #       update_current_step_and_render_wizard('company') # Méthode factorisée pour la logique commune
-    #     else
-    #       render_error_and_wizard('company') # Méthode factorisée pour la gestion des erreurs
-    #     end
-    #   when :company_location
-    #     if @user.update(company_params, context: step)
-    #       update_current_step_and_render_wizard('company')
-    #     else
-    #       render_error_and_wizard('company')
-    #     end
-    #   when :company_details # Ajoute les autres étapes company ici...
-    #     if @user.update(company_params, context: step)
-    #       update_current_step_and_render_wizard('company')
-    #     else
-    #       render_error_and_wizard('company')
-    #     end
-    #   when :company_employee
-    #     if @user.update(company_params, context: step)
-    #       update_current_step_and_render_wizard('company')
-    #     else
-    #       render_error_and_wizard('company')
-    #     end
-    #   end
-    # end
+    if @user.save(context: step)
+      if step == :skills_hobbies_details
+        redirect_to jobs_path
+      else
+        update_current_step_and_render_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
+      end
+    else
+      render_wizard @user
+    end
   end
 
   private
