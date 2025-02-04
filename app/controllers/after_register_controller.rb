@@ -106,7 +106,7 @@ class AfterRegisterController < ApplicationController
     when :birthdate
       params.require(:user).permit(jobseeker_profile_attributes: [:date_of_birth])
     when :location_details
-      params.require(:user).permit(jobseeker_profile_attributes: [:city, :country])
+      params.require(:user).permit(jobseeker_profile_attributes: [:location, :city, :country])
     when :experience_details
       params.require(:user).permit(jobseeker_profile_attributes: [experiences_attributes: [:company, :position, :start_date, :end_date, :description]])
     when :skills_hobbies_details

@@ -7,7 +7,7 @@ class User < ApplicationRecord
   enum role: { jobseeker: 'jobseeker', company: 'company' }
 
   # Associations based on profile
-  has_one :jobseeker_profile, dependent: :destroy
+  has_one :jobseeker_profile, inverse_of: :user
   has_one :company, dependent: :destroy
 
   # Associations
@@ -22,7 +22,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :role, presence: true, inclusion: { in: ['jobseeker', 'company'] }
 
-  accepts_nested_attributes_for :jobseeker_profile
+  accepts_nested_attributes_for :jobseeker_profile, update_only: true
   accepts_nested_attributes_for :company
 
   def after_register_current_step
