@@ -4,7 +4,9 @@ using Rainbow
 
 puts 'Seeding v0.2.0'.green # For Debug purposes to be sure you're in the right file
 
+# -------------------
 # Variables
+# -------------------
 puts ''
 puts 'Do you want to skip the seeding and only reindex the database for elasticsearch? ('.blue + 'y'.green + '/'.blue + 'n'.red + ')'.blue
 print '> '
@@ -67,8 +69,9 @@ unless answer == 'y'
     DATABASE_CLEAR = false
   end
 
+  # -------------------
   # Constants
-
+  # -------------------
   RANGE_OF_STUDIES = 3
   RANGE_OF_EXPERIENCES = 3
   RANGE_OF_APPLICATIONS = 5
@@ -81,7 +84,7 @@ unless answer == 'y'
                 "Rome, Italy"
               ]
 
-
+  # -------------------
   puts ''
   puts 'Fetching logos from Cloudinary...'.cyan
   LOGOS = []
@@ -112,7 +115,7 @@ unless answer == 'y'
   rescue Cloudinary::Api::Error => e
     puts "Error fetching logos from Cloudinary: #{e.message}".red
   end
-
+  # -------------------
   puts ''
   puts 'Fetching profile pictures from Cloudinary...'.cyan
   PROFILE_PICS = []
@@ -143,25 +146,35 @@ unless answer == 'y'
   rescue Cloudinary::Api::Error => e
     puts "Error fetching profile pictures from Cloudinary: #{e.message}".red
   end
+  # -------------------
 
+  # -------------------
   # Clear the database
+  # -------------------
+
   if DATABASE_CLEAR
     puts "Clearing database...".yellow
-    Application.destroy_all
-    Favorite.destroy_all
-    Job.destroy_all
-    Company.destroy_all
-    Experience.destroy_all
-    Study.destroy_all
-    User.destroy_all
+    Application.in_batches(of: 1000).destroy_all
+    Favorite.in_batches(of: 1000).destroy_all
+    Job.in_batches(of: 1000).destroy_all
+    Company.in_batches(of: 1000).destroy_all
+    Experience.in_batches(of: 1000).destroy_all
+    Study.in_batches(of: 1000).destroy_all
+    User.in_batches(of: 1000).destroy_all
     puts "Database cleared!".green
   end
 
+  # -------------------
+  # -------------------
+  # Seed the database
+  # -------------------
+  # -------------------
+
   start_time = Time.now
 
-  # Seed the database
-
+  # -------------------
   # Create Users
+  # -------------------
   puts ''
   puts "Creating users...".cyan
   jobseeker_profiles_to_create = []
@@ -200,7 +213,9 @@ unless answer == 'y'
     end
   end
 
+  # -------------------
   # Create test users
+  # -------------------
   test_seeker = User.create!(
     email: 'test@seeker.com',
     password: '123456',
@@ -244,7 +259,9 @@ unless answer == 'y'
 
   puts "Users created!".green
 
+  # ---------------------------
   # Assign logos to companies
+  # ---------------------------
   puts ''
   puts "Assigning logos to companies...".cyan
   companies.each do |company|
@@ -256,9 +273,11 @@ unless answer == 'y'
   end
   puts "Logos assigned to companies!".green
 
-  # Assign profile pictures to users
+  # ---------------------------------------
+  # Assign profile pictures to jobseekers
+  # ---------------------------------------
   puts ''
-  puts "Assigning profile pictures to users...".cyan
+  puts "Assigning profile pictures to jobseekers...".cyan
   jobseeker_profiles.each do |profile|
     unless profile.photo.attached?
       random_profile_pic = PROFILE_PICS.sample # Get a random profile picture public_id
@@ -266,8 +285,11 @@ unless answer == 'y'
       profile.photo.attach(io: URI.open(profile_pic_url), filename: "profile_pic_#{profile.user.email}_#{Faker::Crypto.md5}.jpg")
     end
   end
+  puts "Profile pictures assigned to jobseekers".green
 
+  # -------------------
   # Create Jobs
+  # -------------------
   puts ''
   puts "Creating jobs...".cyan
   jobs_to_create = []
@@ -298,7 +320,9 @@ unless answer == 'y'
 
   puts "Jobs created!".green
 
+  # -------------------
   # Create Studies
+  # -------------------
   puts ''
   puts "Creating studies...".cyan
   studies_to_create = []
@@ -319,7 +343,9 @@ unless answer == 'y'
 
   puts 'Studies created!'.green
 
+  # -------------------
   # Create Experiences
+  # -------------------
   puts ''
   puts "Creating experiences...".cyan
   experiences_to_create = []
@@ -342,7 +368,9 @@ unless answer == 'y'
 
   puts "Experiences created!".green
 
+  # -------------------
   # Create Applications
+  # -------------------
   puts ''
   puts "Creating applications...".cyan
   applications_to_create = []
@@ -372,7 +400,9 @@ unless answer == 'y'
   puts "Time taken: " + "#{(Time.now - start_time).round(2)} seconds".red
 end
 
+# -------------------
 # Reindex models
+# -------------------
 puts ''
 puts "Reindexing models...".cyan
 Job.reindex
