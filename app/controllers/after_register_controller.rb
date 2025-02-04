@@ -2,11 +2,11 @@ class AfterRegisterController < ApplicationController
   include Wicked::Wizard
   before_action :authenticate_user!
   before_action :set_user
-
+  
   steps :personal_details, :birthdate, :location_details, :experience_details, :skills_hobbies_details,
         :name_of_company, :company_location, :company_details, :company_employee
 
-  def show
+        def show
     if step == 'wicked_finish'
       return redirect_to finish_wizard_path(@user)
     end
@@ -15,22 +15,11 @@ class AfterRegisterController < ApplicationController
 
   def update
     params_to_update = @user.jobseeker? ? jobseeker_params : company_params
-
     @user.assign_attributes(params_to_update)
     if @user.save(context: step)
       update_current_step_and_render_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
     else
       render_error_and_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
-    end
-
-    if @user.save(context: step)
-      if step == :skills_hobbies_details
-        redirect_to jobs_path
-      else
-        update_current_step_and_render_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
-      end
-    else
-      render_wizard @user
     end
   end
 
@@ -53,6 +42,7 @@ class AfterRegisterController < ApplicationController
     when :birthdate
       params.require(:user).permit(jobseeker_profile_attributes: [:date_of_birth])
     when :location_details
+      params.require(:user).permit(jobseeker_profile_attributes: [:city, :country])
       params.require(:user).permit(jobseeker_profile_attributes: [:location, :city, :country])
     when :experience_details
       params.require(:user).permit(jobseeker_profile_attributes: [experiences_attributes: [:company, :position, :start_date, :end_date, :description]])
