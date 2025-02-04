@@ -4,13 +4,13 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :photo, as: :file %>
     <%= f.input :email %>
     <%= f.input :password %>
     <%= f.input :password_confirmation %>
     <%= f.input :role, as: :hidden, input_html: { value: params[:role] } %>
     <% if params[:role] == 'jobseeker' %>
       <%= f.simple_fields_for :jobseeker_profile do |p| %>
+        <%= p.input :photo, as: :file %>
         <%= p.input :first_name %>
         <%= p.input :last_name %>
         <%= p.input :phone_number %>

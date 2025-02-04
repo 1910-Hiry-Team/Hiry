@@ -6,8 +6,4 @@ class UsersController < ApplicationController
   def edit
     @user = current_user
   end
-
-  def user_params
-    params.require(:user).permit(:email, :role, photo: [])
-  end
 end

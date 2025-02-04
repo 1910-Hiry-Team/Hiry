@@ -240,6 +240,7 @@ unless answer == 'y'
 
   users = User.all
   companies = Company.all
+  jobseeker_profiles = JobseekerProfile.all
 
   puts "Users created!".green
 
@@ -258,11 +259,11 @@ unless answer == 'y'
   # Assign profile pictures to users
   puts ''
   puts "Assigning profile pictures to users...".cyan
-  users.each do |user|
-    unless user.photo.attached?
+  jobseeker_profiles.each do |profile|
+    unless profile.photo.attached?
       random_profile_pic = PROFILE_PICS.sample # Get a random profile picture public_id
       profile_pic_url = Cloudinary::Utils.cloudinary_url(random_profile_pic) # Generate the profile picture URL
-      user.photo.attach(io: URI.open(profile_pic_url), filename: "profile_pic_#{user.email}_#{Faker::Crypto.md5}.jpg")
+      profile.photo.attach(io: URI.open(profile_pic_url), filename: "profile_pic_#{profile.user.email}_#{Faker::Crypto.md5}.jpg")
     end
   end
 

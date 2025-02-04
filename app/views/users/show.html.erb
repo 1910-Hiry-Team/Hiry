@@ -1,13 +1,18 @@
 <div>
-  <% if @user.photo.attached? %>
-    <%= image_tag @user.photo, alt: 'profile picture', height:'256px' %>
-  <% else %>
-    <%= image_tag "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp", alt: 'profile picture', height:'256px' %>
-  <% end %>
   <% if @user.jobseeker_profile %>
+    <% if @user.jobseeker_profile.photo.attached? %>
+      <%= image_tag @user.jobseeker_profile.photo, alt: 'profile picture', height:'256px' %>
+    <% else %>
+      <%= image_tag "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp", alt: 'profile picture', height:'256px' %>
+    <% end %>
     <h2><%= @user.jobseeker_profile.first_name %> <%= @user.jobseeker_profile.last_name %>'s profile</h2>
   <% else %>
-    <h2><%= @user.company.name %>, employee: <%= @user.company.employee_number %>'s profile</h2>
+    <% if @user.company.photo.attached? %>
+      <%= image_tag @user.company.photo, alt: 'logo', height:'256px' %>
+    <% else %>
+      <%= image_tag "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp", alt: 'profile picture', height:'256px' %>
+    <% end %>
+    <h2><%= @user.company.name %></h2>
   <% end %>
 </div>
 

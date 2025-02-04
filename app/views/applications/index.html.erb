@@ -3,7 +3,7 @@
   <% @jobs.each do |job| %>
     <% job.users.uniq.each do |user| %>
       <% if user.jobseeker_profile.present? %>
-        <p><%= image_tag user.photo, alt:'profile_picture', height:'128px'%>
+        <p><%= image_tag user.jobseeker_profile.photo, alt:'profile_picture', height:'128px'%>
         <p>
           <%= user.jobseeker_profile.first_name %>
           <%= user.jobseeker_profile.last_name %>
