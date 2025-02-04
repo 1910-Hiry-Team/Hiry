@@ -4,6 +4,9 @@
       <h2><%= @job.job_title %> at <%= @job.company.name %></h2>
     </div>
     <div>
+      <p><%= image_tag @job.company.logo, alt:'company logo', height:'256px' %></p>
+    </div>
+    <div>
       <p><span class="material-symbols-outlined">group</span><strong><%= @job.company.employee_number %></strong> collaborators </p>
     </div>
     <div>
