@@ -46,7 +46,7 @@
         </div>
         <div id="favorite-button">
           <% if current_user.favorite_jobs.include?(@job) %>
-            <%= link_to job_favorites_path(@job), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "favorite-toggle" do %>
+            <%= link_to job_favorites_path(@job), data: { turbo_method: :delete }, class: "favorite-toggle" do %>
               <i class="fas fa-bookmark"></i>
             <% end %>
           <% else %>

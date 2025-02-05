@@ -20,11 +20,13 @@
       font-size: 1.25rem;
     }
   }
+
   .job-card-content {
     span {
       font-size: 16px;
     }
   }
+
   .job-offer-box {
     margin-top: 16px;
     margin-bottom: 16px;
@@ -36,6 +38,7 @@
     }
   }
 }
+
 .job-offer-header {
   display: flex;
   justify-content: space-between;
@@ -52,6 +55,7 @@
 .favorite-toggle {
   border: none;
   margin: 0px 16px;
+  padding: 0px;
   i {
     font-size: 1.5rem;
   }
