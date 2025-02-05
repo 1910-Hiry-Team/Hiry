@@ -3,13 +3,11 @@ class JobseekerProfile < ApplicationRecord
   belongs_to :user
 
   # Validations
-  validates :first_name, presence: true
-  validates :last_name, presence: true
-  validates :phone_number, presence: true
-  # validates :date_of_birth, presence: true
-  # validates :city, presence: true
-  # validates :country, presence: true
-  # validates :skills, presence: true
+  validates :first_name, :last_name, :phone_number, presence: true
+  # validates :date_of_birth, presence: true, on: :update
+  # validates :city, presence: true, on: :update
+  # validates :country, presence: true, on: :update
+  # validates :skills, presence: true, on: :update
 
   validate :validate_date_of_birth, on: :update
   validate :validate_location_details, on: :update

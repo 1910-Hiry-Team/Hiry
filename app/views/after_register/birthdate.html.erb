@@ -3,7 +3,7 @@
   <p>This is the birthdate step.</p>
 
   <%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
-    <%= f.fields_for :jobseeker_profile_attributes do |birthdate_form| %>
+    <%= f.fields_for :jobseeker_profile do |birthdate_form| %>
       <%= birthdate_form.input :date_of_birth, as: :date, html5: true %>
     <% end %>
     <%= f.submit "Next" %>

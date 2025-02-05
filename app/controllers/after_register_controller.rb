@@ -17,16 +17,40 @@ class AfterRegisterController < ApplicationController
     params_to_update = @user.jobseeker? ? jobseeker_params : company_params
     @user.assign_attributes(params_to_update)
 
-    if step == :name_of_company && @user.company && !@user.company.persisted?
-      @user.company.save
-    end
 
     if @user.save(context: step)
       update_current_step_and_render_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
     else
       render_error_and_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
     end
+
+    if step == :name_of_company && @user.company && !@user.company.persisted?
+      @user.company.save
+    end
   end
+
+  # def update
+  #   params_to_update = @user.jobseeker? ? jobseeker_params : company_params
+  #   @user.assign_attributes(params_to_update)
+
+  #   if step == :personal_details
+  #     if @user.jobseeker_profile.nil?
+  #       @user.create_jobseeker_profile(jobseeker_params[:jobseeker_profile_attributes])
+  #     else
+  #       @user.jobseeker_profile.update(jobseeker_params[:jobseeker_profile_attributes])
+  #     end
+  #   end
+
+  #   if step == :name_of_company && @user.company && !@user.company.persisted?
+  #     @user.company.save
+  #   end
+
+  #   if @user.save(context: step)
+  #     update_current_step_and_render_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
+  #   else
+  #     render_error_and_wizard(@user.jobseeker? ? 'jobseeker' : 'company')
+  #   end
+  # end
 
   private
 
@@ -37,6 +61,7 @@ class AfterRegisterController < ApplicationController
   def set_user
     @user = User.find(params[:user_id])
     @user.build_jobseeker_profile if @user.jobseeker? && @user.jobseeker_profile.nil?
+
     if @user.company.nil?
       @user.create_company(name: "") # Crée une company vide pour qu'elle soit persistée
     end
@@ -90,8 +115,6 @@ class AfterRegisterController < ApplicationController
   end
 
   def render_error_and_wizard(form_type)
-    flash.now[:alert] = @user.errors.full_messages.join(", ")
-    flash.now[:alert] += ", " + @user.company.errors.full_messages.join(", ") if @user.company
     render_wizard @user, form: form_type
   end
 end

@@ -2,10 +2,10 @@
   <h2>Your Skills and Hobbies</h2>
 
   <%= simple_form_for @user, url: wizard_path, method: :put, data: { turbo_stream: true } do |f| %>
-     <%= f.fields_for :jobseeker_profile_attributes do |skills_hoobies_form| %>
+     <%= f.fields_for :jobseeker_profile do |skills_hoobies_form| %>
        <%= skills_hoobies_form.input :skills %>
        <%= skills_hoobies_form.input :hobbies %>
      <% end %>
-     <%= f.submit "Next", data: { disable_with: "Please wait..." } %>
+     <%= f.submit "Finish", data: { disable_with: "Please wait..." } %>
   <% end %>
 </turbo-frame>
