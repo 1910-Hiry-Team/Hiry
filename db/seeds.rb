@@ -62,13 +62,11 @@ class DbHandler
   # Clear the database
   # ----------------
   def self.clear_database(batch)
-    Application.in_batches(of: batch).destroy_all
-    Favorite.in_batches(of: batch).destroy_all
-    Job.in_batches(of: batch).destroy_all
-    Company.in_batches(of: batch).destroy_all
-    Experience.in_batches(of: batch).destroy_all
-    Study.in_batches(of: batch).destroy_all
-    User.in_batches(of: batch).destroy_all
+    [Application, Favorite, Job, Company, Experience, Study, User].each do |model|
+      Parallel.each(model.in_batches(of: batch), in_threads: SeedConfig::THREADS_TO_USE) do |batch|
+        batch.destroy_all
+      end
+    end
   end
 
   # -------------------
