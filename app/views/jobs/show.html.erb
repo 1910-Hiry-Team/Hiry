@@ -1,36 +1,12 @@
+<div class="link-back"><i class="fas fa-angle-left"></i><strong><%= link_to "Back to offers", jobs_path %></strong></div>
 <div class="show-container">
   <div class="show-layout">
-    <div class="link-back"><i class="fas fa-angle-left"></i><strong><%= link_to "Back to offers", jobs_path %></strong></div>
     <div class="media-box">
       <img src="https://4.bp.blogspot.com/-M_CSeh2f0Fg/UUaoBn9JmMI/AAAAAAAAgVQ/WEEyDd-B4Lg/s1600/Google+office+3.jpg" alt="office img" class="media-img">
     </div>
   </div>
 
   <div class="show-layout">
-    <div data-controller="modal">
-      <button data-action="modal#open" class="btn-apply">Apply</button>
-
-      <div data-modal-target="container" class="modal-container hidden">
-        <div class="modal-background" data-action="click->modal#close"></div>
-
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2>Application confirmation</h2>
-            <button class="modal-close" data-action="modal#close">&times;</button>
-          </div>
-
-          <div class="modal-body">
-            <%= form_with model: @application, url: job_applications_path(@job), method: :post, data: { turbo_frame: "modal" } do |f| %>
-              <%= f.hidden_field :job_id, value: @job.id %>
-              <%= f.hidden_field :stage, value: 'Applied' %>
-              <%= f.hidden_field :match, value: false %>
-
-              <%= f.submit "Confirm application", class: "btn btn-success" %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="job-offer-card">
       <div class="job-offer-header">
         <div class="job-offer-header-layout">
@@ -64,9 +40,6 @@
         <p><%= @job.language %></p>
         <p><%= @job.company.employee_number %><span class="material-symbols-outlined">group</span></p>
       </div>
-      <div class="offer-salary-box">
-        <h3> $<%= @job.salary %></h3>
-      </div>
       <div class="job-offer-box">
         <h4>Company description:</h4>
         <p><%= @job.company.description %></p>
@@ -75,32 +48,34 @@
         <h4>Your missions:</h4>
         <p><%= @job.missions %></p>
       </div>
-    </div>
-  </div>
-</div>
+      <div class="job-offer-footer">
+        <div class="salary-box">
+          <h3> $<%= @job.salary %></h3>
+        </div>
+        <div data-controller="modal">
+          <button data-action="modal#open" class="btn-apply">Apply</button>
 
+          <div data-modal-target="container" class="modal-container hidden">
+            <div class="modal-background" data-action="click->modal#close"></div>
 
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2>Application confirmation</h2>
+                <button class="modal-close" data-action="modal#close">&times;</button>
+              </div>
 
-<div data-controller="modal">
-  <button data-action="modal#open" class="btn-apply">Apply</button>
+              <div class="modal-body">
+                <%= form_with model: @application, url: job_applications_path(@job), method: :post, data: { turbo_frame: "modal" } do |f| %>
+                  <%= f.hidden_field :job_id, value: @job.id %>
+                  <%= f.hidden_field :stage, value: 'Applied' %>
+                  <%= f.hidden_field :match, value: false %>
 
-  <div data-modal-target="container" class="modal-container hidden">
-    <div class="modal-background" data-action="click->modal#close"></div>
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Application confirmation</h2>
-        <button class="modal-close" data-action="modal#close">&times;</button>
-      </div>
-
-      <div class="modal-body">
-        <%= form_with model: @application, url: job_applications_path(@job), method: :post, data: { turbo_frame: "modal" } do |f| %>
-          <%= f.hidden_field :job_id, value: @job.id %>
-          <%= f.hidden_field :stage, value: 'Applied' %>
-          <%= f.hidden_field :match, value: false %>
-
-          <%= f.submit "Confirm application", class: "btn btn-success" %>
-        <% end %>
+                  <%= f.submit "Confirm application", class: "btn btn-success" %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,3 +1,10 @@
 .btn-apply {
+  border-radius: 16px;
+  padding: 4px 8px;
+  border: 1px solid lightgrey;
+  color: black;
+}
 
-} 
+.btn-apply:hover {
+  background-color: lightgray;
+}
