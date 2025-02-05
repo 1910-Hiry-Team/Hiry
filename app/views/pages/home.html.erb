@@ -1,10 +1,18 @@
 <div class="hero-section">
-  <div class="container">
-    <h1>Empowering careers </br> and building teams</h1>
-    <p>Discover opportunities and connect with the best candidates</p>
-    <div class="cta-container">
-      <%= link_to "Job Seeker", new_user_registration_path(role: 'jobseeker'), class: "cta-jobseeker" %>
-      <%= link_to "Company", new_user_registration_path(role: 'company'), class: "cta-company" %>
+  <div class="hero-video-background">
+    <video autoplay muted loop>
+      <source src="../../assets/images/videos/26011-353916142_small.webm" type="video/webm">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  <div class="hero-content">
+    <div class="container">
+      <h1>Empowering careers </br> and building teams</h1>
+      <p>Discover opportunities and connect with the best candidates</p>
+      <div class="cta-container">
+        <%= link_to "Job Seeker", new_user_registration_path(role: 'jobseeker'), class: "cta-jobseeker" %>
+        <%= link_to "Company", new_user_registration_path(role: 'company'), class: "cta-company" %>
+      </div>
     </div>
   </div>
 </div>

@@ -1,7 +1,42 @@
 // Specific CSS for your home-page
 .hero-section {
-  background-color: $light-beige;
-  padding: $padding 0;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero-video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.hero-video-background video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: white;
+  text-align: center;
 }
 
 .container {
@@ -53,11 +88,11 @@ p {
 
   &.cta-company {
     background-color: $light-beige;
-    border: solid 1px $deep-dark-blue; // Couleur secondaire pour le bouton
+    border: solid 1px $deep-dark-blue;
     color: $deep-dark-blue;
 
-    &:hover { // Style au survol
-        background-color: darken($light-beige, 10%); // Assombrit légèrement la couleur au survol
+    &:hover {
+        background-color: darken($light-beige, 10%);
     }
   }
 }
