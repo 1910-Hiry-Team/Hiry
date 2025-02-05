@@ -77,15 +77,6 @@ class DbHandler
   def self.model_importer(model, model_to_import)
     model.import(model_to_import)
   end
-
-  def self.model_import_and_update(model, model_to_import, attr_to_add)
-    imported_model = model.import(model_to_import)
-    model.where(id: imported_model.ids).find_each do |record|
-      attr_to_add.each do |attr|
-        model.update(attr)
-      end
-    end
-  end
 end
 
 class SeederHandler
@@ -116,10 +107,12 @@ class SeederHandler
   def self.create_users(number_of_users)
     users_to_create = []
     Parallel.each(1..number_of_users, in_threads: SeedConfig::THREADS_TO_USE) do
-      users_to_create << {
+      users_to_create << User.new(
       email: Faker::Internet.unique.email,
+      password: '123456',
+      password_confirmation: '123456',
       role: [:jobseeker, :company].sample
-      }
+      )
     end
     return users_to_create
   end
@@ -131,7 +124,7 @@ class SeederHandler
       location = use_real_cities ? SeedConfig::REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
 
       if user[:role] == :jobseeker
-        jobseeker_profiles_to_create << {
+        jobseeker_profiles_to_create << JobseekerProfile.new(
           user_id: user[:id],
           first_name: Faker::Name.first_name,
           last_name: Faker::Name.last_name,
@@ -139,16 +132,16 @@ class SeederHandler
           date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
           skills: Faker::Job.key_skill, hobbies: Faker::Hobby.activity,
           location: location
-        }
+        )
       else
-        companies_to_create << {
+        companies_to_create << Company.new(
           user_id: user[:id],
           name: Faker::Company.name,
           location: location,
           description: Faker::Company.catch_phrase,
           industry: Faker::Company.industry,
           employee_number: rand(10..500)
-        }
+        )
       end
     end
     return jobseeker_profiles_to_create, companies_to_create
@@ -164,7 +157,7 @@ class SeederHandler
       geo = Geocoder.search(location).first
       lat, lon = geo&.latitude, geo&.longitude
 
-      jobs_to_create << {
+      jobs_to_create << Job.new(
       job_title: Faker::Job.title,
       location: location,
       latitude: lat,
@@ -175,7 +168,7 @@ class SeederHandler
       experience: ["Entry", "Intermediate", "Senior"].sample,
       salary: rand(SeedConfig::SALARY_RANGE), # Adjust to fit your salary format
       company_id: companies.sample[:id]
-      }
+      )
     end
     return jobs_to_create
   end
@@ -187,14 +180,14 @@ class SeederHandler
     studies_to_create = []
     Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_STUDIES).times do
-        studies_to_create << {
+        studies_to_create << Study.new(
           school: Faker::University.name,
           level: ["Bachelor's", "Master's", "PhD"].sample,
           diploma: Faker::Educator.course_name,
           start_date: Faker::Date.backward(days: 3650),
           end_date: Faker::Date.backward(days: 365),
           user_id: user[:id]
-        }
+        )
       end
     end
     return studies_to_create
@@ -207,7 +200,7 @@ class SeederHandler
     experiences_to_create = []
     Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_EXPERIENCES).times do
-        experiences_to_create << {
+        experiences_to_create << Experience.new(
           company: Faker::Company.name,
           job_title: Faker::Job.title,
           contrat: ["Full-time", "Part-time", "Contract"].sample,
@@ -216,7 +209,7 @@ class SeederHandler
           start_date: Faker::Date.backward(days: 2000),
           end_date: Faker::Date.backward(days: 365),
           user_id: user[:id]
-        }
+        )
       end
     end
     return experiences_to_create
@@ -229,12 +222,12 @@ class SeederHandler
     applications_to_create = []
     Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_APPLICATIONS).times do
-        applications_to_create << {
+        applications_to_create << Application.new(
           stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,
           match: [true, false].sample,
           user_id: user[:id],
           job_id: jobs.sample[:id]
-        }
+        )
       end
     end
     return applications_to_create
@@ -253,7 +246,7 @@ class ImageHandler
                                             prefix: prefix,
                                             max_results: 100,
                                             next_cursor: next_cursor)
-      response['resources'].each do |resource|
+      Parallel.each(response['resources'], in_threads: SeedConfig::THREADS_TO_USE) do |resource|
         public_id = resource['public_id']
         begin
           Cloudinary::Api.resource(public_id)
@@ -403,7 +396,7 @@ class SeederView
     puts ''
     puts 'Importing the models...'.cyan
     t_import_models = Time.now
-    DbHandler.model_import_and_update(User, users, [password: '123456', password_confirmation: '123456'])
+    DbHandler.model_importer(User, users)
     DbHandler.model_importer(JobseekerProfile, jobseeker_profiles)
     DbHandler.model_importer(Company, companies)
     DbHandler.model_importer(Study, studies)
@@ -430,6 +423,7 @@ class SeederView
     puts ''
     puts "Seeding completed!".green
     puts "Users created: " + "#{User.count}".red
+    puts "Jobseeker profiles created: " + "#{JobseekerProfile.count}".red
     puts "Companies created: " + "#{Company.count}".red
     puts "Jobs created: " + "#{Job.count}".red
     puts "Studies created: " + "#{Study.count}".red
@@ -461,7 +455,7 @@ class SeederView
     Job.reindex
     puts "Reindexing completed!".green
     t_stop_reindex = Time.now
-    puts "Time taken to reindex:" + "#{(t_stop_reindex - t_reindex).round(2)} seconds".red
+    puts "Time taken to reindex: " + "#{(t_stop_reindex - t_reindex).round(2)} seconds".red
   end
 
   def self.run
