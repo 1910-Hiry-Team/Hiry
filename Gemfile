@@ -89,3 +89,4 @@ gem 'rainbow'
 gem 'cloudinary'
 
 gem 'parallel'
+gem 'ruby-progressbar'

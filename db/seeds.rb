@@ -3,7 +3,7 @@ require 'parallel'
 require 'rainbow/refinement'
 using Rainbow
 
-puts 'Seeding v0.4.5'.green # For Debug purposes to be sure you're in the right file
+puts 'Seeding v0.4.6'.green # For Debug purposes to be sure you're in the right file
 
 # -------------------
 # Initial setup
@@ -106,7 +106,7 @@ class SeederHandler
   # -------------------
   def self.create_users(number_of_users)
     users_to_create = []
-    Parallel.each(1..number_of_users, in_threads: SeedConfig::THREADS_TO_USE) do
+    Parallel.each(1..number_of_users, in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating users") do
       users_to_create << User.new(
       email: Faker::Internet.unique.email,
       password: '123456',
@@ -118,10 +118,13 @@ class SeederHandler
     return users_to_create
   end
 
+  # -------------------
+  # Create profiles and companies
+  # -------------------
   def self.create_profiles_and_companies(users, use_real_cities)
     jobseeker_profiles_to_create = []
     companies_to_create = []
-    Parallel.each(users, in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(users, in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating profiles and companies") do |user|
       location = use_real_cities ? SeedConfig::REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
 
       if user.jobseeker?
@@ -154,22 +157,22 @@ class SeederHandler
   # ---------------------------
   def self.create_jobs(number_of_jobs, use_real_cities, companies)
     jobs_to_create = []
-    Parallel.each(1..number_of_jobs, in_threads: SeedConfig::THREADS_TO_USE) do
+    Parallel.each(1..number_of_jobs, in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating jobs") do
       location = use_real_cities ? SeedConfig::REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
       geo = Geocoder.search(location).first
       lat, lon = geo&.latitude, geo&.longitude
 
       jobs_to_create << Job.new(
-      job_title: Faker::Job.title,
-      location: location,
-      latitude: lat,
-      longitude: lon,
-      missions: Faker::Lorem.sentence(word_count: 10),
-      contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
-      language: SeedConfig::REAL_LANGUAGES.sample,
-      experience: ["Entry", "Intermediate", "Senior"].sample,
-      salary: rand(SeedConfig::SALARY_RANGE), # Adjust to fit your salary format
-      company_id: companies.sample.id
+        job_title: Faker::Job.title,
+        location: location,
+        latitude: lat,
+        longitude: lon,
+        missions: Faker::Lorem.sentence(word_count: 10),
+        contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
+        language: SeedConfig::REAL_LANGUAGES.sample,
+        experience: ["Entry", "Intermediate", "Senior"].sample,
+        salary: rand(SeedConfig::SALARY_RANGE), # Adjust to fit your salary format
+        company_id: companies.sample.id
       )
     end
     DbHandler.model_importer(Job, jobs_to_create)
@@ -180,7 +183,7 @@ class SeederHandler
   # -------------------
   def self.create_studies
     studies_to_create = []
-    Parallel.each(User.where(role:0), in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(User.where(role:0), in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating studies") do |user|
       rand(1.. SeedConfig::RANGE_OF_STUDIES).times do
         studies_to_create << Study.new(
           school: Faker::University.name,
@@ -200,7 +203,7 @@ class SeederHandler
   # -------------------
   def self.create_experiences
     experiences_to_create = []
-    Parallel.each(User.where(role:0), in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(User.where(role:0), in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating experiences") do |user|
       rand(1.. SeedConfig::RANGE_OF_EXPERIENCES).times do
         experiences_to_create << Experience.new(
           company: Faker::Company.name,
@@ -222,14 +225,14 @@ class SeederHandler
   # -------------------
   def self.create_applications(jobs)
     applications_to_create = []
-    Parallel.each(User.where(role:0), in_threads: SeedConfig::THREADS_TO_USE) do |user|
-      rand(1.. SeedConfig::RANGE_OF_APPLICATIONS).times do
-        applications_to_create << Application.new(
-          stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,
-          match: [true, false].sample,
-          user_id: user.id,
-          job_id: jobs.sample[:id]
-        )
+    Parallel.each(User.where(role: 0), in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating applications") do |user|
+      rand(1..SeedConfig::RANGE_OF_APPLICATIONS).times do
+      applications_to_create << Application.new(
+        stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,
+        match: [true, false].sample,
+        user_id: user.id,
+        job_id: jobs.sample[:id]
+      )
       end
     end
     DbHandler.model_importer(Application, applications_to_create)
@@ -248,7 +251,7 @@ class ImageHandler
                                             prefix: prefix,
                                             max_results: 100,
                                             next_cursor: next_cursor)
-      Parallel.each(response['resources'], in_threads: SeedConfig::THREADS_TO_USE) do |resource|
+      Parallel.each(response['resources'], in_threads: SeedConfig::THREADS_TO_USE, progress: "Fetching from cloudinary") do |resource|
         public_id = resource['public_id']
         begin
           resource_url = Cloudinary::Utils.cloudinary_url(public_id)
@@ -261,7 +264,6 @@ class ImageHandler
       break unless next_cursor
     end
     puts "#{resources.size} valid #{name.pluralize} fetched from Cloudinary!".green
-    puts resources.sample(5)
     return resources
   rescue Cloudinary::Api::Error => e
     puts "Error fetching #{name.pluralize} from Cloudinary: #{e.message}".red
@@ -271,7 +273,7 @@ class ImageHandler
   def self.download_images(images)
     dir_path = nil
     FileUtils.mkdir_p(SeedConfig::TEMP_IMG_PATH) unless Dir.exist?(SeedConfig::TEMP_IMG_PATH)
-    Parallel.each(images, in_threads: SeedConfig::THREADS_TO_USE) do |url|
+    Parallel.each(images, in_threads: SeedConfig::THREADS_TO_USE, progress: "Downloading images to cache") do |url|
       file_path = File.join(SeedConfig::TEMP_IMG_PATH, url)
       dir_path = File.dirname(file_path)
 
@@ -293,15 +295,13 @@ class ImageHandler
   # -------------------
   # Assign images to models
   # -------------------
-  def self.assign_images_from_cache(record_to_attach, cache_dir)
+  def self.assign_images_from_cache(records, cache_dir)
     image_files = Dir.glob("#{cache_dir}/*")
-    record_to_attach.find_in_batches(batch_size: SeedConfig::IMAGE_BATCH_SIZE) do |batch|
-      Parallel.each(batch, in_threads: SeedConfig::THREADS_TO_USE) do |record|
-        next if image_files.empty?
+    Parallel.each(records, in_threads: SeedConfig::THREADS_TO_USE, progress: "Assigning images") do |record|
+      next if image_files.empty?
 
-        image_path = image_files.sample
-        record.photo.attach(io: File.open(image_path), filename: File.basename(image_path))
-      end
+      image_path = image_files.sample
+      record.photo.attach(io: File.open(image_path), filename: File.basename(image_path))
     end
   end
 end
@@ -314,8 +314,8 @@ class SeederView
     puts ''
     puts 'What weight of seeding do you want?'.blue
     puts '1. '.red + 'Light' + ' (+15s)'.green
-    puts '2. '.red + 'Medium' + ' (+40s)'.yellow
-    puts '3. '.red + 'Heavy' + ' (100s)'.red
+    puts '2. '.red + 'Medium' + ' (+45s)'.yellow
+    puts '3. '.red + 'Heavy' + ' (+700s)'.red
     print '> '
 
     case gets.chomp
@@ -462,7 +462,7 @@ class SeederView
     puts "Fetching logos: " + "#{(t_stop_logos - t_logos).round(2)} seconds".red
     puts "Fetching profile pictures: " + "#{(t_stop_profile_pics - t_profile_pics).round(2)} seconds".red
     puts "Creating users: " + "#{(t_stop_create_users - t_create_users).round(2)} seconds".red
-    puts "Creating profiles: " + "#{(t_stop_create_profiles - t_create_profiles).round(2)} seconds".red
+    puts "Creating profiles and companies: " + "#{(t_stop_create_profiles - t_create_profiles).round(2)} seconds".red
     puts "Creating jobs: " + "#{(t_stop_create_jobs - t_create_jobs).round(2)} seconds".red
     puts "Creating studies: " + "#{(t_stop_create_studies - t_create_studies).round(2)} seconds".red
     puts "Creating experiences: " + "#{(t_stop_create_experiences - t_create_experiences).round(2)} seconds".red

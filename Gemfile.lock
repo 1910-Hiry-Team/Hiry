@@ -305,6 +305,7 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.4.0)
+    ruby-progressbar (1.13.0)
     rubyzip (2.4.1)
     sassc (2.4.0)
       ffi (~> 1.9)
@@ -394,6 +395,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 7.1.5, >= 7.1.5.1)
   rainbow
+  ruby-progressbar
   sassc-rails
   searchkick
   selenium-webdriver
