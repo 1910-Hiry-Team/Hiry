@@ -1,45 +1,84 @@
-<h2>Sign up</h2>
+<div class="signup-container">  <%# Conteneur principal du formulaire %>
+  <h2>Inscription</h2>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= f.error_notification %>
+  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { id: 'signup-form' }) do |f| %>  <%# Ajout d'un id pour le formulaire %>
+    <%= f.error_notification %>
 
-  <div class="form-inputs">
-    <%= f.input :email %>
-    <%= f.input :password %>
-    <%= f.input :password_confirmation %>
-    <%= f.input :role, as: :hidden, input_html: { value: params[:role] } %>
-    <% if params[:role] == 'jobseeker' %>
-      <%= f.simple_fields_for :jobseeker_profile do |p| %>
-        <%= p.input :first_name %>
-        <%= p.input :last_name %>
-        <%= p.input :phone_number %>
-        <%= p.input :date_of_birth %>
-        <%= p.input :skills %>
-        <%= p.input :hobbies %>
-        <%= p.input :location,
-          placeholder: "Enter Location",
-            input_html: {data: {address_autocomplete_target: "address"}},
-            wrapper_html: {data: {controller: "address-autocomplete",
-                                  address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]}}
-        %>
+    <div class="form-inputs">
+      <div class="form-group">
+        <%= f.input :email, label: 'Email' %>
+      </div>
+      <div class="form-group">
+        <%= f.input :password, label: 'Password' %>
+      </div>
+      <div class="form-group">
+        <%= f.input :password_confirmation, label: 'Password confirmation' %>
+      </div>
+
+      <% if params[:role] == 'jobseeker' %>
+        <fieldset class="jobseeker-fields">
+          <legend>Informations personnelles</legend>
+          <%= f.simple_fields_for :jobseeker_profile do |p| %>
+            <div class="form-group">
+              <%= p.input :first_name, label: 'Prénom' %>
+            </div>
+            <div class="form-group">
+              <%= p.input :last_name, label: 'Nom' %>
+            </div>
+            <div class="form-group">
+              <%= p.input :phone_number, label: 'Numéro de téléphone' %>
+            </div>
+             <div class="form-group">
+              <%= p.input :date_of_birth, label: 'Date de naissance' %>
+            </div>
+             <div class="form-group">
+              <%= p.input :skills, label: 'Compétences' %>
+            </div>
+             <div class="form-group">
+              <%= p.input :hobbies, label: 'Loisirs' %>
+            </div>
+            <div class="form-group location-field">
+              <%= p.input :location,
+                placeholder: "Entrez votre adresse",
+                label: 'Adresse',
+                input_html: {data: {address_autocomplete_target: "address"}},
+                wrapper_html: {data: {controller: "address-autocomplete",
+                                      address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]}}
+            </div>
+          <% end %>
+        </fieldset>
+
+      <% elsif params[:role] == 'company' %>
+        <fieldset class="company-fields">
+          <legend>Informations sur l'entreprise</legend>
+          <%= f.simple_fields_for :company do |c| %>
+            <div class="form-group">
+              <%= c.input :name, label: 'Nom de l\'entreprise' %>
+            </div>
+            <div class="form-group location-field">
+              <%= c.input :location,
+                placeholder: "Entrez l'adresse de l'entreprise",
+                label: 'Adresse',
+                input_html: {data: {address_autocomplete_target: "address"}},
+                wrapper_html: {data: {controller: "address-autocomplete",
+                                      address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]}}
+            </div>
+            <div class="form-group">
+              <%= c.input :description, label: 'Description' %>
+            </div>
+             <div class="form-group">
+              <%= c.input :industry, label: 'Secteur d\'activité' %>
+            </div>
+             <div class="form-group">
+              <%= c.input :employee_number, label: 'Nombre d\'employés' %>
+            </div>
+          <% end %>
+        </fieldset>
       <% end %>
-    <% elsif params[:role] == 'company' %>
-      <%= f.simple_fields_for :company do |c| %>
-        <%= c.input :name %>
-        <%= c.input :location,
-          placeholder: "Enter Location",
-            input_html: {data: {address_autocomplete_target: "address"}},
-            wrapper_html: {data: {controller: "address-autocomplete",
-                                  address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]}}
-        %>
-        <%= c.input :description %>
-        <%= c.input :industry %>
-        <%= c.input :employee_number %>
-      <% end %>
-    <% end %>
-  </div>
+    </div>
 
-  <div class="form-actions">
-    <%= f.button :submit, "Sign up" %>
-  </div>
-<% end %>
+    <div class="form-actions">
+      <%= f.button :submit, "S'inscrire" %>
+    </div>
+  <% end %>
+</div>
