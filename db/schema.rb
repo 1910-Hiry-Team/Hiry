@@ -71,7 +71,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_03_104224) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "salary"
-    t.integer "salary"
     t.float "latitude"
     t.float "longitude"
     t.index ["company_id"], name: "index_jobs_on_company_id"

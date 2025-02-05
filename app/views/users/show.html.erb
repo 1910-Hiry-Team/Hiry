@@ -1,18 +1,26 @@
 <div>
   <% if @user.jobseeker_profile %>
-    <h2><%= @user.first_name %> <%= @user.last_name %>'s profile</h2>
+    <h2><%= @user.jobseeker_profile.first_name %> <%= @user.jobseeker_profile.last_name %></h2>
+
+    <p>Age: <%= ((Time.zone.now - @user.jobseeker_profile.date_of_birth.to_time) / 1.year.seconds).floor %> years old</p>
+    <p>Skills: <%= @user.jobseeker_profile.skills %></p>
+    <p>Hobbies: <%= @user.jobseeker_profile.hobbies %></p>
+    <p>Location: <%= @user.jobseeker_profile.location %></p>
   <% else %>
-    <h2><%= @user.company.name %>, employee: <%= @user.company.employee_number %>'s profile</h2>
+    <h2><%= @user.company.name %>, employee: <%= @user.company.employee_number %></h2>
   <% end %>
 </div>
 
 <div>
   <h3>Contact Information</h3>
   <p><strong>Email:</strong> <%= @user.email %></p>
+  <% if @user.jobseeker_profile %>
+    <p><strong>Phone Number:</strong> <%= @user.jobseeker_profile.phone_number %></p>
+  <% end %>
 </div>
 
 <% if current_user === @user %>
-  <%= link_to "Edit", edit_user_path(@user), class: "btn btn-success" %>
+  <%= link_to "Edit my info", edit_user_path(@user), class: "btn btn-success" %>
   <% if @user.company %>
     <%= link_to "View my company", company_path(@user.company), class: "btn btn-primary" %>
   <% end %>
