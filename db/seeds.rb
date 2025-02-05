@@ -278,9 +278,9 @@ class SeederView
   def self.seeding
     puts ''
     puts 'What weight of seeding do you want?'.blue
-    puts '1. '.red + 'Light' + ' (30s)'.green
-    puts '2. '.red + 'Medium' + ' (200s)'.yellow
-    puts '3. '.red + 'Heavy' + ' (1000s)'.red
+    puts '1. '.red + 'Light' + ' (15s)'.green
+    puts '2. '.red + 'Medium' + ' (70s)'.yellow
+    puts '3. '.red + 'Heavy' + ' (500s)'.red
     print '> '
 
     case gets.chomp
