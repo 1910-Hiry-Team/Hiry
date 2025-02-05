@@ -1,8 +1,73 @@
 require 'open-uri'
+require 'parallel'
 require 'rainbow/refinement'
 using Rainbow
 
-puts 'Seeding v0.2.0'.green # For Debug purposes to be sure you're in the right file
+puts 'Seeding v0.3.0'.green # For Debug purposes to be sure you're in the right file
+
+
+# -------------------
+# Methods
+# -------------------
+def fetch_cloudinary_resources(prefix, name)
+  resources = []
+  next_cursor = nil
+  loop do
+    response = Cloudinary::Api.resources(type: 'upload',
+                                          prefix: prefix,
+                                          max_results: 100,
+                                          next_cursor: next_cursor)
+    response['resources'].each do |resource|
+      public_id = resource['public_id']
+      begin
+        Cloudinary::Api.resource(public_id)
+        resources << public_id
+      rescue Cloudinary::Api::NotFound
+        puts "Skipping deleted #{name.pluralize}: #{public_id}".red
+      end
+    end
+    next_cursor = response['next_cursor']
+    break unless next_cursor
+  end
+  puts "#{resources.size} valid #{name.pluralize} fetched from Cloudinary!".green
+  return resources
+rescue Cloudinary::Api::Error => e
+  puts "Error fetching #{name.pluralize} from Cloudinary: #{e.message}".red
+  []
+end
+
+def create_test_users
+  test_seeker = User.create!(email: 'test@seeker.com', password: '123456',
+                            password_confirmation: '123456', role: :jobseeker
+  )
+
+  test_company = User.create!(email: 'test@company.com', password: '123456',
+                              password_confirmation: '123456', role: :company
+  )
+
+  JobseekerProfile.create!(user_id: test_seeker.id, first_name: 'Test',
+                          last_name: 'Seeker', phone_number: '1234567890',
+                          date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
+                          skills: Faker::Job.key_skill, hobbies: Faker::Hobby.activity,
+                          location: 'Paris, France'
+  )
+
+  Company.create!(user_id: test_company.id, name: 'Test Company',
+                  location: 'Paris, France', description: 'We are a test company',
+                  industry: 'Test Industry', employee_number: 10
+  )
+end
+
+def assign_images(records, model)
+  Parallel.each(records, in_threads: 4) do |record|
+    file_name = record.class == Company ? record.name : "#{record.first_name} #{record.last_name}"
+    unless record.photo.attached?
+      random_photo = model.sample # Get a random photo public_id
+      photo_url = Cloudinary::Utils.cloudinary_url(random_photo) # Generate the photo URL
+      record.photo.attach(io: URI.open(photo_url), filename: "#{file_name}.jpg")
+    end
+  end
+end
 
 # -------------------
 # Variables
@@ -86,78 +151,23 @@ unless answer == 'y'
               ]
   t_stop_constants = Time.now
 
-  # -------------------
   puts ''
   puts 'Fetching logos from Cloudinary...'.cyan
   t_logos = Time.now
-  LOGOS = []
-  begin
-    next_cursor = nil
-    loop do
-      # Fetch all resources from the "logos" folder
-      response = Cloudinary::Api.resources(type: 'upload',
-                                            prefix: 'logos-company',
-                                            max_results: 100,
-                                            next_cursor: next_cursor)
-
-      response['resources'].each do |resource|
-        public_id = resource['public_id']
-      # Check if the resource exists (if it's deleted, this will raise an error)
-        begin
-          Cloudinary::Api.resource(public_id) # This will succeed only if the resource exists
-          LOGOS << public_id
-        rescue Cloudinary::Api::NotFound
-          puts "Skipping deleted logo: #{public_id}".red
-        end
-      end
-
-      next_cursor = response['next_cursor']
-      break unless next_cursor
-    end
-    puts "#{LOGOS.size} valid logos fetched from Cloudinary!".green
-  rescue Cloudinary::Api::Error => e
-    puts "Error fetching logos from Cloudinary: #{e.message}".red
-  end
+  LOGOS = fetch_cloudinary_resources('logos-company', 'logo')
   t_stop_logos = Time.now
 
-  # -------------------
   puts ''
   puts 'Fetching profile pictures from Cloudinary...'.cyan
   t_profile_pics = Time.now
-  PROFILE_PICS = []
-  begin
-    next_cursor = nil
-    loop do
-      # Fetch all resources from the "logos" folder
-      response = Cloudinary::Api.resources(type: 'upload',
-                                            prefix: 'profile-pictures',
-                                            max_results: 100,
-                                            next_cursor: next_cursor)
-
-      response['resources'].each do |resource|
-        public_id = resource['public_id']
-      # Check if the resource exists (if it's deleted, this will raise an error)
-        begin
-          Cloudinary::Api.resource(public_id) # This will succeed only if the resource exists
-          PROFILE_PICS << public_id
-        rescue Cloudinary::Api::NotFound
-          puts "Skipping deleted profile picture: #{public_id}".red
-        end
-      end
-
-      next_cursor = response['next_cursor']
-      break unless next_cursor
-    end
-    puts "#{PROFILE_PICS.size} valid profile pictures fetched from Cloudinary!".green
-  rescue Cloudinary::Api::Error => e
-    puts "Error fetching profile pictures from Cloudinary: #{e.message}".red
-  end
+  PROFILE_PICS = fetch_cloudinary_resources('profile-pictures', 'profile picture')
   t_stop_profile_pics = Time.now
 
   # -------------------
   # Clear the database
   # -------------------
   if DATABASE_CLEAR
+    puts ''
     puts "Clearing database...".yellow
     t_clear_db = Time.now
     Application.in_batches(of: 1000).destroy_all
@@ -218,43 +228,8 @@ unless answer == 'y'
     end
   end
 
-  # -------------------
-  # Create test users
-  # -------------------
   if DATABASE_CLEAR # Only create test users if the database was cleared
-    test_seeker = User.create!(
-      email: 'test@seeker.com',
-      password: '123456',
-      password_confirmation: '123456',
-      role: :jobseeker
-    )
-
-    test_company = User.create!(
-      email: 'test@company.com',
-      password: '123456',
-      password_confirmation: '123456',
-      role: :company
-    )
-
-    JobseekerProfile.create!(
-      user_id: test_seeker.id,
-      first_name: 'Test',
-      last_name: 'Seeker',
-      phone_number: '1234567890',
-      date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
-      skills: Faker::Job.key_skill,
-      hobbies: Faker::Hobby.activity,
-      location: 'Paris, France'
-    )
-
-    Company.create!(
-      user_id: test_company.id,
-      name: 'Test Company',
-      location: 'Paris, France',
-      description: 'We are a test company',
-      industry: 'Test Industry',
-      employee_number: 10
-    )
+    create_test_users
   end
 
   JobseekerProfile.import(jobseeker_profiles_to_create)
@@ -273,13 +248,7 @@ unless answer == 'y'
   puts ''
   puts "Assigning logos to companies...".cyan
   t_assign_logos = Time.now
-  companies.each do |company|
-    unless company.logo.attached?
-      random_logo = LOGOS.sample # Get a random logo public_id
-      logo_url = Cloudinary::Utils.cloudinary_url(random_logo) # Generate the logo URL
-      company.logo.attach(io: URI.open(logo_url), filename: "logo_#{company.name}_#{Faker::Crypto.md5}.jpg")
-    end
-  end
+  assign_images(companies, LOGOS)
   puts "Logos assigned to companies!".green
   t_stop_assign_logos = Time.now
 
@@ -289,13 +258,7 @@ unless answer == 'y'
   puts ''
   puts "Assigning profile pictures to jobseekers...".cyan
   t_assign_profile_pics = Time.now
-  jobseeker_profiles.each do |profile|
-    unless profile.photo.attached?
-      random_profile_pic = PROFILE_PICS.sample # Get a random profile picture public_id
-      profile_pic_url = Cloudinary::Utils.cloudinary_url(random_profile_pic) # Generate the profile picture URL
-      profile.photo.attach(io: URI.open(profile_pic_url), filename: "profile_pic_#{profile.user.email}_#{Faker::Crypto.md5}.jpg")
-    end
-  end
+  assign_images(jobseeker_profiles, PROFILE_PICS)
   puts "Profile pictures assigned to jobseekers".green
   t_stop_assign_profile_pics = Time.now
 

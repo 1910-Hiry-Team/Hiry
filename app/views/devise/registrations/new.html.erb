@@ -26,7 +26,7 @@
       <% end %>
     <% elsif params[:role] == 'company' %>
       <%= f.simple_fields_for :company do |c| %>
-        <%= c.input :logo, as: :file %>
+        <%= c.input :photo, as: :file %>
         <%= c.input :name %>
         <%= c.input :location,
           placeholder: "Enter Location",

@@ -4,6 +4,6 @@ class CompaniesController < ApplicationController
   end
 
   def article_params
-    params.require(:company).permit(:name, :employee_number, :industry, :location, :description, logo: [])
+    params.require(:company).permit(:name, :employee_number, :industry, :location, :description, photo: [])
   end
 end

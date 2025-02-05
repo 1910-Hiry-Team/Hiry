@@ -87,3 +87,5 @@ gem 'hotwire-rails'
 gem 'rainbow'
 
 gem 'cloudinary'
+
+gem 'parallel'
