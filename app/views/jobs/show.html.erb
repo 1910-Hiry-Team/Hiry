@@ -2,7 +2,7 @@
   <div class="show-layout">
     <div class="link-back"><i class="fas fa-angle-left"></i><strong><%= link_to "Back to offers", jobs_path %></strong></div>
     <div class="media-box">
-      <p>add img</p>
+      <img src="https://4.bp.blogspot.com/-M_CSeh2f0Fg/UUaoBn9JmMI/AAAAAAAAgVQ/WEEyDd-B4Lg/s1600/Google+office+3.jpg" alt="office img" class="media-img">
     </div>
   </div>
 
@@ -32,15 +32,30 @@
       </div>
     </div>
     <div class="job-offer-card">
-      <div class="job-card-header">
-        <img src="https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png" alt="company logo" class="company-logo">
-        <div class="job-card-header-info">
-          <h2><%= @job.job_title %></h2>
-          <div class="flexbox">
-            <p><%= @job.company.name %></p>
-            <p>|</p>
-            <p><%= @job.location %></p>
+      <div class="job-offer-header">
+        <div class="job-offer-header-layout">
+          <img src="https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png" alt="company logo" class="company-logo">
+          <div class="job-card-header-info">
+            <h2><%= @job.job_title %></h2>
+            <div class="flexbox">
+              <p><%= @job.company.name %></p>
+              <p>|</p>
+              <p><%= @job.location %></p>
+            </div>
           </div>
+        </div>
+        <div id="favorite-button">
+          <% if current_user.favorite_jobs.include?(@job) %>
+            <%= link_to job_favorites_path(@job), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "favorite-toggle" do %>
+              <i class="fas fa-bookmark"></i>
+            <% end %>
+          <% else %>
+            <%= simple_form_for [@job, @favorite] do |f| %>
+              <button type="submit" class="favorite-toggle">
+                <i class="far fa-bookmark text-secondary"></i>
+              </button>
+            <% end %>
+          <% end %>
         </div>
       </div>
       <div class="job-card-content">
@@ -88,16 +103,5 @@
         <% end %>
       </div>
     </div>
-  </div>
-</div>
-<div>
-  <div id="favorite-button">
-    <% if current_user.favorite_jobs.include?(@job) %>
-      <%= link_to "Unfavorite", job_favorites_path(@job), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
-    <% else %>
-      <%= simple_form_for [@job, @favorite] do |f| %>
-        <%= f.submit "Add to favorites", class: "btn btn-primary" %>
-      <% end %>
-    <% end %>
   </div>
 </div>

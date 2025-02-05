@@ -36,4 +36,26 @@
     }
   }
 }
+.job-offer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0px;
+  padding: 4px 8px;
+  border: 1px solid lightgrey;
+  border-radius: 16px;
+  .job-offer-header-layout {
+    display: flex;
+  }
+}
 
+.favorite-toggle {
+  border: none;
+  margin: 0px 16px;
+  i {
+    font-size: 1.5rem;
+  }
+  .fa-bookmark {
+    color:gray;
+  }
+}

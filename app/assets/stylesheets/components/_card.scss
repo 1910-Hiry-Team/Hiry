@@ -33,6 +33,7 @@
 .job-card-header {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
   margin: 16px 0px;
   padding: 4px 8px;
   border: 1px solid lightgrey;
@@ -94,3 +95,4 @@
   display: flex;
   justify-content: space-between;
 }
+ 
