@@ -3,7 +3,7 @@ require 'parallel'
 require 'rainbow/refinement'
 using Rainbow
 
-puts 'Seeding v0.4.0'.green # For Debug purposes to be sure you're in the right file
+puts 'Seeding v0.4.1'.green # For Debug purposes to be sure you're in the right file
 
 # -------------------
 # Initial setup
