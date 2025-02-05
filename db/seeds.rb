@@ -358,7 +358,6 @@ class SeederView
 
     if clear_database
       puts ''
-      puts "Clearing database...".yellow
       t_clear_db = Time.now
       DbHandler.clear_database
       SeederHandler.create_test_users
@@ -367,82 +366,75 @@ class SeederView
     end
 
     puts ''
-    puts 'Fetching logos from Cloudinary...'.cyan
+    puts 'Logos'
     t_logos = Time.now
     logos = ImageHandler.fetch_cloudinary_resources('logos-company', 'logo')
     logo_cache_path = ImageHandler.download_images(logos)
-    puts 'Added logos to cache'.green
     t_stop_logos = Time.now
+    puts "#{logos.size} valid logos fetched!".green
+    puts 'Added to cache'.green
 
     puts ''
-    puts 'Fetching profile pictures from Cloudinary...'.cyan
+    puts 'Profile Pictures'
     t_profile_pics = Time.now
     profile_pics = ImageHandler.fetch_cloudinary_resources('profile-pictures', 'profile picture')
     profile_pic_cache_path = ImageHandler.download_images(profile_pics)
-    puts 'Added profile pictures to cache'.green
     t_stop_profile_pics = Time.now
+    puts "#{profile_pics.size} valid profile pictures fetched!".green
+    puts 'Added to cache'.green
 
     # -------------------
     # Start creating the models
     # -------------------
     puts ''
-    puts "Creating users...".cyan
     t_create_users = Time.now
     users = SeederHandler.create_users(number_of_users)
-    puts "Users created and imported!".green
     t_stop_create_users = Time.now
+    puts 'Users created!'.green
 
     puts ''
-    puts "Creating profiles and companies...".cyan
     t_create_profiles = Time.now
     SeederHandler.create_profiles_and_companies(users, use_real_cities)
-    puts "Profiles and companies created!".green
     t_stop_create_profiles = Time.now
+    puts 'Profiles and companies created!'.green
 
     puts ''
-    puts "Creating jobs...".cyan
     t_create_jobs = Time.now
     SeederHandler.create_jobs(number_of_jobs, use_real_cities, Company.all)
-    puts "Jobs created!".green
     t_stop_create_jobs = Time.now
+    puts 'Jobs created!'.green
 
     puts ''
-    puts "Creating studies...".cyan
     t_create_studies = Time.now
     SeederHandler.create_studies
-    puts 'Studies created!'.green
     t_stop_create_studies = Time.now
+    puts 'Studies created!'.green
 
     puts ''
-    puts "Creating experiences...".cyan
     t_create_experiences = Time.now
     SeederHandler.create_experiences
-    puts "Experiences created!".green
     t_stop_create_experiences = Time.now
+    puts 'Experiences created!'.green
 
     puts ''
-    puts "Creating applications...".cyan
     t_create_applications = Time.now
     SeederHandler.create_applications(Job.all)
-    puts "Applications created!".green
     t_stop_create_applications = Time.now
+    puts 'Applications created!'.green
 
     puts ''
-    puts "Assigning logos to companies...".cyan
     t_assign_logos = Time.now
     ImageHandler.assign_images_from_cache(Company.all, logo_cache_path)
-    puts "Logos assigned to companies!".green
     t_stop_assign_logos = Time.now
+    puts "Logos assigned!".green
 
     puts ''
-    puts "Assigning profile pictures to jobseekers...".cyan
     t_assign_profile_pics = Time.now
     ImageHandler.assign_images_from_cache(JobseekerProfile.all, profile_pic_cache_path)
-    puts "Profile pictures assigned to jobseekers".green
     t_stop_assign_profile_pics = Time.now
+    puts "Profile pictures assigned!".green
 
     puts ''
-    puts "Deleting cache...".cyan
     ImageHandler.delete_cache
     puts "Cache deleted!".green
 
