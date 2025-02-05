@@ -29,6 +29,7 @@
                 <%= p.input :phone_number %>
               <% end %>
             </div>
+            <button type="button" onclick="showSection('section1')">Back</button>
             <button type="button" onclick="showSection('section3')">Next</button>
           </div>
 
@@ -38,6 +39,7 @@
                 <%= p.input :date_of_birth %>
               <% end %>
             </div>
+            <button type="button" onclick="showSection('section2')">Back</button>
             <button type="button" onclick="showSection('section4')">Next</button>
           </div>
 
@@ -52,6 +54,7 @@
                   %>
                 <% end %>
               </div>
+              <button type="button" onclick="showSection('section3')">Back</button>
               <button type="button" onclick="showSection('section5')">Next</button>
             </div>
 
@@ -62,24 +65,27 @@
                 <%= p.input :hobbies %>
               <% end %>
             </div>
-            <button type="button" onclick="showSection('section4')">Back</button>
-            <div class="form-actions">
-              <%= f.button :submit, "Sign up" %>
+            <div class="sending-form-btn">
+              <button type="button" onclick="showSection('section4')">Back</button>
+              <div class="form-actions">
+                <%= f.button :submit, "Sign up" %>
+              </div>
             </div>
           </div>
 
         <% elsif params[:role] == 'company' %>
-        <div class="form-section" id="section2" style="display: none;"> <%# Section 6 (company) %>
-          <div class="form-inputs"> <%# Ajout de form-inputs %>
+        <div class="form-section" id="section2" style="display: none;">
+          <div class="form-inputs">
             <%= f.simple_fields_for :company do |c| %>
               <%= c.input :name %>
             <% end %>
           </div>
+          <button type="button" onclick="showSection('section1')">Back</button>
           <button type="button" onclick="showSection('section3')">Next</button>
         </div>
 
-        <div class="form-section" id="section3" style="display: none;"> <%# Section 7 (company) %>
-          <div class="form-inputs"> <%# Ajout de form-inputs %>
+        <div class="form-section" id="section3" style="display: none;">
+          <div class="form-inputs">
             <%= f.simple_fields_for :company do |c| %>
               <%= c.input :location,
                 placeholder: "Enter Location",
@@ -89,20 +95,25 @@
               %>
             <% end %>
           </div>
+          <button type="button" onclick="showSection('section2')">Back</button>
           <button type="button" onclick="showSection('section4')">Next</button>
         </div>
 
-        <div class="form-section" id="section4" style="display: none;"> <%# Section 8 (company) %>
-          <div class="form-inputs"> <%# Ajout de form-inputs %>
+        <div class="form-section" id="section4" style="display: none;">
+          <div class="form-inputs">
             <%= f.simple_fields_for :company do |c| %>
-              <%= c.input :industry %>
+            <div class="dropdown-container">
+              <%= c.collection_select :industry, Company.industries,:to_s,:to_s, prompt: "Select your industry" %>
+            </div>
               <%= c.input :description %>
               <%= c.input :employee_number %>
             <% end %>
           </div>
-          <button type="button" onclick="showSection('section3')">Back</button> <%# Correction : section7 au lieu de section1 %>
-          <div class="form-actions"> <%# Ajout de form-actions %>
-            <%= f.button :submit, "Sign up" %>
+          <div class="sending-form-btn">
+            <button type="button" onclick="showSection('section3')">Back</button>
+            <div class="form-actions">
+              <%= f.button :submit, "Sign up" %>
+            </div>
           </div>
         </div>
       <% end %>

@@ -15,7 +15,7 @@ body {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   width: 80%;
   margin: 0 auto;
-  border-radius: 25px;
+  border-radius: 16px;
   margin-top: 50px;
 }
 
@@ -60,21 +60,20 @@ body {
   box-sizing: border-box;
 }
 
-.form-section button { /* Cibler tous les boutons des sections */
-  background-color: #007bff; /* Couleur de fond bleue */
-  color: white; /* Texte blanc */
-  padding: 10px 20px; /* Marge intérieure */
-  border: none; /* Pas de bordure */
-  border-radius: 5px; /* Coins arrondis */
-  cursor: pointer; /* Curseur en forme de main */
-  font-size: 16px; /* Taille du texte */
-  transition: background-color 0.3s ease; /* Transition douce au survol */
+.form-section button {
+  background-color: $deep-dark-blue;
+  color: $light-beige;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .btn {
   background-color: $deep-dark-blue;
   color: $light;
-  padding: 10px 20px;
+  padding: 12px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -85,4 +84,34 @@ body {
 .help-block {
     color: red;
   }
+}
+
+.dropdown-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: white;
+  color: #333;
+}
+
+.dropdown-container::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border-top: 5px solid #333;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  pointer-events: none; /* Pour éviter que la flèche ne soit cliquable */
+}
+
+.sending-form-btn {
+  display: flex;
+  justify-content: space-between;
 }
