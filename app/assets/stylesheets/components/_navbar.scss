@@ -15,3 +15,13 @@
 .navbar-lewagon .navbar-brand img {
   width: 60px;
 }
+
+.nav-link {
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-family: $body-font;
+  text-decoration: none;
+  text-align: center;
+  background-color: $deep-dark-blue;
+  color: $light-beige;
+}

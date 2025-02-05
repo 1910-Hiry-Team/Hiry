@@ -1,0 +1,64 @@
+// Specific CSS for your forms
+body {
+  padding-top: 70px;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 70px);
+  padding: 20px;
+}
+
+.text-content {
+  width: 40%; /* Largeur du texte (ajuste selon tes besoins) */
+  padding-right: 20px; /* Marge à droite du texte */
+  font-size: 30px;
+}
+
+.text-content-image {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+}
+
+.form-wrapper {
+  width: 40%; /* Largeur du formulaire (ajuste selon tes besoins) */
+}
+
+.simple_form {
+  font-family: $body-font;
+  color: $deep-dark-blue;
+}.form-inputs {
+  margin-bottom: 20px; /* Marge en bas des groupes de champs */
+}.form-group {
+  margin-bottom: 15px; /* Marge en bas de chaque champ */
+}.form-label {
+  font-weight: 300; /* Labels en gras */
+  display: block; /* Pour que les labels soient au-dessus des inputs */
+  margin-bottom: 5px; /* Marge en bas des labels */
+}.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Styles spécifiques */
+.btn { /* Style spécifique pour le bouton */
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}.field_with_errors { /* Style pour les erreurs */
+.form-control {
+    border-color: red;
+  }
+.help-block {
+    color: red;
+  }
+}
