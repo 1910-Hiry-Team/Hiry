@@ -5,7 +5,7 @@
   </div>
 
   <div class="form-wrapper">
-    <h2>Sign up</h2>
+    <h2>Create your account</h2>
 
     <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
       <%= f.error_notification %>
@@ -69,16 +69,16 @@
           </div>
 
         <% elsif params[:role] == 'company' %>
-        <div class="form-section" id="section6" style="display: none;"> <%# Section 6 (company) %>
+        <div class="form-section" id="section2" style="display: none;"> <%# Section 6 (company) %>
           <div class="form-inputs"> <%# Ajout de form-inputs %>
             <%= f.simple_fields_for :company do |c| %>
               <%= c.input :name %>
             <% end %>
           </div>
-          <button type="button" onclick="showSection('section7')">Next</button>
+          <button type="button" onclick="showSection('section3')">Next</button>
         </div>
 
-        <div class="form-section" id="section7" style="display: none;"> <%# Section 7 (company) %>
+        <div class="form-section" id="section3" style="display: none;"> <%# Section 7 (company) %>
           <div class="form-inputs"> <%# Ajout de form-inputs %>
             <%= f.simple_fields_for :company do |c| %>
               <%= c.input :location,
@@ -89,10 +89,10 @@
               %>
             <% end %>
           </div>
-          <button type="button" onclick="showSection('section8')">Next</button>
+          <button type="button" onclick="showSection('section4')">Next</button>
         </div>
 
-        <div class="form-section" id="section8" style="display: none;"> <%# Section 8 (company) %>
+        <div class="form-section" id="section4" style="display: none;"> <%# Section 8 (company) %>
           <div class="form-inputs"> <%# Ajout de form-inputs %>
             <%= f.simple_fields_for :company do |c| %>
               <%= c.input :industry %>
@@ -100,7 +100,7 @@
               <%= c.input :employee_number %>
             <% end %>
           </div>
-          <button type="button" onclick="showSection('section7')">Back</button> <%# Correction : section7 au lieu de section1 %>
+          <button type="button" onclick="showSection('section3')">Back</button> <%# Correction : section7 au lieu de section1 %>
           <div class="form-actions"> <%# Ajout de form-actions %>
             <%= f.button :submit, "Sign up" %>
           </div>
