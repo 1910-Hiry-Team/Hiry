@@ -3,7 +3,7 @@ require 'parallel'
 require 'rainbow/refinement'
 using Rainbow
 
-puts 'Seeding v0.4.3'.green # For Debug purposes to be sure you're in the right file
+puts 'Seeding v0.4.4'.green # For Debug purposes to be sure you're in the right file
 
 # -------------------
 # Initial setup
@@ -285,9 +285,9 @@ class SeederView
   def self.seeding
     puts ''
     puts 'What weight of seeding do you want?'.blue
-    puts '1. '.red + 'Light' + ' (15s)'.green
-    puts '2. '.red + 'Medium' + ' (70s)'.yellow
-    puts '3. '.red + 'Heavy' + ' (500s)'.red
+    puts '1. '.red + 'Light' + ' (10s)'.green
+    puts '2. '.red + 'Medium' + ' (15s)'.yellow
+    puts '3. '.red + 'Heavy' + ' (100s)'.red
     print '> '
 
     case gets.chomp
@@ -300,8 +300,9 @@ class SeederView
       number_of_users = rand(50..100)
       number_of_jobs = rand(25..50)
     when /3\.?|h|heavy/i
-      puts 'Heavy seeding Selected'.green
-      puts 'This can take 10 minutes. Do you really want to proceed? ('.yellow + 'y'.green + '/'.yellow + 'n'.red + ')'.yellow
+      puts 'Heavy seeding Selected'.yellow
+      puts "This can be pretty CPU intensive. This will use #{SeedConfig::THREADS_TO_USE} threads".yellow
+      puts 'Do you really want to proceed? ('.yellow + 'y'.green + '/'.yellow + 'n'.red + ')'.yellow
       print '> '
       answer = gets.chomp
       if answer == 'y'
