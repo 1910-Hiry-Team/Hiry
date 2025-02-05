@@ -3,7 +3,7 @@ require 'parallel'
 require 'rainbow/refinement'
 using Rainbow
 
-puts 'Seeding v0.4.4'.green # For Debug purposes to be sure you're in the right file
+puts 'Seeding v0.4.5'.green # For Debug purposes to be sure you're in the right file
 
 # -------------------
 # Initial setup
@@ -16,6 +16,9 @@ module SeedConfig
   SALARY_RANGE = 30000..60000
 
   THREADS_TO_USE = 4
+  IMAGE_BATCH_SIZE = 20
+
+  TEMP_IMG_PATH = 'app/assets/images/tmp_images/'
 
   REAL_CITIES = [
     "Paris, France",
@@ -61,11 +64,10 @@ class DbHandler
   # -------------------
   # Clear the database
   # ----------------
-  def self.clear_database(batch)
-    [Application, Favorite, Job, Company, Experience, Study, User].each do |model|
-      Parallel.each(model.in_batches(of: batch), in_threads: SeedConfig::THREADS_TO_USE) do |batch|
-        batch.destroy_all
-      end
+  def self.clear_database
+    models = [Application, Favorite, Job, Company, Experience, Study, User]
+    Parallel.each(models, in_threads: SeedConfig::THREADS_TO_USE) do |model|
+      model.connection.execute("TRUNCATE TABLE #{model.table_name} RESTART IDENTITY CASCADE")
     end
   end
 
@@ -112,6 +114,7 @@ class SeederHandler
       role: [:jobseeker, :company].sample
       )
     end
+    DbHandler.model_importer(User, users_to_create)
     return users_to_create
   end
 
@@ -121,9 +124,9 @@ class SeederHandler
     Parallel.each(users, in_threads: SeedConfig::THREADS_TO_USE) do |user|
       location = use_real_cities ? SeedConfig::REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
 
-      if user[:role] == :jobseeker
+      if user.jobseeker?
         jobseeker_profiles_to_create << JobseekerProfile.new(
-          user_id: user[:id],
+          user_id: user.id,
           first_name: Faker::Name.first_name,
           last_name: Faker::Name.last_name,
           phone_number: Faker::PhoneNumber.phone_number,
@@ -133,7 +136,7 @@ class SeederHandler
         )
       else
         companies_to_create << Company.new(
-          user_id: user[:id],
+          user_id: user.id,
           name: Faker::Company.name,
           location: location,
           description: Faker::Company.catch_phrase,
@@ -142,7 +145,8 @@ class SeederHandler
         )
       end
     end
-    return jobseeker_profiles_to_create, companies_to_create
+    DbHandler.model_importer(JobseekerProfile, jobseeker_profiles_to_create)
+    DbHandler.model_importer(Company, companies_to_create)
   end
 
   # ---------------------------
@@ -165,18 +169,18 @@ class SeederHandler
       language: SeedConfig::REAL_LANGUAGES.sample,
       experience: ["Entry", "Intermediate", "Senior"].sample,
       salary: rand(SeedConfig::SALARY_RANGE), # Adjust to fit your salary format
-      company_id: companies.sample[:id]
+      company_id: companies.sample.id
       )
     end
-    return jobs_to_create
+    DbHandler.model_importer(Job, jobs_to_create)
   end
 
   # -------------------
   # Create studies
   # -------------------
-  def self.create_studies(users)
+  def self.create_studies
     studies_to_create = []
-    Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(User.where(role:0), in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_STUDIES).times do
         studies_to_create << Study.new(
           school: Faker::University.name,
@@ -184,19 +188,19 @@ class SeederHandler
           diploma: Faker::Educator.course_name,
           start_date: Faker::Date.backward(days: 3650),
           end_date: Faker::Date.backward(days: 365),
-          user_id: user[:id]
+          user_id: user.id
         )
       end
     end
-    return studies_to_create
+    DbHandler.model_importer(Study, studies_to_create)
   end
 
   # -------------------
   # Create experiences
   # -------------------
-  def self.create_experiences(users)
+  def self.create_experiences
     experiences_to_create = []
-    Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(User.where(role:0), in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_EXPERIENCES).times do
         experiences_to_create << Experience.new(
           company: Faker::Company.name,
@@ -206,29 +210,29 @@ class SeederHandler
           description: Faker::Lorem.paragraph,
           start_date: Faker::Date.backward(days: 2000),
           end_date: Faker::Date.backward(days: 365),
-          user_id: user[:id]
+          user_id: user.id
         )
       end
     end
-    return experiences_to_create
+    DbHandler.model_importer(Experience, experiences_to_create)
   end
 
   # -------------------
   # Create applications
   # -------------------
-  def self.create_applications(users, jobs)
+  def self.create_applications(jobs)
     applications_to_create = []
-    Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(User.where(role:0), in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_APPLICATIONS).times do
         applications_to_create << Application.new(
           stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,
           match: [true, false].sample,
-          user_id: user[:id],
+          user_id: user.id,
           job_id: jobs.sample[:id]
         )
       end
     end
-    return applications_to_create
+    DbHandler.model_importer(Application, applications_to_create)
   end
 end
 
@@ -247,8 +251,8 @@ class ImageHandler
       Parallel.each(response['resources'], in_threads: SeedConfig::THREADS_TO_USE) do |resource|
         public_id = resource['public_id']
         begin
-          Cloudinary::Api.resource(public_id)
-          resources << public_id
+          resource_url = Cloudinary::Utils.cloudinary_url(public_id)
+          resources << resource_url
         rescue Cloudinary::Api::NotFound
           puts "Skipping deleted #{name.pluralize}: #{public_id}".red
         end
@@ -257,22 +261,46 @@ class ImageHandler
       break unless next_cursor
     end
     puts "#{resources.size} valid #{name.pluralize} fetched from Cloudinary!".green
+    puts resources.sample(5)
     return resources
   rescue Cloudinary::Api::Error => e
     puts "Error fetching #{name.pluralize} from Cloudinary: #{e.message}".red
     []
   end
 
+  def self.download_images(images)
+    dir_path = nil
+    FileUtils.mkdir_p(SeedConfig::TEMP_IMG_PATH) unless Dir.exist?(SeedConfig::TEMP_IMG_PATH)
+    Parallel.each(images, in_threads: SeedConfig::THREADS_TO_USE) do |url|
+      file_path = File.join(SeedConfig::TEMP_IMG_PATH, url)
+      dir_path = File.dirname(file_path)
+
+      FileUtils.mkdir_p(dir_path) unless Dir.exist?(dir_path)
+
+      begin
+        File.open(file_path, 'wb') { |file| file.write(URI.open(url).read) }
+      rescue Errno::ENOENT => e
+        puts "Error downloading image #{url}: #{e.message}".red
+      end
+    end
+    return dir_path
+  end
+
+  def self.delete_cache
+    FileUtils.rm_rf(SeedConfig::TEMP_IMG_PATH) if Dir.exist?(SeedConfig::TEMP_IMG_PATH)
+  end
+
   # -------------------
   # Assign images to models
   # -------------------
-  def self.assign_images(records, model)
-    Parallel.each(records, in_threads: SeedConfig::THREADS_TO_USE) do |record|
-      file_name = record.class == Company ? record.name : "#{record.first_name} #{record.last_name}"
-      unless record.photo.attached?
-        random_photo = model.sample # Get a random photo public_id
-        photo_url = Cloudinary::Utils.cloudinary_url(random_photo) # Generate the photo URL
-        record.photo.attach(io: URI.open(photo_url), filename: "#{file_name}.jpg")
+  def self.assign_images_from_cache(record_to_attach, cache_dir)
+    image_files = Dir.glob("#{cache_dir}/*")
+    record_to_attach.find_in_batches(batch_size: SeedConfig::IMAGE_BATCH_SIZE) do |batch|
+      Parallel.each(batch, in_threads: SeedConfig::THREADS_TO_USE) do |record|
+        next if image_files.empty?
+
+        image_path = image_files.sample
+        record.photo.attach(io: File.open(image_path), filename: File.basename(image_path))
       end
     end
   end
@@ -285,8 +313,8 @@ class SeederView
   def self.seeding
     puts ''
     puts 'What weight of seeding do you want?'.blue
-    puts '1. '.red + 'Light' + ' (10s)'.green
-    puts '2. '.red + 'Medium' + ' (15s)'.yellow
+    puts '1. '.red + 'Light' + ' (+15s)'.green
+    puts '2. '.red + 'Medium' + ' (+40s)'.yellow
     puts '3. '.red + 'Heavy' + ' (100s)'.red
     print '> '
 
@@ -332,7 +360,7 @@ class SeederView
       puts ''
       puts "Clearing database...".yellow
       t_clear_db = Time.now
-      DbHandler.clear_database(1000)
+      DbHandler.clear_database
       SeederHandler.create_test_users
       puts "Database cleared!".green
       t_stop_clear_db = Time.now
@@ -342,14 +370,21 @@ class SeederView
     puts 'Fetching logos from Cloudinary...'.cyan
     t_logos = Time.now
     logos = ImageHandler.fetch_cloudinary_resources('logos-company', 'logo')
+    logo_cache_path = ImageHandler.download_images(logos)
+    puts 'Added logos to cache'.green
     t_stop_logos = Time.now
 
     puts ''
     puts 'Fetching profile pictures from Cloudinary...'.cyan
     t_profile_pics = Time.now
     profile_pics = ImageHandler.fetch_cloudinary_resources('profile-pictures', 'profile picture')
+    profile_pic_cache_path = ImageHandler.download_images(profile_pics)
+    puts 'Added profile pictures to cache'.green
     t_stop_profile_pics = Time.now
 
+    # -------------------
+    # Start creating the models
+    # -------------------
     puts ''
     puts "Creating users...".cyan
     t_create_users = Time.now
@@ -360,64 +395,56 @@ class SeederView
     puts ''
     puts "Creating profiles and companies...".cyan
     t_create_profiles = Time.now
-    jobseeker_profiles, companies = SeederHandler.create_profiles_and_companies(users, use_real_cities)
+    SeederHandler.create_profiles_and_companies(users, use_real_cities)
     puts "Profiles and companies created!".green
     t_stop_create_profiles = Time.now
 
     puts ''
     puts "Creating jobs...".cyan
     t_create_jobs = Time.now
-    jobs = SeederHandler.create_jobs(number_of_jobs, use_real_cities, companies)
+    SeederHandler.create_jobs(number_of_jobs, use_real_cities, Company.all)
     puts "Jobs created!".green
     t_stop_create_jobs = Time.now
 
     puts ''
     puts "Creating studies...".cyan
     t_create_studies = Time.now
-    studies = SeederHandler.create_studies(users)
+    SeederHandler.create_studies
     puts 'Studies created!'.green
     t_stop_create_studies = Time.now
 
     puts ''
     puts "Creating experiences...".cyan
     t_create_experiences = Time.now
-    experiences = SeederHandler.create_experiences(users)
+    SeederHandler.create_experiences
     puts "Experiences created!".green
     t_stop_create_experiences = Time.now
 
     puts ''
     puts "Creating applications...".cyan
     t_create_applications = Time.now
-    applications = SeederHandler.create_applications(users, jobs)
+    SeederHandler.create_applications(Job.all)
     puts "Applications created!".green
     t_stop_create_applications = Time.now
 
     puts ''
-    puts 'Importing the models...'.cyan
-    t_import_models = Time.now
-    DbHandler.model_importer(User, users)
-    DbHandler.model_importer(JobseekerProfile, jobseeker_profiles)
-    DbHandler.model_importer(Company, companies)
-    DbHandler.model_importer(Study, studies)
-    DbHandler.model_importer(Experience, experiences)
-    DbHandler.model_importer(Application, applications)
-    puts 'Models imported!'.green
-    t_stop_import_models = Time.now
-
-    puts ''
     puts "Assigning logos to companies...".cyan
     t_assign_logos = Time.now
-    ImageHandler.assign_images(Company.all, logos)
+    ImageHandler.assign_images_from_cache(Company.all, logo_cache_path)
     puts "Logos assigned to companies!".green
     t_stop_assign_logos = Time.now
 
     puts ''
     puts "Assigning profile pictures to jobseekers...".cyan
     t_assign_profile_pics = Time.now
-    ImageHandler.assign_images(JobseekerProfile.all, profile_pics)
+    ImageHandler.assign_images_from_cache(JobseekerProfile.all, profile_pic_cache_path)
     puts "Profile pictures assigned to jobseekers".green
     t_stop_assign_profile_pics = Time.now
 
+    puts ''
+    puts "Deleting cache...".cyan
+    ImageHandler.delete_cache
+    puts "Cache deleted!".green
 
     puts ''
     puts "Seeding completed!".green
@@ -440,11 +467,10 @@ class SeederView
     puts "Creating studies: " + "#{(t_stop_create_studies - t_create_studies).round(2)} seconds".red
     puts "Creating experiences: " + "#{(t_stop_create_experiences - t_create_experiences).round(2)} seconds".red
     puts "Creating applications: " + "#{(t_stop_create_applications - t_create_applications).round(2)} seconds".red
-    puts "Importing models: " + "#{(t_stop_import_models - t_import_models).round(2)} seconds".red
     puts "Assigning logos: " + "#{(t_stop_assign_logos - t_assign_logos).round(2)} seconds".red
     puts "Assigning profile pictures: " + "#{(t_stop_assign_profile_pics - t_assign_profile_pics).round(2)} seconds".red
     puts '---------------------------------'.green
-    puts "TOTAL TIME: " + "#{(t_stop_import_models - t_clear_db).round(2)} seconds".red
+    puts "TOTAL TIME: " + "#{(t_stop_assign_profile_pics - t_clear_db).round(2)} seconds".red
   end
 
   def self.reindex
