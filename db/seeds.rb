@@ -3,7 +3,7 @@ require 'parallel'
 require 'rainbow/refinement'
 using Rainbow
 
-puts 'Seeding v0.4.2'.green # For Debug purposes to be sure you're in the right file
+puts 'Seeding v0.4.3'.green # For Debug purposes to be sure you're in the right file
 
 # -------------------
 # Initial setup
@@ -12,6 +12,8 @@ module SeedConfig
   RANGE_OF_STUDIES = 3
   RANGE_OF_EXPERIENCES = 3
   RANGE_OF_APPLICATIONS = 5
+
+  SALARY_RANGE = 30000..60000
 
   THREADS_TO_USE = 4
 
@@ -72,8 +74,17 @@ class DbHandler
   # -------------------
   # Import models
   # -------------------
-  def self.model_importer(model, model_hash)
-    model.import(model_hash)
+  def self.model_importer(model, model_to_import)
+    model.import(model_to_import)
+  end
+
+  def self.model_import_and_update(model, model_to_import, attr_to_add)
+    imported_model = model.import(model_to_import)
+    model.where(id: imported_model.ids).find_each do |record|
+      attr_to_add.each do |attr|
+        model.update(attr)
+      end
+    end
   end
 end
 
@@ -107,8 +118,6 @@ class SeederHandler
     Parallel.each(1..number_of_users, in_threads: SeedConfig::THREADS_TO_USE) do
       users_to_create << {
       email: Faker::Internet.unique.email,
-      password: "password123",
-      password_confirmation: "password123",
       role: [:jobseeker, :company].sample
       }
     end
@@ -121,9 +130,9 @@ class SeederHandler
     Parallel.each(users, in_threads: SeedConfig::THREADS_TO_USE) do |user|
       location = use_real_cities ? SeedConfig::REAL_CITIES.sample : "#{Faker::Address.city}, #{Faker::Address.country}"
 
-      if user.jobseeker?
+      if user[:role] == :jobseeker
         jobseeker_profiles_to_create << {
-          user_id: user.id,
+          user_id: user[:id],
           first_name: Faker::Name.first_name,
           last_name: Faker::Name.last_name,
           phone_number: Faker::PhoneNumber.phone_number,
@@ -133,7 +142,7 @@ class SeederHandler
         }
       else
         companies_to_create << {
-          user_id: user.id,
+          user_id: user[:id],
           name: Faker::Company.name,
           location: location,
           description: Faker::Company.catch_phrase,
@@ -164,8 +173,8 @@ class SeederHandler
       contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
       language: SeedConfig::REAL_LANGUAGES.sample,
       experience: ["Entry", "Intermediate", "Senior"].sample,
-      salary: rand(30000..60000), # Adjust to fit your salary format
-      company_id: companies.sample.id
+      salary: rand(SeedConfig::SALARY_RANGE), # Adjust to fit your salary format
+      company_id: companies.sample[:id]
       }
     end
     return jobs_to_create
@@ -174,9 +183,9 @@ class SeederHandler
   # -------------------
   # Create studies
   # -------------------
-  def self.create_studies
+  def self.create_studies(users)
     studies_to_create = []
-    Parallel.each(User.where(role: 0), in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_STUDIES).times do
         studies_to_create << {
           school: Faker::University.name,
@@ -184,7 +193,7 @@ class SeederHandler
           diploma: Faker::Educator.course_name,
           start_date: Faker::Date.backward(days: 3650),
           end_date: Faker::Date.backward(days: 365),
-          user_id: user.id
+          user_id: user[:id]
         }
       end
     end
@@ -194,9 +203,9 @@ class SeederHandler
   # -------------------
   # Create experiences
   # -------------------
-  def self.create_experiences
+  def self.create_experiences(users)
     experiences_to_create = []
-    Parallel.each(User.where(role: 0), in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_EXPERIENCES).times do
         experiences_to_create << {
           company: Faker::Company.name,
@@ -206,7 +215,7 @@ class SeederHandler
           description: Faker::Lorem.paragraph,
           start_date: Faker::Date.backward(days: 2000),
           end_date: Faker::Date.backward(days: 365),
-          user_id: user.id
+          user_id: user[:id]
         }
       end
     end
@@ -216,15 +225,15 @@ class SeederHandler
   # -------------------
   # Create applications
   # -------------------
-  def self.create_applications(jobs)
+  def self.create_applications(users, jobs)
     applications_to_create = []
-    Parallel.each(User.where(role: 1), in_threads: SeedConfig::THREADS_TO_USE) do |user|
+    Parallel.each(users.select { |user| user[:role] == :jobseeker }, in_threads: SeedConfig::THREADS_TO_USE) do |user|
       rand(1.. SeedConfig::RANGE_OF_APPLICATIONS).times do
         applications_to_create << {
           stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,
           match: [true, false].sample,
-          user_id: user.id,
-          job_id: jobs.sample.id,
+          user_id: user[:id],
+          job_id: jobs.sample[:id]
         }
       end
     end
@@ -366,56 +375,35 @@ class SeederView
     puts ''
     puts "Creating jobs...".cyan
     t_create_jobs = Time.now
-    jobs_to_create = SeederHandler.create_jobs(number_of_jobs, use_real_cities, companies)
+    jobs = SeederHandler.create_jobs(number_of_jobs, use_real_cities, companies)
     puts "Jobs created!".green
     t_stop_create_jobs = Time.now
 
     puts ''
-    puts 'Importing jobs...'.cyan
-    t_import_jobs = Time.now
-    DbHandler.model_importer(Job, jobs_to_create)
-    jobs = Job.all
-    puts 'Jobs imported!'.green
-
-    puts ''
     puts "Creating studies...".cyan
     t_create_studies = Time.now
-    studies = SeederHandler.create_studies
+    studies = SeederHandler.create_studies(users)
     puts 'Studies created!'.green
     t_stop_create_studies = Time.now
 
     puts ''
     puts "Creating experiences...".cyan
     t_create_experiences = Time.now
-    experiences = SeederHandler.create_experiences
+    experiences = SeederHandler.create_experiences(users)
     puts "Experiences created!".green
     t_stop_create_experiences = Time.now
 
     puts ''
     puts "Creating applications...".cyan
     t_create_applications = Time.now
-    applications = SeederHandler.create_applications(jobs)
+    applications = SeederHandler.create_applications(users, jobs)
     puts "Applications created!".green
     t_stop_create_applications = Time.now
 
     puts ''
-    puts "Assigning logos to companies...".cyan
-    t_assign_logos = Time.now
-    ImageHandler.assign_images(companies, logos)
-    puts "Logos assigned to companies!".green
-    t_stop_assign_logos = Time.now
-
-    puts ''
-    puts "Assigning profile pictures to jobseekers...".cyan
-    t_assign_profile_pics = Time.now
-    ImageHandler.assign_images(jobseeker_profiles, profile_pics)
-    puts "Profile pictures assigned to jobseekers".green
-    t_stop_assign_profile_pics = Time.now
-
-    puts ''
-    puts 'Importing the rest of the models...'.cyan
+    puts 'Importing the models...'.cyan
     t_import_models = Time.now
-    DbHandler.model_importer(User, users)
+    DbHandler.model_import_and_update(User, users, [password: '123456', password_confirmation: '123456'])
     DbHandler.model_importer(JobseekerProfile, jobseeker_profiles)
     DbHandler.model_importer(Company, companies)
     DbHandler.model_importer(Study, studies)
@@ -423,6 +411,21 @@ class SeederView
     DbHandler.model_importer(Application, applications)
     puts 'Models imported!'.green
     t_stop_import_models = Time.now
+
+    puts ''
+    puts "Assigning logos to companies...".cyan
+    t_assign_logos = Time.now
+    ImageHandler.assign_images(Company.all, logos)
+    puts "Logos assigned to companies!".green
+    t_stop_assign_logos = Time.now
+
+    puts ''
+    puts "Assigning profile pictures to jobseekers...".cyan
+    t_assign_profile_pics = Time.now
+    ImageHandler.assign_images(JobseekerProfile.all, profile_pics)
+    puts "Profile pictures assigned to jobseekers".green
+    t_stop_assign_profile_pics = Time.now
+
 
     puts ''
     puts "Seeding completed!".green
