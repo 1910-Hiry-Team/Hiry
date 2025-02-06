@@ -1,16 +1,16 @@
 <h1 class="job-listings-title">Job Listings</h1>
 
-<div class="job-listings-container">
-  <div class="">
+<div class="container-job-listing">
+  <div class="action-job-listing">
     <%= link_to "Create a New Job", new_company_job_path(@company), class: "btn-create-job"%>
   </div>
 
-  <div class="job-listings-grid">
+  <div class="container-card">
     <% @jobs.each do |job| %>
-      <div class="job-card">
-        <div class="job-card-header">
-          <img src="<%= asset_path "logo.png"  %>" alt="Company logo" class="company-logo">
-          <button class="btn-delete">Delete</button>
+      <div class="job-card-content">
+        <div class="job-card-content-header">
+          <img src="<%= asset_path "logo.png" %>" alt="Company logo" class="company-logo">
+          <%= link_to "Edit", edit_company_job_path(job.company, job), class: "btn-action-edit" %>
         </div>
 
         <h3 class="job-title"><%= job.job_title.capitalize %></h3>
@@ -20,11 +20,10 @@
           <span class="experience-level"><%= job.experience %></span>
         </div>
 
-        <div class="salary"><%= job.salary %></div>
+        <div class="salary">💲<%= job.salary %></div>
         <div class="location"><%= job.location %></div>
-
-        <%= link_to "Edit", edit_company_job_path(job.company, job), class: "btn-edit" %>
       </div>
+      <%= button_to "Delete", company_job_path(job.company, job), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn-delete" %>
     <% end %>
   </div>
 </div>
