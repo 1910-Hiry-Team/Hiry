@@ -85,3 +85,5 @@ gem 'activerecord-import'
 gem 'hotwire-rails'
 
 gem 'rainbow'
+
+gem 'cloudinary'
