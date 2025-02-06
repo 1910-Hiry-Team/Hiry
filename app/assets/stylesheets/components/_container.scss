@@ -3,3 +3,16 @@
   flex-wrap: wrap;
   gap: 16px;
 }
+
+.searchbar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(2,0,36,0.8) 0%, rgba(27,122,191,0.7) 100%);
+  margin: 20px 0;
+  position: sticky;
+  top: 80px;
+  z-index: 1000;
+  padding: 20px 30px;
+  border-radius: 10px;
+}

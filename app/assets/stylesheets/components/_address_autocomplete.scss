@@ -1,0 +1,24 @@
+.autocomplete-dropdown {
+  max-width: none;
+  width: 100%;
+  box-shadow: none;
+  background-color: rgba(#9f9f9f, 0.85);
+  z-index: 2000;
+  position: absolute;
+  border-radius: 5px;
+  padding: 13px 13px; // Added vertical padding
+  li {
+    list-style: none;
+    padding: 12px;
+    cursor: pointer;
+    background-color: rgba($deep-dark-blue, 0.85);
+    border-radius: 5px;
+    color: $light-beige;
+    margin-bottom: 5px; // Added space between each element
+
+    &:hover {
+      background-color: $dark-blue;
+    }
+
+  }
+}

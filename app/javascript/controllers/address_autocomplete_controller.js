@@ -61,13 +61,27 @@ export default class extends Controller {
       dropdown.appendChild(li);
     });
 
-    this.addressTarget.parentNode.appendChild(dropdown);
+    // Position the dropdown absolutely to avoid moving the container
+    dropdown.style.width = `${this.addressTarget.offsetWidth}px`;
+
+    const updateDropdownPosition = () => {
+      const rect = this.addressTarget.getBoundingClientRect();
+      dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+      dropdown.style.left = `${rect.left + window.scrollX}px`;
+    };
+
+    // Initial position
+    updateDropdownPosition();
+
+    // Update position on scroll and resize
+    window.addEventListener("scroll", updateDropdownPosition);
+    window.addEventListener("resize", updateDropdownPosition);
+
+    document.body.appendChild(dropdown);
   }
 
   clearSuggestions() {
-    const dropdown = this.addressTarget.parentNode.querySelector(
-      ".autocomplete-dropdown"
-    );
+    const dropdown = document.querySelector(".autocomplete-dropdown");
     if (dropdown) {
       dropdown.remove();
     }
