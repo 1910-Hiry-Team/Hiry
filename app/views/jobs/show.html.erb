@@ -28,7 +28,7 @@
           <% else %>
             <%= simple_form_for [@job, @favorite] do |f| %>
               <button type="submit" class="favorite-toggle">
-                <i class="far fa-bookmark text-secondary"></i>
+                <i class="far fa-bookmark"></i>
               </button>
             <% end %>
           <% end %>
@@ -41,16 +41,16 @@
         <p><%= @job.company.employee_number %><span class="material-symbols-outlined">group</span></p>
       </div>
       <div class="job-offer-box">
-        <h4>Company description:</h4>
+        <h4>📝Company description:</h4>
         <p><%= @job.company.description %></p>
       </div>
       <div class="job-offer-box">
-        <h4>Your missions:</h4>
+        <h4>🎯 Missions:</h4>
         <p><%= @job.missions %></p>
       </div>
       <div class="job-offer-footer">
         <div class="salary-box">
-          <h3> 💰 Salary: $<%= @job.salary %></h3>
+          <h4> 💰 Salary: $<%= @job.salary %></h4>
         </div>
         <div data-controller="modal">
           <button data-action="modal#open" class="btn-apply">Apply</button>
