@@ -12,9 +12,9 @@
           <p class="card-text">View and manage applications for your job listings.</p>
           <ul class="list-group">
             <% if @applications %>
-              <% @applications.each do |application| %>
+              <% @company.applications.each do |application| %>
                 <li class="list-group-item">
-                  <%= application.user.jobseeker_profile.first_name %> <%= application.user.jobseeker_profile.last_name %>
+                  <%= application.jobseeker_profile.first_name %> <%= application.user.jobseeker_profile.last_name %>
                 </li>
               <% end %>
             <% else %>
@@ -35,7 +35,6 @@
             <% @company.jobs.each do |job| %>
               <li class="list-group-item">
                 <%= link_to job.job_title, company_job_path(job.company, job) %>
-                <%#= job.job_title %>
               </li>
             <% end %>
           </ul>
