@@ -220,7 +220,7 @@ class SeederView
 
 
   # -------------------
-  # Reindex models for elasticsearch
+  # Reindex models for algolia
   # -------------------
   def self.reindex
     puts ''
