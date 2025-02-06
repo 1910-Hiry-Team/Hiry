@@ -12,7 +12,8 @@
 
 .application-card-header {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
+  gap: 32px;
   align-items: center;
   margin: 16px 0px;
   padding: 4px 8px;
