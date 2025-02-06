@@ -67,3 +67,14 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.modal-content {
+  padding-top: 8px;
+}
+.modal-close {
+  font-size: 2rem;
+  margin-bottom: 48px;
+}
+.modal-close:hover {
+  color: $deep-dark-blue;
+}
