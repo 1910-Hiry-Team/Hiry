@@ -2,7 +2,7 @@ class JobsController < ApplicationController
 
   before_action :set_job, only: [:show, :edit, :update, :destroy]
   def index
-    @jobs = Job.all  # Add filtering logic here (search function)
+    @jobs = Job.order(updated_at: :desc)
   end
 
   def search
@@ -10,7 +10,7 @@ class JobsController < ApplicationController
     if params[:job_title].present?
       @jobs = Job.search(params[:job_title])
     else
-      @jobs = Job.all
+      @jobs = Job.order(updated_at: :desc)
     end
 
     # Filter results by location if present
@@ -46,6 +46,10 @@ class JobsController < ApplicationController
   end
 
   def destroy
+  end
+
+  def article_params
+    params.require(:job).permit(:job_title, :location, :missions, :contract, :language, :experience, :salary, photo: [])
   end
 
   private

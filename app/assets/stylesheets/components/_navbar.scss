@@ -17,11 +17,12 @@
 }
 
 .nav-link {
-  padding: 12px 32px;
-  border-radius: 5px;
+  margin-right: 4px;
+  padding: 8px 32px;
+  border-radius: 16px;
   font-family: $body-font;
   text-decoration: none;
   text-align: center;
   background-color: $deep-dark-blue;
   color: $light-beige;
-}
+} 

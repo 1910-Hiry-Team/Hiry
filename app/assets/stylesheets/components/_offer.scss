@@ -12,12 +12,11 @@
     align-items: center;
     margin-top: 8px;
     margin-bottom: 8px;
-    padding: 4px 8px;
+    padding: 16px;
     border: 1px solid lightgrey;
     border-radius: 16px;
-    h3 {
+    h4 {
       margin: 0px;
-      font-size: 1.25rem;
     }
   }
 
@@ -57,14 +56,25 @@
   margin: 0px 16px;
   padding: 0px;
   i {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
   .fa-bookmark {
-    color:gray;
+    color: $deep-dark-blue;
   }
 }
 .job-offer-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.modal-content {
+  padding-top: 8px;
+}
+.modal-close {
+  font-size: 2rem;
+  margin-bottom: 48px;
+}
+.modal-close:hover {
+  color: $deep-dark-blue;
 }

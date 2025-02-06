@@ -3,7 +3,7 @@
       <%=@application.user.jobseeker_profile.last_name%>'s application
   </h2>
   <div>
-    <h3>Profile</h3>
+    <h3><%= image_tag @application.user.jobseeker_profile.photo, alt:'profile picture', height:'256px'%></h3>
     <p>Age:
       <%= ((Time.zone.now - @application.user.jobseeker_profile.date_of_birth.to_time) / 1.year.seconds).floor %> years old
     </p>

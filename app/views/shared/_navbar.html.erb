@@ -18,7 +18,13 @@
             <%= link_to "Favorites",  user_favorites_path(current_user), class: "nav-link" %>
           <li class="nav-item dropdown">
           <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "avatar", alt: "dropdown menu" %>
+            <% if current_user.jobseeker_profile.present? && current_user.jobseeker_profile.photo.attached? %>
+              <%= image_tag current_user.jobseeker_profile.photo, class: "avatar", alt: "dropdown menu"%>
+            <% elsif current_user.company.present? && current_user.company.photo.attached? %>
+              <%= image_tag current_user.company.photo, class: "avatar", alt: "dropdown menu"%>
+            <% else %>
+              <%= image_tag "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp", class: "avatar", alt: "dropdown menu"%>
+            <% end %>
           </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
               <% if current_user.company %>

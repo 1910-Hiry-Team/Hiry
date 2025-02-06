@@ -2,6 +2,8 @@
 class JobseekerProfile < ApplicationRecord
   belongs_to :user
 
+  has_one_attached :photo
+
   # Validations
   validates :first_name, presence: true
   validates :last_name, presence: true
