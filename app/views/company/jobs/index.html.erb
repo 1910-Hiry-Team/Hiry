@@ -1,29 +1,29 @@
-<h1 class="text-center my-4">Job Listings</h1>
+<h1 class="job-listings-title">Job Listings</h1>
 
-<div class="container">
-  <div class="text-center mt-4">
-    <%= link_to "Create a New Job", new_company_job_path(@company), class: "btn btn-success mt-4 mb-4"%>
+<div class="job-listings-container">
+  <div class="">
+    <%= link_to "Create a New Job", new_company_job_path(@company), class: "btn-create-job"%>
   </div>
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+  <div class="job-listings-grid">
     <% @jobs.each do |job| %>
-      <div class="col">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">
-              <%= link_to job.job_title.capitalize, company_job_path(job.company, job), class: "fw-bold fs-4 text-decoration-none text-dark" %>
-            </h5>
-            <p class="card-text"><strong>Location:</strong> <%= job.location %></p>
-            <p class="card-text"><strong>Contract Type:</strong> <%= job.contract %></p>
-            <p class="card-text"><strong>Preferred Language:</strong> <%= job.language %></p>
-            <p class="card-text"><strong>Experience Level:</strong> <%= job.experience %></p>
-            <p class="card-text"><strong>Salary:</strong> <%= job.salary %></p>
-            <p class="card-text text-muted"><strong>Posted on:</strong> <%= job.created_at.strftime("%B %d, %Y") %></p>
-            <div class="d-flex justify-content-between mt-3">
-              <%= link_to "Edit", edit_company_job_path(job.company, job), class: "btn btn-outline-primary btn-sm" %>
-              <%= button_to "Delete", company_job_path(job.company, job), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-outline-danger btn-sm" %>
-            </div>
-          </div>
+      <div class="job-card">
+        <div class="job-card-header">
+          <img src="<%= asset_path "logo.png"  %>" alt="Company logo" class="company-logo">
+          <button class="btn-delete">Delete</button>
         </div>
+
+        <h3 class="job-title"><%= job.job_title.capitalize %></h3>
+
+        <div class="job-details">
+          <span class="job-type"><%= job.contract %></span>
+          <span class="experience-level"><%= job.experience %></span>
+        </div>
+
+        <div class="salary"><%= job.salary %></div>
+        <div class="location"><%= job.location %></div>
+
+        <%= link_to "Edit", edit_company_job_path(job.company, job), class: "btn-edit" %>
       </div>
     <% end %>
   </div>

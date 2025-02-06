@@ -1,0 +1,91 @@
+.job-listings-container {
+  width: 50%; /* Largeur du conteneur */
+  margin: 0 auto; /* Centrer le conteneur */
+  font-family: $headers-font; /* Police Poppins */
+}
+
+.job-listings-title {
+  font-size: 2.5rem; /* Taille du titre */
+  font-weight: bold; /* Titre en gras */
+  margin-bottom: 2rem; /* Marge en bas */
+  text-align: center; /* Centrer le titre */
+}
+
+.job-listings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 colonnes de même largeur */
+  gap: 1.5rem; /* Espacement entre les cartes */
+}
+
+.job-card {
+  border: 1px solid red; /* Bordure fine */
+  border-radius: 5px; /* Coins arrondis */
+  padding: 1.5rem; /* Marge intérieure */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+}
+
+.job-card-header {
+  display: flex;
+  justify-content: space-between; /* Espace les éléments horizontalement */
+  align-items: center; /* Aligne les éléments verticalement */
+  margin-bottom: 1rem; /* Marge en bas */
+}
+
+.company-logo {
+  width: 50px; /* Ajuste la taille du logo */
+  height: auto;
+}
+
+.job-title {
+  font-size: 1.2rem; /* Taille du titre de l'offre */
+  margin-bottom: 1rem; /* Marge en bas */
+}
+
+.job-card-text {
+  margin-bottom: 0.5rem; /* Marge en bas */
+}
+
+.job-card-actions {
+  display: flex; /* Utiliser flexbox pour les boutons */
+  justify-content: space-between; /* Espacer les boutons */
+  margin-top: 1.5rem; /* Marge en haut */
+}
+
+.btn-create-job {
+  background-color: #007bff; /* Couleur de fond bleue */
+  color: white; /* Texte blanc */
+  padding: 10px 20px; /* Marge intérieure */
+  border: none; /* Pas de bordure */
+  border-radius: 5px; /* Coins arrondis */
+  cursor: pointer; /* Curseur en forme de main */
+  font-size: 1rem; /* Taille du texte */
+  transition: background-color 0.3s ease; /* Transition douce au survol */
+  text-decoration: none;
+}
+
+.btn-edit,.btn-delete {
+  background-color: #f0f0f0; /* Couleur de fond grise */
+  color: #333; /* Texte noir */
+  padding: 5px 10px; /* Marge intérieure */
+  border: none; /* Pas de bordure */
+  border-radius: 5px; /* Coins arrondis */
+  cursor: pointer; /* Curseur en forme de main */
+  font-size: 0.9rem; /* Taille du texte */
+  transition: background-color 0.3s ease; /* Transition douce au survol */
+  text-decoration: none;
+}
+.btn-edit {
+  background-color: #f0ad4e;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover {
+  background-color: #d49337;
+}
