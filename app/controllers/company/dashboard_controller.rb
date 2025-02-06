@@ -3,7 +3,9 @@ class Company::DashboardController < ApplicationController
   before_action :ensure_company_user!
 
   def index
-    @jobs = current_user.company.jobs
+    @company = current_user.company
+    @jobs = @company.jobs
+    @applications = @company.applications.includes(user: { jobseeker_profile: :first_name })
   end
 
   private
