@@ -5,9 +5,20 @@
     <div class="col-md-6">
       <div class="card mb-4">
         <div class="card-body">
-          <h2 class="card-title">Company Profile</h2>
-          <p class="card-text">View and manage your company profile.</p>
-          <%= link_to "View my company profile", company_path(@company), class: "btn btn-primary" %>
+          <h2 class="card-title">Applications</h2>
+          <p class="card-text">View and manage applications for your job listings.</p>
+          <ul class="list-group">
+            <% if @applications %>
+              <% @applications.each do |application| %>
+                <li class="list-group-item">
+                  <%= application.user.jobseeker_profile.first_name %> <%= application.user.jobseeker_profile.last_name %>
+                </li>
+              <% end %>
+            <% else %>
+              <li class="list-group-item">No applications for the moment</li>
+            <% end %>
+          </ul>
+          <%= link_to "View my applications", company_applications_path, class: "btn btn-primary mt-3" %>
         </div>
       </div>
     </div>
@@ -20,7 +31,8 @@
           <ul class="list-group">
             <% @company.jobs.each do |job| %>
               <li class="list-group-item">
-                <%= job.job_title %>
+                <%= link_to job.job_title, company_job_path(job.company, job) %>
+                <%#= job.job_title %>
               </li>
             <% end %>
           </ul>
@@ -29,22 +41,15 @@
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card mb-4">
-        <div class="card-body">
-          <h2 class="card-title">Applications</h2>
-          <p class="card-text">View and manage applications for your job listings.</p>
-          <ul class="list-group">
-            <% @company.applications.each do |application| %>
-              <li class="list-group-item">
-                <%= application.user.jobseeker_profile.first_name %> <%= application.user.jobseeker_profile.last_name %>
-              </li>
-            <% end %>
-          </ul>
-          <%= link_to "View my applications", company_applications_path, class: "btn btn-primary mt-3" %>
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2 class="card-title">Company Profile</h2>
+            <p class="card-text">View and manage your company profile.</p>
+            <%= link_to "View my company profile", company_path(@company), class: "btn btn-primary" %>
+          </div>
         </div>
       </div>
-    </div>
 
     <div class="col-md-6">
       <div class="card mb-4">
