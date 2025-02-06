@@ -1,0 +1,32 @@
+  <% @jobs.each do |job| %>
+    <% job.users.uniq.each do |user| %>
+      <% if user.jobseeker_profile.present? %>
+        <div class="application-card mb-3">
+          <div class="application-card-header">
+            <% if user.jobseeker_profile&.photo %>
+              <%= image_tag user.jobseeker_profile.photo, alt: 'Profile Picture', class: "application-profile-img", height: "128px" %>
+            <% end %>
+
+            <h5 class="card-title">
+              <%= user.jobseeker_profile&.first_name %> <%= user.jobseeker_profile&.last_name %>
+            </h5>
+          </div>
+          <div class="application-card-body">
+            <p class="card-text"><strong>Skills:</strong> <%= user.jobseeker_profile&.skills || "Not provided" %></p>
+            <p class="card-text"><strong>Hobbies:</strong> <%= user.jobseeker_profile&.hobbies || "Not provided" %></p>
+            <p class="card-text"><strong>Location:</strong> <%= user.jobseeker_profile&.location || "Not provided" %></p>
+
+            <p class="card-text"><strong>Applying for:</strong> <%= job.job_title %> at <%= job.company.name %></p>
+          </div>
+          <div class="application-card-footer">
+            <% application = job.applications.find_by(user_id: user.id) %>
+            <% if application %>
+              <%= link_to "View Application", job_application_path(job, application), class: "btn-apply" %>
+            <% else %>
+              <p class="text-muted">Application not found</p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
