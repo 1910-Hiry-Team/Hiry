@@ -1,9 +1,25 @@
-<h1><%= @company.name %></h1>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-4">
+      <% if @company.photo.attached? %>
+        <%= image_tag @company.photo, alt: 'logo', class: "img-fluid rounded-circle", style: "width: 256px; height: 256px; object-fit: cover;" %>
+      <% else %>
+        <%= image_tag "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp", alt: 'profile picture', class: "img-fluid rounded-circle", style: "width: 256px; height: 256px; object-fit: cover;" %>
+      <% end %>
+    </div>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="card-title"><%= @company.name %></h1>
+          <p class="card-text"><strong>Location:</strong> <%= @company.location %></p>
+          <p class="card-text"><strong>Industry:</strong> <%= @company.industry %></p>
+          <p class="card-text"><strong>Description:</strong> <%= @company.description %></p>
 
-<p><strong>Location:</strong> <%= @company.location %></p>
-<p><strong>Industry:</strong> <%= @company.industry %></p>
-<p><strong>Description:</strong> <%= @company.description %></p>
-
-<% if current_user.company == @company %>
-  <%= link_to "Edit", edit_company_path(@company), class: "btn btn-success"%>
-<% end %>
+          <% if current_user.company == @company %>
+            <%= link_to "Edit", edit_company_path(@company), class: "btn btn-success" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
