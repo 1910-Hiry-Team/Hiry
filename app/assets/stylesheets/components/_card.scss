@@ -9,16 +9,17 @@
   width: 40%;
   box-shadow: 2px 2px 2px lightgrey;
   a {
-    border: 1px solid lightgrey;
     border-radius: 16px;
+    padding: 8px 32px;
+    border: 1px solid lightgrey;
+    color: white;
+    background-color: $deep-dark-blue;
     text-decoration: none;
-    padding: 8px 16px;
     margin: 8px;
-    color: black;
     box-shadow: 2px 2px 2px lightgrey;
   }
   a:hover {
-    background-color: lightgrey;
+    background-color: $dark-blue;
   }
   .job-button {
     display: flex;
@@ -95,4 +96,3 @@
   display: flex;
   justify-content: space-between;
 }
- 
