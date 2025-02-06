@@ -75,7 +75,7 @@ end
 
 gem "devise"
 
-gem "elasticsearch"
+gem 'elasticsearch', '~> 7.10'
 gem "searchkick"
 
 gem 'geocoder'
