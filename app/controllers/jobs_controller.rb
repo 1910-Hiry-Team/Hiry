@@ -48,6 +48,10 @@ class JobsController < ApplicationController
   def destroy
   end
 
+  def article_params
+    params.require(:job).permit(:job_title, :location, :missions, :contract, :language, :experience, :salary, photo: [])
+  end
+
   private
 
   def set_job

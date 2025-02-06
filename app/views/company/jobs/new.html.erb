@@ -62,6 +62,10 @@
               <%= form.label :salary, "Salary (USD)", class: "form-label" %>
               <%= form.number_field :salary, min: 0, step: 1000, class: "form-control" %>
             </div>
+
+            <div class="mb-3">
+              <%= form.label :company_id, "Display image", class: "form-label" %>
+              <%= form.file_field :photo, class: "form-control" %>
           </div>
         </div>
 

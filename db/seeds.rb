@@ -3,7 +3,7 @@ require 'parallel'
 require 'rainbow/refinement'
 using Rainbow
 
-puts 'Seeding v0.4.6'.green # For Debug purposes to be sure you're in the right file
+puts 'Seeding v0.4.7'.green # For Debug purposes to be sure you're in the right file
 
 # -------------------
 # Initial setup
@@ -241,39 +241,59 @@ end
 
 class ImageHandler
   # -------------------
-  # Fetch Cloudinary images
+  # Delete Cloudinary images
   # -------------------
-  def self.fetch_cloudinary_resources(prefix, name)
-    resources = []
-    next_cursor = nil
-    loop do
-      response = Cloudinary::Api.resources(type: 'upload',
-                                            prefix: prefix,
-                                            max_results: 100,
-                                            next_cursor: next_cursor)
-      Parallel.each(response['resources'], in_threads: SeedConfig::THREADS_TO_USE, progress: "Fetching from cloudinary") do |resource|
-        public_id = resource['public_id']
-        begin
-          resource_url = Cloudinary::Utils.cloudinary_url(public_id)
-          resources << resource_url
-        rescue Cloudinary::Api::NotFound
-          puts "Skipping deleted #{name.pluralize}: #{public_id}".red
-        end
-      end
-      next_cursor = response['next_cursor']
-      break unless next_cursor
+  def self.delete_cloudinary_images(prefix)
+    begin
+      Cloudinary::Api.delete_resources_by_prefix(prefix)
+      puts "Deleted old images from Cloudinary!".green
+    rescue Cloudinary::Api::Error => e
+      puts "Error deleting #{prefix} images from Cloudinary: #{e.message}".red
+    rescue Cloudinary::RateLimited => e
+      puts "Rate limited by Cloudinary: #{e.message}".red
     end
-    puts "#{resources.size} valid #{name.pluralize} fetched from Cloudinary!".green
-    return resources
-  rescue Cloudinary::Api::Error => e
-    puts "Error fetching #{name.pluralize} from Cloudinary: #{e.message}".red
-    []
   end
 
-  def self.download_images(images)
+
+  # -------------------
+  # Fetch Cloudinary images
+  # -------------------
+  def self.fetch_cloudinary_urls(prefix, name)
+    urls = []
+    next_cursor = nil
+    begin
+      loop do
+        # Fetch resources from Cloudinary
+        response = Cloudinary::Api.resources(
+          type: 'upload',
+          prefix: prefix,
+          max_results: 100,
+          next_cursor: next_cursor
+        )
+
+        # Collect URLs for valid resources
+        Parallel.each(response['resources'], in_threads: SeedConfig::THREADS_TO_USE, progress: "Fetching Cloudinary URLs") do |resource|
+          urls << Cloudinary::Utils.cloudinary_url(resource['public_id'])
+        end
+
+        # Check for the next page of results
+        next_cursor = response['next_cursor']
+        break unless next_cursor
+      end
+
+      puts "#{urls.size} valid #{name.pluralize} fetched from Cloudinary!".green
+    rescue Cloudinary::Api::Error => e
+      puts "Error fetching #{name.pluralize} from Cloudinary: #{e.message}".red
+    rescue Cloudinary::RateLimited => e
+      puts "Rate limited by Cloudinary: #{e.message}".red
+    end
+    urls
+  end
+
+  def self.download_images(links)
     dir_path = nil
     FileUtils.mkdir_p(SeedConfig::TEMP_IMG_PATH) unless Dir.exist?(SeedConfig::TEMP_IMG_PATH)
-    Parallel.each(images, in_threads: SeedConfig::THREADS_TO_USE, progress: "Downloading images to cache") do |url|
+    Parallel.each(links, in_threads: SeedConfig::THREADS_TO_USE, progress: "Downloading images to cache") do |url|
       file_path = File.join(SeedConfig::TEMP_IMG_PATH, url)
       dir_path = File.dirname(file_path)
 
@@ -301,7 +321,7 @@ class ImageHandler
       next if image_files.empty?
 
       image_path = image_files.sample
-      record.photo.attach(io: File.open(image_path), filename: File.basename(image_path))
+      record.photo.attach(io: File.open(image_path), filename: "#{File.basename(image_path)}_#{Date.today}_#{Time.now}")
     end
   end
 end
@@ -313,9 +333,9 @@ class SeederView
   def self.seeding
     puts ''
     puts 'What weight of seeding do you want?'.blue
-    puts '1. '.red + 'Light' + ' (+15s)'.green
-    puts '2. '.red + 'Medium' + ' (+45s)'.yellow
-    puts '3. '.red + 'Heavy' + ' (+700s)'.red
+    puts '1. '.red + 'Light' + ' (20s)'.green
+    puts '2. '.red + 'Medium' + ' (60s)'.yellow
+    puts '3. '.red + 'Heavy' + ' (900s)'.red
     print '> '
 
     case gets.chomp
@@ -365,10 +385,21 @@ class SeederView
       t_stop_clear_db = Time.now
     end
 
+    # -------------------
+    # Cloudinary image fetching
+    # And image caching
+    # -------------------
+    puts ''
+    puts 'Deleting old images from Cloudinary'.yellow
+    t_delete_images = Time.now
+    ImageHandler.delete_cloudinary_images('development')
+    t_stop_delete_images = Time.now
+    puts 'Old images deleted!'.green
+
     puts ''
     puts 'Logos'
     t_logos = Time.now
-    logos = ImageHandler.fetch_cloudinary_resources('logos-company', 'logo')
+    logos = ImageHandler.fetch_cloudinary_urls('logos-company', 'logo')
     logo_cache_path = ImageHandler.download_images(logos)
     t_stop_logos = Time.now
     puts "#{logos.size} valid logos fetched!".green
@@ -377,10 +408,18 @@ class SeederView
     puts ''
     puts 'Profile Pictures'
     t_profile_pics = Time.now
-    profile_pics = ImageHandler.fetch_cloudinary_resources('profile-pictures', 'profile picture')
+    profile_pics = ImageHandler.fetch_cloudinary_urls('profile-pictures', 'profile picture')
     profile_pic_cache_path = ImageHandler.download_images(profile_pics)
     t_stop_profile_pics = Time.now
     puts "#{profile_pics.size} valid profile pictures fetched!".green
+    puts 'Added to cache'.green
+
+    puts ''
+    puts 'Job images'
+    t_job_images = Time.now
+    job_images = ImageHandler.fetch_cloudinary_urls('job-images', 'job image')
+    job_image_cache_path = ImageHandler.download_images(job_images)
+    t_stop_job_images = Time.now
     puts 'Added to cache'.green
 
     # -------------------
@@ -422,6 +461,9 @@ class SeederView
     t_stop_create_applications = Time.now
     puts 'Applications created!'.green
 
+    # -------------------
+    # Assign images to models
+    # -------------------
     puts ''
     t_assign_logos = Time.now
     ImageHandler.assign_images_from_cache(Company.all, logo_cache_path)
@@ -433,6 +475,12 @@ class SeederView
     ImageHandler.assign_images_from_cache(JobseekerProfile.all, profile_pic_cache_path)
     t_stop_assign_profile_pics = Time.now
     puts "Profile pictures assigned!".green
+
+    puts ''
+    t_assign_job_images = Time.now
+    ImageHandler.assign_images_from_cache(Job.all, job_image_cache_path)
+    t_stop_assign_job_images = Time.now
+    puts "Job images assigned!".green
 
     puts ''
     ImageHandler.delete_cache
@@ -451,8 +499,10 @@ class SeederView
     puts ''
     puts "Time taken for each step:".green
     puts "Clearing database: " + "#{(t_stop_clear_db - t_clear_db).round(2)} seconds".red if clear_database
+    puts "Deleting images: " + "#{(t_stop_delete_images - t_delete_images).round(2)} seconds".red
     puts "Fetching logos: " + "#{(t_stop_logos - t_logos).round(2)} seconds".red
     puts "Fetching profile pictures: " + "#{(t_stop_profile_pics - t_profile_pics).round(2)} seconds".red
+    puts "Fetching job images: " + "#{(t_stop_job_images - t_job_images).round(2)} seconds".red
     puts "Creating users: " + "#{(t_stop_create_users - t_create_users).round(2)} seconds".red
     puts "Creating profiles and companies: " + "#{(t_stop_create_profiles - t_create_profiles).round(2)} seconds".red
     puts "Creating jobs: " + "#{(t_stop_create_jobs - t_create_jobs).round(2)} seconds".red
@@ -461,6 +511,7 @@ class SeederView
     puts "Creating applications: " + "#{(t_stop_create_applications - t_create_applications).round(2)} seconds".red
     puts "Assigning logos: " + "#{(t_stop_assign_logos - t_assign_logos).round(2)} seconds".red
     puts "Assigning profile pictures: " + "#{(t_stop_assign_profile_pics - t_assign_profile_pics).round(2)} seconds".red
+    puts "Assigning job images: " + "#{(t_stop_assign_job_images - t_assign_job_images).round(2)} seconds".red
     puts '---------------------------------'.green
     puts "TOTAL TIME: " + "#{(t_stop_assign_profile_pics - t_clear_db).round(2)} seconds".red
   end
