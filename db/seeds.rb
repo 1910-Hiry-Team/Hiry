@@ -1,9 +1,8 @@
 require 'open-uri'
 require 'parallel'
 require 'rainbow/refinement'
+require 'yaml'
 using Rainbow
-
-puts 'Seeding v0.4.7'.green # For Debug purposes to be sure you're in the right file
 
 # -------------------
 # Initial setup
@@ -331,52 +330,12 @@ end
 # -------------------
 class SeederView
   def self.seeding
-    puts ''
-    puts 'What weight of seeding do you want?'.blue
-    puts '1. '.red + 'Light' + ' (20s)'.green
-    puts '2. '.red + 'Medium' + ' (60s)'.yellow
-    puts '3. '.red + 'Heavy' + ' (900s)'.red
-    print '> '
+    @number_of_users = ENV['SEEDING_WEIGHT'] == 'light' ? rand(10..20) : ENV['SEEDING_WEIGHT'] == 'medium' ? rand(50..100) : rand(1000..2000)
+    @number_of_jobs = ENV['SEEDING_WEIGHT'] == 'light' ? rand(5..10) : ENV['SEEDING_WEIGHT'] == 'medium' ? rand(25..50) : rand(400..600)
+    @use_real_cities = ENV['USE_REAL_CITIES'] == 'true'
+    @clear_database = ENV['CLEAR_DATABASE'] == 'true'
 
-    case gets.chomp
-    when /1\.?|l|light/i
-      puts 'Light seeding Selected'.green
-      number_of_users = rand(10..20)
-      number_of_jobs = rand(5..10)
-    when /2\.?|m|medium/i
-      puts 'Medium seeding Selected'.green
-      number_of_users = rand(50..100)
-      number_of_jobs = rand(25..50)
-    when /3\.?|h|heavy/i
-      puts 'Heavy seeding Selected'.yellow
-      puts "This can be pretty CPU intensive. This will use #{SeedConfig::THREADS_TO_USE} threads".yellow
-      puts 'Do you really want to proceed? ('.yellow + 'y'.green + '/'.yellow + 'n'.red + ')'.yellow
-      print '> '
-      answer = gets.chomp
-      if answer == 'y'
-        number_of_users = rand(1000..2000)
-        number_of_jobs = rand(400..600)
-      else
-        puts 'Exiting...'.red
-        exit
-      end
-    else
-      puts 'Invalid choice. Exiting...'.red
-      exit
-    end
-
-    puts ''
-    puts 'Do you want to generate real cities? ('.blue + 'y'.green + '/'.blue + 'n'.red + ')'.blue
-    print '> '
-    use_real_cities = gets.chomp == 'y'
-    puts 'Real cities selected'.green if use_real_cities
-
-    puts ''
-    puts 'Do you want to clear the database? ('.blue + 'y'.green + '/'.blue + 'n'.red + ')'.blue
-    print '> '
-    clear_database = gets.chomp == 'y'
-
-    if clear_database
+    if @clear_database
       puts ''
       t_clear_db = Time.now
       DbHandler.clear_database
@@ -417,7 +376,7 @@ class SeederView
     puts ''
     puts 'Job images'
     t_job_images = Time.now
-    job_images = ImageHandler.fetch_cloudinary_urls('job-images', 'job image')
+    job_images = ImageHandler.fetch_cloudinary_urls('job-job-images', 'job image')
     job_image_cache_path = ImageHandler.download_images(job_images)
     t_stop_job_images = Time.now
     puts 'Added to cache'.green
@@ -427,19 +386,19 @@ class SeederView
     # -------------------
     puts ''
     t_create_users = Time.now
-    users = SeederHandler.create_users(number_of_users)
+    users = SeederHandler.create_users(@number_of_users)
     t_stop_create_users = Time.now
     puts 'Users created!'.green
 
     puts ''
     t_create_profiles = Time.now
-    SeederHandler.create_profiles_and_companies(users, use_real_cities)
+    SeederHandler.create_profiles_and_companies(users, @use_real_cities)
     t_stop_create_profiles = Time.now
     puts 'Profiles and companies created!'.green
 
     puts ''
     t_create_jobs = Time.now
-    SeederHandler.create_jobs(number_of_jobs, use_real_cities, Company.all)
+    SeederHandler.create_jobs(@number_of_jobs, @use_real_cities, Company.all)
     t_stop_create_jobs = Time.now
     puts 'Jobs created!'.green
 
@@ -498,7 +457,7 @@ class SeederView
 
     puts ''
     puts "Time taken for each step:".green
-    puts "Clearing database: " + "#{(t_stop_clear_db - t_clear_db).round(2)} seconds".red if clear_database
+    puts "Clearing database: " + "#{(t_stop_clear_db - t_clear_db).round(2)} seconds".red if @clear_database
     puts "Deleting images: " + "#{(t_stop_delete_images - t_delete_images).round(2)} seconds".red
     puts "Fetching logos: " + "#{(t_stop_logos - t_logos).round(2)} seconds".red
     puts "Fetching profile pictures: " + "#{(t_stop_profile_pics - t_profile_pics).round(2)} seconds".red
@@ -513,7 +472,7 @@ class SeederView
     puts "Assigning profile pictures: " + "#{(t_stop_assign_profile_pics - t_assign_profile_pics).round(2)} seconds".red
     puts "Assigning job images: " + "#{(t_stop_assign_job_images - t_assign_job_images).round(2)} seconds".red
     puts '---------------------------------'.green
-    puts "TOTAL TIME: " + "#{(t_stop_assign_profile_pics - t_clear_db).round(2)} seconds".red
+    puts "TOTAL TIME: " + "#{(t_stop_assign_job_images - t_clear_db).round(2)} seconds".red
   end
 
   def self.reindex
@@ -527,13 +486,60 @@ class SeederView
   end
 
   def self.run
+    SeederView.catch_env_errors
     puts ''
-    puts 'Do you want to skip the seeding and only reindex the database for elasticsearch? ('.blue + 'y'.green + '/'.blue + 'n'.red + ')'.blue
-    print '> '
-    answer = gets.chomp
+    puts 'Seeding v0.5.0'.green.underline.bold
+    puts ''
+    puts '-----------------'
+    puts "| Seeding weight: " + "#{ENV['SEEDING_WEIGHT']}".green.bold
+    puts "| Real cities: " + "#{ENV['USE_REAL_CITIES']}".green.bold
+    puts "| Clear database: " + "#{ENV['CLEAR_DATABASE']}".green.bold
+    puts "| Skip seeding: " + "#{ENV['SKIP_SEEDING']}".green.bold
+    puts '-----------------'
+    sleep(2)
 
-    SeederView.seeding if answer == 'n'
-    SeederView.reindex
+    puts ''
+    puts 'Starting seeding!'.magenta
+    SeederView.new
+    if ENV['SKIP_SEEDING'] == 'true'
+      SeederView.reindex
+    else
+      SeederView.seeding
+      SeederView.reindex
+    end
+  end
+
+  private
+
+  def self.catch_env_errors
+    required_env_vars = ['SEEDING_WEIGHT', 'USE_REAL_CITIES', 'CLEAR_DATABASE', 'SKIP_SEEDING']
+    missing_env_vars = required_env_vars.select { |var| ENV[var].nil? }
+
+    unless missing_env_vars.empty?
+      puts "Error: Missing required environment variables: #{missing_env_vars.join(', ')}".red
+      puts "The seeding has changed and now requires setting environment variables."
+      puts "Go to your .env file and set the following variables:"
+      puts "SEEDING_WEIGHT=light|medium|heavy".green
+      puts "USE_REAL_CITIES=true|false".green
+      puts "CLEAR_DATABASE=true|false".green
+      puts "SKIP_SEEDING=true|false".green
+      exit(1)
+    end
+
+    cloudinary_url = ENV['CLOUDINARY_URL']
+    if cloudinary_url.nil?
+      puts "Error: Missing CLOUDINARY_URL environment variable".red
+      puts "Please set the CLOUDINARY_URL environment variable in your .env file".red
+      exit(1)
+    end
+
+    mapbox_api_key = ENV['MAPBOX_API_KEY']
+    if mapbox_api_key.nil?
+      puts "Error: Missing MAPBOX_API_KEY environment variable".red
+      puts "Please set the MAPBOX_API_KEY environment variable in your .env file".red
+      puts "The script will work but features will be missing".red
+    end
+
   end
 end
 
