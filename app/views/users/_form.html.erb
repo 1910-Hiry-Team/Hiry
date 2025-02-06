@@ -71,16 +71,4 @@
     </div>
   <% end %>
 <% end %>
-
-<% if @user.company %>
-  <%= simple_fields_for @user.company do |c| %>
-    <div class="col-md-6">
-      <div class="mb-3">
-        <%= c.label :employee_number, class: "form-label" %>
-        <%= c.text_field :employee_number, class: "form-control" %>
-      </div>
-      <%= c.submit "Update my employee number", class: "btn btn-primary" %>
-    </div>
-  <% end %>
-<% end %>
 </div>

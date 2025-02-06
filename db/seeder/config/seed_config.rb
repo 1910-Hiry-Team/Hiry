@@ -5,6 +5,8 @@ module SeedConfig
 
   SALARY_RANGE = 30000..60000
 
+  NUMBER_OF_TEST_JOBS = 10
+
   THREADS_TO_USE = 4
   IMAGE_BATCH_SIZE = 20
 

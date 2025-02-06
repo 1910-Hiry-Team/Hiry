@@ -30,4 +30,9 @@ module TestUsers
     industry: 'Test Industry',
     employee_number: 10
   }
+
+  WEB_DEVELOPMENT_SAMPLE_JOB = {
+    job_title: 'Web Developer',
+    location: 'Paris, France',
+  }
 end

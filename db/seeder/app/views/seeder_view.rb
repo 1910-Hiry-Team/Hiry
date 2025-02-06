@@ -142,6 +142,10 @@ class SeederView
     puts 'Jobs created!'.green
 
     puts ''
+    t_create_test_jobs = Time.now
+    SeederController.create_test_jobs(Company.all)
+
+    puts ''
     t_create_studies = Time.now
     SeederController.create_studies
     t_stop_create_studies = Time.now
