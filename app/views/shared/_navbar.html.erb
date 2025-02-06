@@ -1,7 +1,7 @@
 <div class="navbar navbar-expand-sm navbar-light navbar-lewagon">
   <div class="container-fluid">
-    <%= link_to "#", class: "navbar-brand" do %>
-      <%= image_tag "https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png" %>
+    <%= link_to root_path, class: "navbar-brand" do %>
+      <%= image_tag "logo-hiry-deep-dark-blue.svg" %>
     <% end %>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,18 +12,25 @@
       <ul class="navbar-nav me-auto">
         <% if user_signed_in? %>
           <li class="nav-item active">
-            <%= link_to "Home", "#", class: "nav-link" %>
+            <%= link_to "Jobs", jobs_path, class: "nav-link" %>
           </li>
           <li class="nav-item">
-            <%= link_to "Messages", "#", class: "nav-link" %>
-          </li>
+            <%= link_to "Favorites",  user_favorites_path(current_user), class: "nav-link" %>
           <li class="nav-item dropdown">
           <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "avatar", alt: "dropdown menu" %>
+            <% if current_user.jobseeker_profile.present? && current_user.jobseeker_profile.photo.attached? %>
+              <%= image_tag current_user.jobseeker_profile.photo, class: "avatar", alt: "dropdown menu"%>
+            <% elsif current_user.company.present? && current_user.company.photo.attached? %>
+              <%= image_tag current_user.company.photo, class: "avatar", alt: "dropdown menu"%>
+            <% else %>
+              <%= image_tag "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp", class: "avatar", alt: "dropdown menu"%>
+            <% end %>
           </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <%= link_to "Action", "#", class: "dropdown-item" %>
-              <%= link_to "Another action", "#", class: "dropdown-item" %>
+              <% if current_user.company %>
+                <%= link_to "Dashboard", company_dashboard_path(current_user.company), class: "dropdown-item" %>
+              <% end %>
+              <%= link_to "My profile", user_path(current_user), class: "dropdown-item" %>
               <%= link_to "Log out", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item" %>
             </div>
           </li>

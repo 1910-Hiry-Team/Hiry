@@ -74,6 +74,19 @@ group :test do
 end
 
 gem "devise"
+
+gem "elasticsearch"
+gem "searchkick"
+
+gem 'geocoder'
 gem 'faker'
 gem 'country_select', '~> 8.0'
+gem 'activerecord-import'
 gem 'hotwire-rails'
+
+gem 'rainbow'
+
+gem 'cloudinary'
+
+gem 'parallel'
+gem 'ruby-progressbar'

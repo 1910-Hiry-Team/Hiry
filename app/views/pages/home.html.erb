@@ -1,21 +1,17 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
-
-
-<div>
-  <div class="row">
-    <div class="col-6">
-      <div class="container">
-        <h2>Some text</h2>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et asperiores exercitationem natus commodi dignissimos ipsa dolore magnam blanditiis, expedita perspiciatis sapiente hic aperiam, iure velit sed eum excepturi aliquam? Iure ratione velit iste aperiam? Iure asperiores dolorem obcaecati dolore dignissimos suscipit corrupti minima, quisquam amet aut veniam perferendis harum debitis labore tenetur officia sint eligendi quia dolorum earum sunt quo quos deleniti tempora! Quas enim totam, consequatur nemo odio eos quam vero incidunt id necessitatibus dolorum rerum sit inventore distinctio corrupti laborum veritatis natus amet. Tenetur sint, quod, sapiente laborum voluptatum dignissimos ipsa unde vel rem, delectus quibusdam. Itaque tempore neque, suscipit illo voluptas fugiat harum magni laborum voluptatum unde quia recusandae sapiente voluptates consequatur repellat odio eveniet delectus excepturi a sunt accusamus pariatur molestiae nihil maxime. Vero, eius exercitationem impedit quisquam corrupti cupiditate quas pariatur voluptas ex deserunt debitis obcaecati iste consectetur rem in porro corporis, omnis autem provident praesentium aut! Quod reprehenderit, exercitationem dolore consequuntur voluptates laborum praesentium sit veniam nostrum cum magni dolor delectus impedit laboriosam. Laboriosam unde voluptatem accusantium, suscipit magnam cupiditate libero debitis. Incidunt, soluta laborum! Modi architecto ullam fuga, impedit ab magni cum enim temporibus animi esse ea blanditiis? Quod, vitae. In, iure fugit.</p>
-        <img src="https://media.istockphoto.com/photos/welcome-picture-id187845015?k=6&m=187845015&s=612x612&w=0&h=g7zIKAbJ_J89CT3HOkiGoK5auOMNXNLs2YDGibUeNFE=" alt="hiring stock">
-      </div>
-    </div>
-    <div class="col-6">
-      <div class="card lg-white">
-        <h2 class="mb-3">Sign up as a ...</h2>
-          <%= link_to "Job Seeker", new_user_registration_path(role: 'jobseeker'), class: "btn btn-primary mb-3" %>
-          <%= link_to "Company", new_user_registration_path(role: 'company'), class: "btn btn-secondary mb-3" %>
+<div class="hero-section">
+  <div class="hero-video-background">
+    <video autoplay muted loop>
+      <source src="<%= asset_path "26011-353916142_small.webm" %>" type="video/webm">
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <div class="container">
+      <h1>Empowering careers </br> and building teams</h1>
+      <p>Discover opportunities and connect with the best candidates</p>
+      <div class="cta-container">
+        <%= link_to "Job Seeker", new_user_registration_path(role: 'jobseeker'), class: "cta-jobseeker" %>
+        <%= link_to "Company", new_user_registration_path(role: 'company'), class: "cta-company" %>
       </div>
     </div>
   </div>

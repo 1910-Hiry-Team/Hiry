@@ -1,0 +1,30 @@
+<div class= "job-container">
+  <% @jobs.each do |job| %>
+    <div class="job-card">
+      <div class="job-card-header">
+        <div class="job-card-header-image">
+          <%= image_tag job.company.photo, alt: "company logo" ,class: "company-logo" %>
+        </div>
+        <div class="job-card-header-info">
+          <h2><%= job.job_title %></h2>
+          <div class="flexbox">
+            <p><%= job.company.name %></p>
+            <p>|</p>
+            <p><%= job.location %></p>
+          </div>
+        </div>
+      </div>
+      <div class="job-card-content">
+        <p><%= job.contract %></p>
+        <p><%= job.experience %></p>
+        <p><%= job.language %></p>
+      </div>
+      <div class="job-card-footer">
+        <div class="salary-box">
+          <h3>💰 Salary: $<%= job.salary %></h3>
+        </div>
+        <div class="job-button"><%= link_to "Details", job_path(job) %></div>
+      </div>
+    </div>
+  <% end %>
+</div>

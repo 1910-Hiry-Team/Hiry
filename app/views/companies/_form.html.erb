@@ -1,0 +1,45 @@
+<%= form_with model: @company, local: true do |form| %>
+  <% if @company.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(@company.errors.count, "error") %> prohibited this company from being saved:</h4>
+      <ul>
+        <% @company.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= form.label :name, class: "form-label" %>
+        <%= form.text_field :name, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :location, class: "form-label" %>
+        <%= form.text_field :location,
+            placeholder: "Enter Location",
+            data: {
+              controller: "address-autocomplete",
+              address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"],
+              address_autocomplete_target: "address"
+            },
+            class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :industry, class: "form-label" %>
+        <%= form.text_field :industry, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :description, class: "form-label" %>
+        <%= form.text_area :description, class: "form-control" %>
+      </div>
+
+    </div>
+  </div>
+  <%= form.submit "Update my company", class: "btn btn-primary" %>
+<% end %>

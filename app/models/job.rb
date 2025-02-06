@@ -1,4 +1,11 @@
 class Job < ApplicationRecord
+  geocoded_by :location
+  after_validation :geocode, if: :location_changed?
+
+  searchkick
+
+  has_one_attached :photo
+
   # Associations
   belongs_to :company
   has_many :applications

@@ -1,0 +1,11 @@
+.btn-apply {
+  border-radius: 16px;
+  padding: 8px 32px;
+  border: 1px solid lightgrey;
+  color: white;
+  background-color: $deep-dark-blue;
+}
+
+.btn-apply:hover {
+  background-color: $dark-blue;
+}
