@@ -52,8 +52,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
     devise_parameter_sanitizer.permit(
       :sign_up, keys: [
       :email, :password, :password_confirmation, :role,
-      company_attributes: [:name, :location, :description, :industry, :employee_number],
-      jobseeker_profile_attributes: [:first_name, :last_name, :phone_number, :date_of_birth, :skills, :hobbies, :location]
+      company_attributes: [:photo, :name, :location, :description, :industry, :employee_number],
+      jobseeker_profile_attributes: [:first_name, :last_name, :phone_number, :date_of_birth, :skills, :hobbies, :location, :photo]
     ])
   end
 

@@ -1,13 +1,22 @@
 <div>
   <% if @user.jobseeker_profile %>
-    <h2><%= @user.jobseeker_profile.first_name %> <%= @user.jobseeker_profile.last_name %></h2>
-
+    <% if @user.jobseeker_profile.photo.attached? %>
+      <%= image_tag @user.jobseeker_profile.photo, alt: 'profile picture', height:'256px' %>
+    <% else %>
+      <%= image_tag "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp", alt: 'profile picture', height:'256px' %>
+    <% end %>
+    <h2><%= @user.jobseeker_profile.first_name %> <%= @user.jobseeker_profile.last_name %>'s profile</h2>
     <p>Age: <%= ((Time.zone.now - @user.jobseeker_profile.date_of_birth.to_time) / 1.year.seconds).floor %> years old</p>
     <p>Skills: <%= @user.jobseeker_profile.skills %></p>
     <p>Hobbies: <%= @user.jobseeker_profile.hobbies %></p>
     <p>Location: <%= @user.jobseeker_profile.location %></p>
   <% else %>
-    <h2><%= @user.company.name %>, employee: <%= @user.company.employee_number %></h2>
+    <% if @user.company.photo.attached? %>
+      <%= image_tag @user.company.photo, alt: 'logo', height:'256px' %>
+    <% else %>
+      <%= image_tag "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp", alt: 'profile picture', height:'256px' %>
+    <% end %>
+    <h2><%= @user.company.name %></h2>
   <% end %>
 </div>
 

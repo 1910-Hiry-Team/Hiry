@@ -24,6 +24,7 @@
           <div class="form-section" id="section2" style="display: none;">
             <div class="form-inputs">
               <%= f.simple_fields_for :jobseeker_profile do |p| %>
+                <%= p.input :photo, as: :file %>
                 <%= p.input :first_name %>
                 <%= p.input :last_name %>
                 <%= p.input :phone_number %>

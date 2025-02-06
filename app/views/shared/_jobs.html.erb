@@ -2,7 +2,9 @@
   <% @jobs.each do |job| %>
     <div class="job-card">
       <div class="job-card-header">
-        <img src="https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png" alt="company logo" class="company-logo">
+        <div class="job-card-header-image">
+          <%= image_tag job.company.photo, alt: "company logo" ,class: "company-logo" %>
+        </div>
         <div class="job-card-header-info">
           <h2><%= job.job_title %></h2>
           <div class="flexbox">

@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -9,6 +10,9 @@ class User < ApplicationRecord
   # Associations based on profile
   has_one :jobseeker_profile, dependent: :destroy
   has_one :company, dependent: :destroy
+
+  accepts_nested_attributes_for :jobseeker_profile
+  accepts_nested_attributes_for :company
 
   # Associations
   has_many :favorites
