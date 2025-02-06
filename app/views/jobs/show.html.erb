@@ -2,7 +2,11 @@
 <div class="show-container">
   <div class="show-layout">
     <div class="media-box">
-      <img src="https://4.bp.blogspot.com/-M_CSeh2f0Fg/UUaoBn9JmMI/AAAAAAAAgVQ/WEEyDd-B4Lg/s1600/Google+office+3.jpg" alt="office img" class="media-img">
+      <% if @job.photo.attached? %>
+        <%= image_tag @job.photo, alt:"company image", class:"media-img" %>
+      <% else %>
+        <h2>Image not available</h2>
+      <% end %>
     </div>
   </div>
 
@@ -10,7 +14,11 @@
     <div class="job-offer-card">
       <div class="job-offer-header">
         <div class="job-offer-header-layout">
-          <img src="https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png" alt="company logo" class="company-logo">
+          <% if @job.company.photo.attached? %>
+            <%= image_tag @job.company.photo, alt:"company logo", class:"company-logo" %>
+          <% else %>
+            <img src="https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp" alt="company logo" class="company-logo">
+          <% end %>
           <div class="job-card-header-info">
             <h2><%= @job.job_title %></h2>
             <div class="flexbox">
