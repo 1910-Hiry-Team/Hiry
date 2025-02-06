@@ -17,6 +17,7 @@
           <p><strong>Skills:</strong> <%= @application.user.jobseeker_profile.skills %></p>
           <p><strong>Hobbies:</strong> <%= @application.user.jobseeker_profile.hobbies %></p>
           <p><strong>Location:</strong> <%= @application.user.jobseeker_profile.location %></p>
+          <img src="#" alt="<%= @application.user.jobseeker_profile.first_name %> Resume & Cover letter" class="mb-3">
           <div class="d-flex justify-content-center">
             <% unless @application.match %>
               <%= link_to "Accept", edit_company_application_path(@company, @application), class: 'btn btn-primary me-2' %>
