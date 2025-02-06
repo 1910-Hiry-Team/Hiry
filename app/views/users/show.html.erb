@@ -1,6 +1,6 @@
 <div>
   <% if @user.jobseeker_profile %>
-    <h2><%= @user.jobseeker_profile.first_name %> <%= @user.jobseeker_profile.last_name %></h2>
+    <h2><%= @user.jobseeker_profile.first_name.capitalize %> <%= @user.jobseeker_profile.last_name.capitalize %></h2>
 
     <p>Age: <%= ((Time.zone.now - @user.jobseeker_profile.date_of_birth.to_time) / 1.year.seconds).floor %> years old</p>
     <p>Skills: <%= @user.jobseeker_profile.skills %></p>
