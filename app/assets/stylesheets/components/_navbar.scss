@@ -25,4 +25,13 @@
   text-align: center;
   background-color: $deep-dark-blue;
   color: $light-beige;
-} 
+}
+
+.jobseeker-only {
+  display: none; /* Masquer par défaut */
+}
+
+.company-only {
+    display: none; /* Masquer par défaut */
+}
+
