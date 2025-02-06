@@ -115,3 +115,12 @@ body {
   display: flex;
   justify-content: space-between;
 }
+
+.form-control-search {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid $deep-dark-blue;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: $light_beige;
+}
