@@ -1,24 +1,4 @@
 <div>
   <h3>Applications</h3>
-  <% @jobs.each do |job| %>
-    <% job.users.uniq.each do |user| %>
-      <% if user.jobseeker_profile.present? %>
-        <p><%= image_tag user.jobseeker_profile.photo, alt:'profile_picture', height:'128px'%>
-        <p>
-          <%= user.jobseeker_profile.first_name %>
-          <%= user.jobseeker_profile.last_name %>
-        </p>
-        <p>Skills : <%= user.jobseeker_profile.skills %></p>
-        <p>Hobbies : <%= user.jobseeker_profile.hobbies %></p>
-        <p>Location : <%= user.jobseeker_profile.location %></p>
-        <p>Applying for : <%= job.job_title %> at <%= job.company.name %></p>
-        <p>
-          <% application = job.applications.find_by(user_id: user.id) %>
-          <%= link_to "View Application",
-              job_application_path(job, application),
-              class: "btn btn-primary" %>
-        </p>
-      <% end %>
-    <% end %>
-  <% end %>
+  <%= render "shared/applications" %>
 </div>
