@@ -58,6 +58,7 @@
           <div data-modal-target="container" class="modal-container hidden">
             <div class="modal-background" data-action="click->modal#close"></div>
 
+
             <div class="modal-content">
               <div class="modal-header">
                 <h2>Application confirmation</h2>
@@ -70,7 +71,7 @@
                   <%= f.hidden_field :stage, value: 'Applied' %>
                   <%= f.hidden_field :match, value: false %>
 
-                  <%= f.submit "Confirm application", class: "btn btn-success" %>
+                  <%= f.submit "Confirm application", class: "btn-apply" %>
                 <% end %>
               </div>
             </div>
