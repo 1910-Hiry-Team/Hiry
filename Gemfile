@@ -75,9 +75,6 @@ end
 
 gem "devise"
 
-gem "elasticsearch"
-gem "searchkick"
-
 gem 'geocoder'
 gem 'faker'
 gem 'country_select', '~> 8.0'
@@ -90,3 +87,5 @@ gem 'cloudinary'
 
 gem 'parallel'
 gem 'ruby-progressbar'
+
+gem 'algoliasearch-rails'

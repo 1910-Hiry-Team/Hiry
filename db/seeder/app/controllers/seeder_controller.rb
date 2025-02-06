@@ -14,6 +14,8 @@ class SeederController
   end
 
   # -------------------
+
+  # -------------------
   def self.create_users(number_of_users)
     users_to_create = []
     Parallel.each(1..number_of_users, in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating users") do
@@ -83,9 +85,8 @@ class SeederController
     end
     DbController.model_importer(Job, jobs_to_create)
   end
-
   # -------------------
-  self.create_test_jobs(companies)
+  def self.create_test_jobs(companies)
     jobs_to_create = []
     Parallel.each(1.. SeedConfig::NUMBER_OF_TEST_JOBS, in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating jobs") do
       location = TestUsers::WEB_DEVELOPMENT_SAMPLE_JOB[:location]
