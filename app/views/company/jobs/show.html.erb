@@ -39,21 +39,4 @@
     <%= link_to "➕ Create a New Job", new_company_job_path(@company), class: "btn btn-success me-2" %>
     <%= link_to "⬅️ Back to Job Listings", company_jobs_path(@job.company), class: "btn btn-secondary" %>
   </div>
-
-  <div class="container">
-    <h3>Applications</h3>
-      <% @job.users.uniq.each do |user| %>
-        <p>
-          <% if user.jobseeker_profile.present? %>
-            <h2><%= user.jobseeker_profile.first_name %>
-            <%= user.jobseeker_profile.last_name %><h2>
-
-            <% application = @job.applications.find_by(user_id: user.id) %>
-            <%= link_to "View Application",
-              job_application_path(@job, application),
-              class: "btn btn-primary" %>
-          <% end %>
-        </p>
-      <% end %>
-  </div>
 </div>

@@ -11,12 +11,14 @@ module SeedConfig
   IMAGE_BATCH_SIZE = 20
 
   TEMP_IMG_PATH = 'app/assets/images/tmp_images/'
+  CONTRACT_TYPES = ["Full-time", "Part-time", "Contract", "Internship"]
+  EXPERIENCE_LEVELS = ["Entry", "Intermediate", "Senior"]
+  STUDY_LEVELS = ["Bachelor's", "Master's", "PhD"]
+  JOB_TYPE = ["Full-time", "Part-time", "Contract"]
+  APPLICATION_STATUS = ["Applied", "Interviewing", "Hired", "Rejected"]
 
   REAL_CITIES = [
     "Paris, France",
-    "New York, NY, United States",
-    "Brussels, Belgium",
-    "London, UK",
     "Rome, Italy"
   ]
 
