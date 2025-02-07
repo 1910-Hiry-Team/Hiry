@@ -20,7 +20,7 @@ class JobsController < ApplicationController
 
       # If using Searchkick, ensure to intersect with geocoded results
       if params[:job_title].present?
-        @jobs = @jobs.where(id: nearby_jobs)
+        @jobs = Job.search(params[:job_title]).select { |job| nearby_jobs.include?(job.id) }
       else
         @jobs = Job.where(id: nearby_jobs)
       end
