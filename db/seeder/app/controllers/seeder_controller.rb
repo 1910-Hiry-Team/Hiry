@@ -137,7 +137,7 @@ class SeederController
           job_title: Faker::Job.title,
           contrat: SeedConfig::JOB_TYPE.sample,
           missions: SampleText::MISSION_STATEMENTS.sample,
-          description: Faker::Lorem.paragraph,
+          description: SampleText::DESCRIPTIONS.sample,
           start_date: Faker::Date.backward(days: 2000),
           end_date: Faker::Date.backward(days: 365),
           user_id: user.id

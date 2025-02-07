@@ -103,9 +103,8 @@ module SampleText
     "Inspiring a new era of progress and positive impact.",
     "Dedicated to turning challenges into opportunities for success."
   ]
-end
 
-  EXPERIENCE_PARAGRAPHS = [
+  DESCRIPTIONS = [
     "During my tenure as a software engineer at TechCorp, I was immersed in a fast-paced environment where deadlines were tight and expectations high. I spearheaded the development of a mission-critical application that required designing scalable architecture, writing efficient code, and working closely with cross-functional teams. This experience not only sharpened my technical abilities in languages like Ruby and JavaScript but also taught me the importance of clear communication and agile collaboration. I often found myself brainstorming innovative solutions to complex problems, learning new debugging techniques, and refining my skills in performance optimization. The challenges I faced at TechCorp ultimately helped me grow both professionally and personally, instilling in me a drive for continuous improvement and creative problem-solving.",
     "Working as a project manager at Innovate Solutions was a transformative experience that broadened my perspective on team leadership and resource management. I was responsible for coordinating multiple projects concurrently, which required a delicate balance between technical oversight and interpersonal communication. My role involved planning project timelines, managing budgets, and ensuring that deliverables met the highest quality standards. The job pushed me to refine my skills in agile methodology, risk management, and conflict resolution. By navigating the challenges of tight deadlines and shifting client demands, I developed a resilient approach to leadership and learned how to motivate teams even under pressure.",
     "At Global Finance Inc., I served as a data analyst in a dynamic environment where accurate, real-time information was crucial for strategic decision-making. I was tasked with transforming large, complex data sets into actionable insights for various departments. This role demanded a deep understanding of statistical analysis, proficiency in SQL, and expertise in visualization tools like Tableau. Over time, I mastered the art of storytelling with data, crafting narratives that helped senior management identify trends and forecast market shifts. This experience not only enhanced my analytical abilities but also taught me the significance of data-driven decision-making in a corporate setting.",
@@ -230,4 +229,6 @@ end
     "At MediaFlow I coordinated high-profile events that combined creative vision with meticulous planning, delivering memorable experiences.",
     "During my time at PureTech I worked in quality assurance, rigorously testing products to ensure they met the highest standards of reliability.",
     "At ConnectCorp I managed key client accounts and ensured that project deliverables exceeded expectations through consistent collaboration."
-]
+  ]
+
+end
