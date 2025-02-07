@@ -7,14 +7,14 @@ Our platform offers several key features to enhance the user experience:
 
 - **Complete Geocoding**: We provide accurate geocoding to help job seekers find opportunities near their location.
 - **Secure Login and Sign Up**: Our platform ensures user data is protected with secure authentication processes.
-- **Advanced Search Algorithm**: Utilizing Elasticsearch, our advanced search algorithm helps users find the most relevant job listings quickly and efficiently.
+- **Advanced Search Algorithm**: Utilizing Algolia, our advanced search algorithm helps users find the most relevant job listings quickly and efficiently.
 
 ## Setting Up the Environment
 To set up the environment for the project, ensure you have the following installed:
 - Ruby 3.3.5
 - Rails 7.1.5
 - PostgreSQL
-- Elasticsearch (follow the [installation instructions](https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html))
+- Algolia (follow the [installation instructions](https://www.algolia.com/doc/guides/getting-started/installation/))
 
 ## Running the Project Locally
 To run the project locally, follow these steps:
@@ -24,7 +24,7 @@ To run the project locally, follow these steps:
   ```
 2. Navigate to the project directory.
 3. Install the required gems by running `bundle install`.
-4. Launch the Elasticsearch server by running `elasticsearch`.
+4. Launch the Algolia server by running `Algolia`.
 5. Set up the database by running `rails db:setup`.
 6. Start the Rails server by running `rails server`.
 7. Visit `http://localhost:3000` in your web browser to see the application in action.

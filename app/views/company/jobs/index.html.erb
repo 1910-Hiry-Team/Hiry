@@ -4,7 +4,7 @@
   <div class="text-center mt-4">
     <%= link_to "Create a New Job", new_company_job_path(@company), class: "btn btn-success mt-4 mb-4"%>
   </div>
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  <div class="row row-cols-1 row-cols-md-5 row-cols-lg-2 g-4">
     <% @jobs.each do |job| %>
       <div class="col">
         <div class="card shadow-sm">

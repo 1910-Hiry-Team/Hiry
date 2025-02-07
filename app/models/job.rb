@@ -1,9 +1,17 @@
 class Job < ApplicationRecord
+  include AlgoliaSearch
+
   geocoded_by :location
   after_validation :geocode, if: :location_changed?
 
-  searchkick
+  # Algolia configuration
+  algoliasearch do
+    attribute :job_title
+    searchableAttributes ['job_title']
+    customRanking ['desc(updated_at)']
+  end
 
+  # Active Storage
   has_one_attached :photo
 
   # Associations

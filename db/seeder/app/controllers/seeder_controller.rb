@@ -14,6 +14,8 @@ class SeederController
   end
 
   # -------------------
+
+  # -------------------
   def self.create_users(number_of_users)
     users_to_create = []
     Parallel.each(1..number_of_users, in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating users") do
@@ -83,7 +85,29 @@ class SeederController
     end
     DbController.model_importer(Job, jobs_to_create)
   end
+  # -------------------
+  def self.create_test_jobs(companies)
+    jobs_to_create = []
+    Parallel.each(1.. SeedConfig::NUMBER_OF_TEST_JOBS, in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating jobs") do
+      location = TestUsers::WEB_DEVELOPMENT_SAMPLE_JOB[:location]
+      geo = Geocoder.search(location).first
+      lat, lon = geo&.latitude, geo&.longitude
 
+      jobs_to_create << Job.new(
+        job_title: TestUsers::WEB_DEVELOPMENT_SAMPLE_JOB[:job_title],
+        location: location,
+        latitude: lat,
+        longitude: lon,
+        missions: Faker::Lorem.sentence(word_count: 10),
+        contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
+        language: SeedConfig::REAL_LANGUAGES.sample,
+        experience: ["Entry", "Intermediate", "Senior"].sample,
+        salary: rand(SeedConfig::SALARY_RANGE), # Adjust to fit your salary format
+        company_id: companies.sample.id
+      )
+    end
+    DbController.model_importer(Job, jobs_to_create)
+  end
   # -------------------
   def self.create_studies
     studies_to_create = []
