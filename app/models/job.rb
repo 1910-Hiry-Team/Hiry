@@ -16,7 +16,7 @@ class Job < ApplicationRecord
 
   # Associations
   belongs_to :company
-  has_many :applications
+  has_many :applications, dependent: :destroy
   has_many :users, through: :applications
   has_many :favorites
   has_many :favorited_by_users, through: :favorites, source: :user
