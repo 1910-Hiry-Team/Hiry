@@ -2,7 +2,8 @@ class Application < ApplicationRecord
   # Associations
   belongs_to :user
   belongs_to :job
-  belongs_to :applications
+
+  has_one :company, through: :jobs
 
   # Validations
   validates :stage, inclusion: { in: ["Applied", "Interviewing", "Hired", "Rejected"] }
