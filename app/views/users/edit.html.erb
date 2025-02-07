@@ -1,5 +1,7 @@
-<h1>Edit my user profile</h1>
+<div class="text-center" style="padding: 20px;">
+  <%= link_to "Back to my profile", user_path(@user), class: "btn btn-primary" %>
+</div>
 
-<%= render "form", user: @user %>
-
-<%= link_to "Back to my profile", user_path(@user), class: "btn btn-primary" %>
+<div class="user-card">
+  <%= render "form", user: @user %>
+</div>

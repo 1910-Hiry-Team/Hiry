@@ -22,3 +22,64 @@
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
   border: white 1px solid;
 }
+
+.avatar-very-large {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+}
+
+.avatar-very-large-bordered {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  border: white 1px solid;
+}
+
+.avatar-very-large-square {
+  width: 128px;
+  height: 128px;
+  border-radius: 0px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  border: white 1px solid;
+}
+
+.avatar-extremely-large {
+  width: 256px;
+  height: 256px;
+  border-radius: 50%;
+}
+
+.avatar-extremely-large-bordered {
+  width: 256px;
+  height: 256px;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  border: white 1px solid;
+}
+
+.avatar-extremely-large-square {
+  width: 256px;
+  height: 256px;
+  border-radius: 0px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  border: white 1px solid;
+}
+.avatar-extremely-large-rectangular {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  border: 5px solid $light-gray;
+  object-fit: contain;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.user-img-bg {
+  background-color: $light-beige;
+  border-radius: 16px;
+  border: 1px solid lightgrey;
+}

@@ -26,7 +26,10 @@
         <%= form.label :password_confirmation, class: "form-label" %>
         <%= form.password_field :password_confirmation, class: "form-control" %>
       </div>
-      <%= form.submit "Update my login information", class: "btn btn-primary" %>
+
+      <div style="padding: 20px;">
+        <%= form.submit "Update my login information", class: "btn btn-primary" %>
+      </div>
     </div>
 <% end %>
 
@@ -67,7 +70,10 @@
         <%= p.label :location, class: "form-label" %>
         <%= p.text_field :location, class: "form-control" %>
       </div>
-      <%= p.submit "Update my job seeker information", class: "btn btn-primary" %>
+
+      <div style="padding: 20px;">
+        <%= p.submit "Update my job seeker information", class: "btn btn-primary" %>
+      </div>
     </div>
   <% end %>
 <% end %>
