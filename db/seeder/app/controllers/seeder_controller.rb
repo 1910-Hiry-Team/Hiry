@@ -53,7 +53,7 @@ class SeederController
           user_id: user.id,
           name: Faker::Company.name,
           location: location,
-          description: Faker::Company.catch_phrase,
+          description: SampleText::COMPANY_DESCRIPTIONS.sample,
           industry: Faker::Company.industry,
           employee_number: rand(10..500)
         )

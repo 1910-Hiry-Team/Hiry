@@ -1,3 +1,5 @@
+require './sample_text_config.rb'
+
 module TestUsers
   TEST_USER_SEEKER = {
     email: 'test@seeker.com',
@@ -26,7 +28,7 @@ module TestUsers
   TEST_COMPANY = {
     name: 'Test Company',
     location: 'Paris, France',
-    description: 'We are a test company',
+    description: SampleText::COMPANY_DESCRIPTIONS.sample,
     industry: 'Test Industry',
     employee_number: 10
   }
