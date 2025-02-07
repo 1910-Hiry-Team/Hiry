@@ -5,7 +5,6 @@ class Application < ApplicationRecord
 
   has_one :company, through: :jobs
 
-
   # Validations
   validates :stage, inclusion: { in: ["Applied", "Interviewing", "Hired", "Rejected"] }
   validates :match, inclusion: { in: [true, false] }

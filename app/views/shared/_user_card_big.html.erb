@@ -1,0 +1,48 @@
+<div class="user-card">
+  <div class="user-card-content">
+    <div class="row mb-3">
+      <div class="col-4 user-img-bg">
+        <% if @user.jobseeker_profile %>
+          <%= image_tag (@user.jobseeker_profile.photo.attached? ? @user.jobseeker_profile.photo : "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp"), alt: 'profile picture', class: 'avatar-extremely-large-rectangular' %>
+        <% else %>
+          <%= image_tag (@user.company.photo.attached? ? @user.company.photo : "https://res.cloudinary.com/dqyti4nxi/image/upload/v1738668927/sample_pfp.webp"), alt: 'profile picture', class: 'avatar-extremely-large-rectangular' %>
+        <% end %>
+      </div>
+
+      <div class="col-8">
+        <div class="user-card flex-column">
+          <% if @user.jobseeker_profile %>
+            <h2><%= @user.jobseeker_profile.first_name %> <%= @user.jobseeker_profile.last_name %></h2>
+            <p>Age: <%= ((Time.zone.now - @user.jobseeker_profile.date_of_birth.to_time) / 1.year.seconds).floor %> years old</p>
+            <p>Skills: <%= @user.jobseeker_profile.skills %></p>
+            <p>Hobbies: <%= @user.jobseeker_profile.hobbies %></p>
+            <p>Location: <%= @user.jobseeker_profile.location %></p>
+          <% else %>
+            <h2 style="padding: 16px;"><%= @user.company.name %></h2>
+            <p>Industry: <%= @user.company.industry %></p>
+            <p>Employee Number: <%= @user.company.employee_number %></p>
+            <p>Location: <%= @user.company.location %></p>
+            <p>Description: <%= @user.company.description %></p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="user-card-content">
+      <p style="padding: 16px;"><strong>Email:</strong> <%= @user.email %></p>
+      <% if @user.jobseeker_profile %>
+        <p style="padding: 16px;"><strong>Phone Number:</strong> <%= @user.jobseeker_profile.phone_number %></p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="user-card-content text-center">
+      <% if current_user == @user %>
+        <%= link_to "Edit my info", edit_user_path(@user), class: "btn btn-success", style: 'margin-right: 10px;' %>
+      <% end %>
+    </div>
+  </div>
+</div>
