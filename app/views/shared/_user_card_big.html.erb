@@ -19,6 +19,10 @@
             <p>Location: <%= @user.jobseeker_profile.location %></p>
           <% else %>
             <h2><%= @user.company.name %></h2>
+            <p>Industry: <%= @user.company.industry %></p>
+            <p>Employee Number: <%= @user.company.employee_number %></p>
+            <p>Location: <%= @user.company.location %></p>
+            <p>Description: <%= @user.company.description %></p>
           <% end %>
         </div>
       </div>
