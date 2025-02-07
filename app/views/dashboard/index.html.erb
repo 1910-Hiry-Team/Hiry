@@ -12,9 +12,10 @@
           <p class="card-text">View and manage applications for your job listings.</p>
           <ul class="list-group">
             <% if @applications %>
-              <% @company.applications.each do |application| %>
+              <% @applications.each do |application| %>
                 <li class="list-group-item">
-                  <%= application.jobseeker_profile.first_name %> <%= application.user.jobseeker_profile.last_name %>
+                  <% @user = User.find_by(id: application.user_id) %>
+                  <%= JobseekerProfile.find_by(user_id: @user.id).first_name %> <%= JobseekerProfile.find_by(user_id: @user.id).last_name %>
                 </li>
               <% end %>
             <% else %>

@@ -1,5 +1,6 @@
 require_relative './sample_text_config'
 
+
 module TestUsers
   TEST_USER_SEEKER = {
     email: 'test@seeker.com',
