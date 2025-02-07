@@ -42,9 +42,6 @@
     <div class="user-card-content text-center">
       <% if current_user == @user %>
         <%= link_to "Edit my info", edit_user_path(@user), class: "btn btn-success", style: 'margin-right: 10px;' %>
-        <% if @user.company %>
-          <%= link_to "View my company", company_path(@user.company), class: "btn btn-primary" %>
-        <% end %>
       <% end %>
     </div>
   </div>

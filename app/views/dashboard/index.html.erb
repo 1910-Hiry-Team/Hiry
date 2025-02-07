@@ -48,7 +48,7 @@
           <div class="card-body">
             <h2 class="card-title">Company Profile</h2>
             <p class="card-text">View and manage your company profile.</p>
-            <%= link_to "View my company profile", company_path(@company), class: "btn btn-primary" %>
+            <%= link_to "View my company profile", user_path(@company.user), class: "btn btn-primary" %>
           </div>
         </div>
       </div>
