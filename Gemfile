@@ -75,6 +75,7 @@ end
 
 gem "devise"
 
+
 gem 'elasticsearch', '~> 7.10'
 gem "searchkick"
 
@@ -90,3 +91,5 @@ gem 'cloudinary'
 
 gem 'parallel'
 gem 'ruby-progressbar'
+
+gem 'algoliasearch-rails'
