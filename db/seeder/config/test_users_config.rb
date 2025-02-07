@@ -1,4 +1,4 @@
-require './sample_text_config.rb'
+require_relative './sample_text_config.rb'
 
 module TestUsers
   TEST_USER_SEEKER = {
