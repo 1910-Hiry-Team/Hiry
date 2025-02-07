@@ -1,6 +1,66 @@
-<h1>Your dashboard</h1>
+<div class="container mt-5">
 
-<%= link_to "View my company profile", company_path(@company), class: "btn btn-primary" %>
-<%= link_to "View my Job listings", company_jobs_path, class: "btn btn-primary" %>
-<%= link_to "View my applications", company_applications_path, class: "btn btn-primary" %>
-<%= link_to "Create a new Job listing", new_company_job_path(@company), class: "btn btn-success mt-4 mb-4" %>
+  <div class="mb-3">
+    <h1>Your dashboard</h1>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">Applications</h2>
+          <p class="card-text">View and manage applications for your job listings.</p>
+          <ul class="list-group">
+            <% if @applications %>
+              <% @company.applications.each do |application| %>
+                <li class="list-group-item">
+                  <%= application.jobseeker_profile.first_name %> <%= application.user.jobseeker_profile.last_name %>
+                </li>
+              <% end %>
+            <% else %>
+              <li class="list-group-item">No applications for the moment</li>
+            <% end %>
+          </ul>
+          <%= link_to "View my applications", company_applications_path, class: "btn btn-primary mt-3" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">Job Listings</h2>
+          <p class="card-text">View and manage your job listings.</p>
+          <ul class="list-group">
+            <% @company.jobs.each do |job| %>
+              <li class="list-group-item">
+                <%= link_to job.job_title, company_job_path(job.company, job) %>
+              </li>
+            <% end %>
+          </ul>
+          <%= link_to "View my Job listings", company_jobs_path, class: "btn btn-primary mt-3" %>
+        </div>
+      </div>
+    </div>
+
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2 class="card-title">Company Profile</h2>
+            <p class="card-text">View and manage your company profile.</p>
+            <%= link_to "View my company profile", company_path(@company), class: "btn btn-primary" %>
+          </div>
+        </div>
+      </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">New Job Listing</h2>
+          <p class="card-text">Create a new job listing.</p>
+          <%= link_to "Create a new Job listing", new_company_job_path(@company), class: "btn btn-success" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

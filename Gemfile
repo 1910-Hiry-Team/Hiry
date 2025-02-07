@@ -75,6 +75,10 @@ end
 
 gem "devise"
 
+
+gem 'elasticsearch', '~> 7.10'
+gem "searchkick"
+
 gem 'geocoder'
 gem 'faker'
 gem 'country_select', '~> 8.0'
