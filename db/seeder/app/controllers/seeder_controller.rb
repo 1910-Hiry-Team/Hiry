@@ -1,6 +1,7 @@
 require_relative '../../config/seed_config.rb'
 require_relative '../../config/test_users_config'
 require_relative './db_controller.rb'
+require_relative '../../config/sample_text_config'
 
 require 'parallel'
 
@@ -52,7 +53,7 @@ class SeederController
           user_id: user.id,
           name: Faker::Company.name,
           location: location,
-          description: Faker::Company.catch_phrase,
+          description: SampleText::COMPANY_DESCRIPTIONS.sample,
           industry: Faker::Company.industry,
           employee_number: rand(10..500)
         )
@@ -75,10 +76,10 @@ class SeederController
         location: location,
         latitude: lat,
         longitude: lon,
-        missions: Faker::Lorem.sentence(word_count: 10),
-        contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
+        missions: SampleText::MISSION_STATEMENTS.sample,
+        contract: SeedConfig::CONTRACT_TYPES.sample,
         language: SeedConfig::REAL_LANGUAGES.sample,
-        experience: ["Entry", "Intermediate", "Senior"].sample,
+        experience: SeedConfig::EXPERIENCE_LEVELS.sample,
         salary: rand(SeedConfig::SALARY_RANGE), # Adjust to fit your salary format
         company_id: companies.sample.id
       )
@@ -98,10 +99,10 @@ class SeederController
         location: location,
         latitude: lat,
         longitude: lon,
-        missions: Faker::Lorem.sentence(word_count: 10),
-        contract: ["Full-time", "Part-time", "Contract", "Internship"].sample,
+        missions: SampleText::MISSION_STATEMENTS.sample,
+        contract: SeedConfig::CONTRACT_TYPES.sample,
         language: SeedConfig::REAL_LANGUAGES.sample,
-        experience: ["Entry", "Intermediate", "Senior"].sample,
+        experience: SeedConfig::EXPERIENCE_LEVELS.sample,
         salary: rand(SeedConfig::SALARY_RANGE), # Adjust to fit your salary format
         company_id: companies.sample.id
       )
@@ -115,7 +116,7 @@ class SeederController
       rand(1.. SeedConfig::RANGE_OF_STUDIES).times do
         studies_to_create << Study.new(
           school: Faker::University.name,
-          level: ["Bachelor's", "Master's", "PhD"].sample,
+          level: SeedConfig::STUDY_LEVELS.sample,
           diploma: Faker::Educator.course_name,
           start_date: Faker::Date.backward(days: 3650),
           end_date: Faker::Date.backward(days: 365),
@@ -134,9 +135,9 @@ class SeederController
         experiences_to_create << Experience.new(
           company: Faker::Company.name,
           job_title: Faker::Job.title,
-          contrat: ["Full-time", "Part-time", "Contract"].sample,
-          missions: Faker::Lorem.sentence(word_count: 10),
-          description: Faker::Lorem.paragraph,
+          contrat: SeedConfig::JOB_TYPE.sample,
+          missions: SampleText::MISSION_STATEMENTS.sample,
+          description: SampleText::DESCRIPTIONS.sample,
           start_date: Faker::Date.backward(days: 2000),
           end_date: Faker::Date.backward(days: 365),
           user_id: user.id
@@ -152,7 +153,7 @@ class SeederController
     Parallel.each(User.where(role: 0), in_threads: SeedConfig::THREADS_TO_USE, progress: "Creating applications") do |user|
       rand(1..SeedConfig::RANGE_OF_APPLICATIONS).times do
       applications_to_create << Application.new(
-        stage: ["Applied", "Interviewing", "Hired", "Rejected"].sample,
+        stage: SeedConfig::APPLICATION_STATUS.sample,
         match: [true, false].sample,
         user_id: user.id,
         job_id: jobs.sample[:id]

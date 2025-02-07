@@ -144,6 +144,7 @@ class SeederView
     puts ''
     t_create_test_jobs = Time.now
     SeederController.create_test_jobs(Company.all)
+    t_stop_create_test_jobs = Time.now
 
     puts ''
     t_create_studies = Time.now
@@ -208,6 +209,7 @@ class SeederView
     puts "Creating users: " + "#{(t_stop_create_users - t_create_users).round(2)} seconds".red
     puts "Creating profiles and companies: " + "#{(t_stop_create_profiles - t_create_profiles).round(2)} seconds".red
     puts "Creating jobs: " + "#{(t_stop_create_jobs - t_create_jobs).round(2)} seconds".red
+    puts "Creating test jobs: " + "#{(t_stop_create_test_jobs - t_create_test_jobs).round(2)} seconds".red
     puts "Creating studies: " + "#{(t_stop_create_studies - t_create_studies).round(2)} seconds".red
     puts "Creating experiences: " + "#{(t_stop_create_experiences - t_create_experiences).round(2)} seconds".red
     puts "Creating applications: " + "#{(t_stop_create_applications - t_create_applications).round(2)} seconds".red
